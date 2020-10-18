@@ -1,0 +1,10 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="prova" type="Application" factoryName="Application">
+    <option name="MAIN_CLASS_NAME" value="de.jflex.example.standalone.Subst" />
+    <module name="Cetrangolo_es2_Jflex" />
+    <option name="PROGRAM_PARAMETERS" value="test_files/test" />
+    <method v="2">
+      <option name="Make" enabled="true" />
+    </method>
+  </configuration>
+</component>

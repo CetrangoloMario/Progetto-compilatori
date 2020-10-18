@@ -4,7 +4,6 @@
     <modules>
       <module fileurl="file://$PROJECT_DIR$/Cetrangolo_es2_Jflex.iml" filepath="$PROJECT_DIR$/Cetrangolo_es2_Jflex.iml" />
       <module fileurl="file://$PROJECT_DIR$/srcfilexcup/srcfilexcup.iml" filepath="$PROJECT_DIR$/srcfilexcup/srcfilexcup.iml" />
-      <module fileurl="file://$PROJECT_DIR$/srcjflexcup/srcjflexcup.iml" filepath="$PROJECT_DIR$/srcjflexcup/srcjflexcup.iml" />
       <module fileurl="file://$PROJECT_DIR$/test_files/test_files.iml" filepath="$PROJECT_DIR$/test_files/test_files.iml" />
     </modules>
   </component>
