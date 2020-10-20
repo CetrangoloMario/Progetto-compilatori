@@ -25,7 +25,7 @@ import java.util.Map;
 %{
 
     private StringBuffer string= new StringBuffer();
-    private static HashMap<String,Symbol> stringTable=new HashMap<String,Symbol>();
+   // private static HashMap<String,Symbol> stringTable=new HashMap<String,Symbol>();
 
     private Symbol symbol(int type){
         return new Symbol(type, yyline,yycolumn);
@@ -35,27 +35,27 @@ import java.util.Map;
         return new Symbol(type, yyline, yycolumn, value);
     }
 
-    private Symbol installID(String str){
+   /* private Symbol installID(String str){
         Symbol symbol;
         if(stringTable.containsKey(str)){
             return symbol(CircuitSym.ID,stringTable.get(str).toString());
         }
         else {
-            symbol=new Symbol(CircuitSym.ID,str.toString());
+            symbol=new Symbol(CircuitSym.ID,str);
             stringTable.put(str,symbol);
-            return symbol;
+            return symbol(CircuitSym.ID,str);
         }
     }
 
     private Symbol intNum(String str){
         Symbol symbol;
-        symbol=new Symbol(CircuitSym.INTNUM,str.toString());
+        symbol=new Symbol(CircuitSym.INTNUM,str);
         return symbol;
     }
 
     private Symbol decNUM(String str){
             Symbol symbol;
-            symbol=new Symbol(CircuitSym.DECNUM,str.toString());
+            symbol=new Symbol(CircuitSym.DECNUM,str);
             return symbol;
         }
 
@@ -69,21 +69,21 @@ import java.util.Map;
 
                 }
                 System.out.println("------------------------------------" );
-            }
+            }*/
 %}
 
 
 
 
 										// Abbreviations for regular expressions
-delimitator=[\n|\r|\t|' ']
+delimitator=[ \r\n\t\f]
 letter=([a-z]|[A-Z])
-letter_=(letter)|(_)
+letter_=[a-z]|[A-Z]|_
 digit=[0-9]
 digits=(digit)|([1-9][0-9]*)
-integer=0|([1-9][0-9]*)
-identifier= letter_((letter_)|(digit))*
-decimal= integer.([0-9]*)
+integer = (0)|([1-9]{digit}*)
+identifier={letter_}({letter_}|{digit})*
+decimal= {integer}((\.({digit}+))?)
 /*Comments*/
 TraditionlComment="#"
 CommentLines="/*"[^*]("*/")| "/*""*"+"/"
@@ -94,77 +94,82 @@ Comment= {TraditionlComment} | {CommentLines}
 %%
 <YYINITIAL>{
 										// Now for the actual tokens and assocated actions
-"if" 		{ return  symbol(CircuitSym.IF); }
-"else"      {return  symbol(CircuitSym.ELSE);}
-"while"      {return  symbol(CircuitSym.WHILE);}
-"for"      {return  symbol(CircuitSym.FOR);}
-"int"      {return  symbol(CircuitSym.INT);}
-"float"      {return  symbol(CircuitSym.FLOAT);}
-"bool"      {return  symbol(CircuitSym.BOOL);}
-"else"      {return  symbol(CircuitSym.ELSE);}
-"return"      {return  symbol(CircuitSym.RETURN);}
-"main"      {return  symbol(CircuitSym.MAIN);}
-"true"      {return  symbol(CircuitSym.TRUE);}
-"false"      {return  symbol(CircuitSym.FALSE);}
-"then"      {return  symbol(CircuitSym.THEN);}
-"continue"      {return  symbol(CircuitSym.CONTINUE);}
-"string"      {return  symbol(CircuitSym.STRING);}
+"if" 		{ return new Symbol(CircuitSym.IF); }
+"else"      {return new Symbol(CircuitSym.ELSE);}
+"while"      {return new Symbol(CircuitSym.WHILE);}
+"for"      {return new Symbol(CircuitSym.FOR);}
+"int"      {return new Symbol(CircuitSym.INT);}
+"float"      {return new Symbol(CircuitSym.FLOAT);}
+"bool"      {return new Symbol(CircuitSym.BOOL);}
+"return"      {return new Symbol(CircuitSym.RETURN);}
+"main"      {return new Symbol(CircuitSym.MAIN);}
+"true"      {return new Symbol(CircuitSym.TRUE);}
+"false"      {return new Symbol(CircuitSym.FALSE);}
+"then"      {return new Symbol(CircuitSym.THEN);}
+"continue"      {return new Symbol(CircuitSym.CONTINUE);}
+"string"      {return new Symbol(CircuitSym.STRING);}
+
+
+{identifier}    { return new Symbol(CircuitSym.ID, yytext()); }
+
+{integer}       {return new Symbol(CircuitSym.INTNUM, yytext()); }
+{decimal}       {return new Symbol(CircuitSym.DECNUM, yytext());}
+
+
 
 {delimitator} { /* ignore */ }
 {Comment}       {/*ignore*/}
 \"             {string.setLength(0); yybegin(STRING);}
 
 /*operator*/
-"<"            {return symbol(CircuitSym.LESSOP);}
-"<="             {return symbol(CircuitSym.LESSEQUALSOP);}
-"<>"            {return symbol(CircuitSym.NOTEQUALSOP);}
-"<-"            {return symbol(CircuitSym.ASSIGNMENTOP);}
-">"            {return symbol(CircuitSym.GREATEROP);}
-">="            {return symbol(CircuitSym.GREATEREQUALSOP);}
-"="            {return symbol(CircuitSym.EQUALSOP);}
+
+"<="             {return new Symbol(CircuitSym.LESSEQUALSOP);}
+"<>"            {return new Symbol(CircuitSym.NOTEQUALSOP);}
+"<-"            {return new Symbol(CircuitSym.ASSIGNMENTOP);}
+">="            {return new Symbol(CircuitSym.GREATEREQUALSOP);}
+"="            {return new Symbol(CircuitSym.EQUALSOP);}
+"<"            {return new Symbol(CircuitSym.LESSOP);}
+">"            {return new Symbol(CircuitSym.GREATEROP);}
 
 /*Separatori*/
-"("             {return symbol(CircuitSym.LRBRACKET);}
-")"             {return symbol(CircuitSym.RRBRACKET);}
-"{"             {return symbol(CircuitSym.LBRACKET);}
-"}"             {return symbol(CircuitSym.RBRACKET);}
-"["             {return symbol(CircuitSym.LSBRACKET);}
-"]"             {return symbol(CircuitSym.RSBRACKET);}
-","             {return symbol(CircuitSym.COMMA);}
-";"             {return symbol(CircuitSym.SEMICOMMA);}
-
-
-{identifier}    { return installID(yytext()); }
-
-{integer}       {return intNum(yytext()); }
-{decimal}       {return decNUM(yytext());}
+"("             {return new Symbol(CircuitSym.LRBRACKET);}
+")"             {return new Symbol(CircuitSym.RRBRACKET);}
+"{"             {return new Symbol(CircuitSym.LBRACKET);}
+"}"             {return new Symbol(CircuitSym.RBRACKET);}
+"["             {return new Symbol(CircuitSym.LSBRACKET);}
+"]"             {return new Symbol(CircuitSym.RSBRACKET);}
+","             {return new Symbol(CircuitSym.COMMA);}
+";"             {return new Symbol(CircuitSym.SEMICOMMA);}
 
 
 /*operatori aritmetici*/
-"+"             {return symbol(CircuitSym.ADDITION);}
-"-"             {return symbol(CircuitSym.SUBTRACTION);}
-"++"             {return symbol(CircuitSym.INCREASE);}
-"--"             {return symbol(CircuitSym.DECREASE);}
-"*"             {return symbol(CircuitSym.MULTIPLICATION);}
-"/"             {return symbol(CircuitSym.DIVISION);}
-"%"             {return symbol(CircuitSym.MODULE);}
-"!"             {return symbol(CircuitSym.NOT);}
-"!="             {return symbol(CircuitSym.NOT_EQUALS);}
+"++"             {return new Symbol(CircuitSym.INCREASE);}
+"--"             {return new Symbol(CircuitSym.DECREASE);}
+"+"             {return new Symbol(CircuitSym.ADDITION);}
+"-"             {return new Symbol(CircuitSym.SUBTRACTION);}
 
+"*"             {return new Symbol(CircuitSym.MULTIPLICATION);}
+"/"             {return new Symbol(CircuitSym.DIVISION);}
+"%"             {return new Symbol(CircuitSym.MODULE);}
+"\(!=\)"             {return new Symbol(CircuitSym.NOT_EQUALS);}
+"!"             {return new Symbol(CircuitSym.NOT);}
+
+
+
+<<EOF>> {return new Symbol(CircuitSym.EOF);}
+
+[^]			{ return new Symbol(CircuitSym.ERROR,yytext());}
 
 <STRING>{
 
 \"          {yybegin(YYINITIAL);
-            return symbol(CircuitSym.STRING_LITERAL,string.toString());}
+            return new Symbol(CircuitSym.STRING_LITERAL,string.toString());}
 [^\n\r\"\\]+    {string.append(yytext());}
 \\t             {string.append('\t');}
 \\n             {string.append('\n');}
 \\r             {string.append('\r');}
-\"              {string.append('\"');}
 \\              {string.append('\\');}
 
 }
 
-<<EOF>> {return symbol(CircuitSym.EOF);}
-[^]			{ return symbol(CircuitSym.ERROR,"<"+yytext()+">");}
 }

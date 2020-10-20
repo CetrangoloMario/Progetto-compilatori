@@ -1,8 +1,8 @@
 <component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="prova" type="Application" factoryName="Application">
+  <configuration default="false" name="test1" type="Application" factoryName="Application">
     <option name="MAIN_CLASS_NAME" value="Tester" />
     <module name="Cetrangolo_es2_Jflex" />
-    <option name="PROGRAM_PARAMETERS" value="test_files/test" />
+    <option name="PROGRAM_PARAMETERS" value="test_files/test1.txt" />
     <method v="2">
       <option name="Make" enabled="true" />
     </method>
