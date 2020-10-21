@@ -18,7 +18,8 @@ public class Tester {
         Yylex lexer=new Yylex(inFile);
 
         Symbol symbol= lexer.next_token();
-        while (symbol.sym!= CircuitSym.EOF){
+        boolean flag=true;
+        while (flag){
             switch (symbol.sym){
 
                 case CircuitSym.IF:
@@ -114,21 +115,21 @@ public class Tester {
 
 
                 case CircuitSym.ID:
-                    System.out.println("(ID , "
+                    System.out.println("(ID , \""
                            +(symbol.value).toString()
-                            +" )");
+                            +" \")");
                     break;
 
                 case CircuitSym.INTNUM:
-                    System.out.println("( INTNUM , "
+                    System.out.println("( INTNUM , \""
                             +(symbol.value).toString()
                             +"\" )");
                     break;
 
                 case CircuitSym.DECNUM:
-                    System.out.println("( DECNUM , "
+                    System.out.println("( DECNUM , \""
                             +(symbol.value).toString()
-                            +" )");
+                            +"\" )");
                     break;
 
 
@@ -161,15 +162,16 @@ public class Tester {
                     break;
 
 
+
+                case CircuitSym.ERROR:
+                    System.out.println("ERROR, <"+symbol.value+">");
+                    break;
                 case CircuitSym.EOF:
                     System.out.println("\nEOF, il file di input è finito\n");
+                    flag=false;
                     break;
-                case CircuitSym.ERROR:
-                    System.out.println("\n ERROR, <"+symbol.value+">\n");
-                    break;
-
                 default:
-                    System.out.println("\n ERROR, <"+symbol.value+">\n");
+                    System.out.println("ERROR, <"+symbol.value+">");
                     break;
 
             }

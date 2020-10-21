@@ -84,16 +84,11 @@ digits=(digit)|([1-9][0-9]*)
 integer = (0)|([1-9]{digit}*)
 identifier={letter_}({letter_}|{digit})*
 decimal= {integer}((\.({digit}+))?)
-/*Comments*/
-TraditionlComment="#"
-CommentLines="/*"[^*]("*/")| "/*""*"+"/"
-Comment= {TraditionlComment} | {CommentLines}
 
-%state STRING
+//%state STRING
 
 %%
-<YYINITIAL>{
-										// Now for the actual tokens and assocated actions
+							// Now for the actual tokens and assocated actions
 "if" 		{ return new Symbol(CircuitSym.IF); }
 "else"      {return new Symbol(CircuitSym.ELSE);}
 "while"      {return new Symbol(CircuitSym.WHILE);}
@@ -118,8 +113,7 @@ Comment= {TraditionlComment} | {CommentLines}
 
 
 {delimitator} { /* ignore */ }
-{Comment}       {/*ignore*/}
-\"             {string.setLength(0); yybegin(STRING);}
+//\"             {string.setLength(0); yybegin(STRING);}
 
 /*operator*/
 
@@ -156,20 +150,21 @@ Comment= {TraditionlComment} | {CommentLines}
 
 
 
-<<EOF>> {return new Symbol(CircuitSym.EOF);}
+
 
 [^]			{ return new Symbol(CircuitSym.ERROR,yytext());}
+<<EOF>> {return new Symbol(CircuitSym.EOF);}
 
-<STRING>{
 
-\"          {yybegin(YYINITIAL);
-            return new Symbol(CircuitSym.STRING_LITERAL,string.toString());}
-[^\n\r\"\\]+    {string.append(yytext());}
+//<STRING>{
+
+//\"          {yybegin(YYINITIAL);
+  //          return new Symbol(CircuitSym.STRING_LITERAL,string.toString());}
+
+/*[^\n\r\"\\]+    {string.append(yytext());}
 \\t             {string.append('\t');}
 \\n             {string.append('\n');}
 \\r             {string.append('\r');}
 \\              {string.append('\\');}
 
-}
-
-}
+}*/

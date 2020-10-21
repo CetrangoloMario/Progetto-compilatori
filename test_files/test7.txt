@@ -1,0 +1,11 @@
+| if       | If       | IF       |
+| else     | Else     | ELSE     |
+| while    | While    | WHILE    |
+| for      | For      | FOR      |
+| int      | Int      | INT      |
+| float    | Float    | FLOAT    |
+| bool     | Bool     | BOOL     |
+| return   | Return   | RETURN   |
+| main     | Main     | MAIN     |
+| true     |   True   | TRUE     |
+| false    |  False   | FALSE    |
