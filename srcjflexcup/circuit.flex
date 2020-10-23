@@ -16,6 +16,7 @@ import java.util.Map;
 										// Declarations for JFlex
 
 %unicode 								// We wish to read text files
+%class Lexer
 %cupsym CircuitSym
 %cup 									// Declare that we expect to use Java CUP
 %line

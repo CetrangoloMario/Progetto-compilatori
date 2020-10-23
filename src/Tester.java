@@ -15,7 +15,7 @@ public class Tester {
     public static void main (String [] args) throws IOException {
 
         FileReader inFile=new FileReader(args[0]);
-        Yylex lexer=new Yylex(inFile);
+        Lexer lexer=new Lexer(inFile);
 
         Symbol symbol= lexer.next_token();
         boolean flag=true;
