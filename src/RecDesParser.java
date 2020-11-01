@@ -28,7 +28,7 @@ public class RecDesParser {
 
     static boolean F(){
         //Check if ptr is ID |NUMBER
-        return true
+        return true;
 
     }
 
