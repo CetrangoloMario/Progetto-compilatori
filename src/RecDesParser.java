@@ -44,7 +44,7 @@ public class RecDesParser {
             String token=nextToken();
             if (token.equals("EOF")){
 
-                System.out.println("Token EOF fine file");
+                //System.out.println("Token EOF fine file");
                 return true;
             }
         }

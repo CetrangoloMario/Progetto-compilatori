@@ -18,6 +18,7 @@ public class TesterLexer {
             while (!(res = lex.nextToken()).getName().equals("EOF")) {
                 System.out.println(res.toString());
             }
+            System.out.println("Token EOF fine file");
             lex.printSymbolTable();
             lex.printKeyWordsTable();
         }

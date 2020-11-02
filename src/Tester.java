@@ -22,9 +22,10 @@ public class Tester {
         Lexer lex=new Lexer();
         RecDesParser parser= new RecDesParser(lex,sourcePath);
         if (parser.run()) {
+
+            System.out.println("Token EOF fine file");
             System.out.println("Tutto OK");
-            lex.printSymbolTable();
-            lex.printKeyWordsTable();
+
         }
         else System.out.println("Errore");
 
