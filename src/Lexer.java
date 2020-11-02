@@ -1,9 +1,8 @@
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
+
+
+import java.io.*;
 import java.util.HashMap;
 import java.util.Map;
-
 
 public class Lexer {
 
@@ -17,38 +16,38 @@ public class Lexer {
 
     /**
      * Costruttore
-     * con generazione dell symbol table e inserimento delle parole chiavi
-     * all'interno della tabella delle parole chiavi
      */
-    public Lexer( String sourcePath) {
+    /*public Lexer(String sourcePath) {
         symbolTable = new HashMap<String, Token>();
         keyWordsTable = new HashMap<String, Token>();
         state = 0;
         globalPointer = 0;
-        keyWordsTable.put("main", new Token("MAIN"));
-        keyWordsTable.put("return", new Token("RETURN"));
-        keyWordsTable.put("then", new Token("THEN"));
-        keyWordsTable.put("continue", new Token("CONTINUE"));
         keyWordsTable.put("if", new Token("IF"));
         keyWordsTable.put("else", new Token("ELSE"));
         keyWordsTable.put("while", new Token("WHILE"));
-        keyWordsTable.put("for", new Token("FOR"));
-        keyWordsTable.put("int", new Token("INT"));
-        keyWordsTable.put("float", new Token("FLOAT"));
-        keyWordsTable.put("bool", new Token("BOOL"));
-        keyWordsTable.put("true", new Token("TRUE"));
-        keyWordsTable.put("false", new Token("FALSE"));
-        keyWordsTable.put("string", new Token("STRING"));
+        keyWordsTable.put("do", new Token("DO"));
+        keyWordsTable.put("eof", new Token("EOF"));
 
-        initialize(sourcePath);
+        this.initialize(sourcePath);
+    }*/
+
+    public Lexer() {
+        symbolTable = new HashMap<String, Token>();
+        keyWordsTable = new HashMap<String, Token>();
+        state = 0;
+        globalPointer = 0;
+        keyWordsTable.put("if", new Token("IF"));
+        keyWordsTable.put("else", new Token("ELSE"));
+        keyWordsTable.put("while", new Token("WHILE"));
+        keyWordsTable.put("do", new Token("DO"));
+        keyWordsTable.put("eof", new Token("EOF"));
     }
 
     /**
-     * Inizializza l'analizzatore lessicale
+     * Questo metodo permette l'inizializzazione del Lexer, permettendo la lettura del file che gli viene passato in input
      *
      * @param filePath il path del file
-     * @return true se il file esiste e può essere letto
-     * @exception   IOException problema nel realizzare un puntatore al file e il puntatore alla posizione da dove si parte a leggere all'interno del file
+     * @return true se il file esiste e può essere letto altrimenti restituisce false
      */
 
     public Boolean initialize(String filePath) {
@@ -57,38 +56,33 @@ public class Lexer {
         if (!input.canRead() || !input.isFile()) return false;
         try {
             inputStream = new FileInputStream(input);
-            globalPointer = inputStream.getChannel().position(); //Salva all'imterno della var la poizione del puntatore all'interno del file
+            globalPointer = inputStream.getChannel().position(); //Inizializza la variabile GlobalPointer assegnando la posizione del puntatore di inputStream
             return true;
         } catch (IOException e) {
             return false;
         }
     }
 
-
     /**
-     * @return Analizza il file dato in input all'analizzatore lessicale e restituisce il
-     * token relativo al primo lessema letto che rispetta i pattern definiti, oppure restituisce
-     * un token di errore
+     * @return Trova il prossimo lessema e se corrisponde ad un pattern restituisce il token relativo
+     * altrimenti restituisce un token di errore
      * @throws Exception
      */
     public Token nextToken() throws Exception {
 
-        //Ad ogni chiamata del lexer (nextToken())
-        //si resettano tutte le variabili utilizzate
+        //Ad ogni chiamata del seguente metodo vengono inizilizzate le seguenti variagili
         state = 0;
-
-        StringBuilder lessema = new StringBuilder(); //Il lessema riconosciuto
+        StringBuilder lessema = new StringBuilder();
         char c;
 
         while (true) {
 
-            // legge un carattere da input e lancia eccezione quando incontra EOF per restituire null
-            //  per indicare che non ci sono piu' token
+
             globalPointer = inputStream.getChannel().position(); /*Salva la posizione corrente del puntatore prima
                                                                 di leggere un nuovo carattere e quindi di
                                                                 incrementare la posizione*/
-            int intChar = inputStream.read();
-            if (intChar == -1) return null; // -1 = End Of File
+            int intChar = inputStream.read();//Lettura di un carattere per volta
+                if (intChar == -1) return  new Token("EOF");// -1 = End Of File restuisce null per indicare che in file è finito
 
             c = (char) intChar;
             if (isDelimiter(c)) {
@@ -101,16 +95,13 @@ public class Lexer {
                 }
             }
 
-
-            //Operator
+            //OPERATORI RELAZIONALI
             switch (state) {
-                case 0://caso legge minore, uguale, maggiore
+                case 0:
                     if (c == '<') {
                         state = 1;
                         lessema.append(c);
-                        // Nel caso in cui il file e' terminato ma ho letto qualcosa di valido
-                        // devo lanciare il token (altrimenti perderei l'ultimo token, troncato per l'EOF)
-                        if (inputStream.available() <= 0 || nextCharIsDelimiter()) { //Niente più da leggere
+                        if (inputStream.available() <= 0 || nextCharIsDelimiter()) { //Niente più da leggere o il carattere successivo è un delimitatore
                             return new Token("LESSOP");
                         }
                         break;
@@ -123,9 +114,7 @@ public class Lexer {
                     if (c == '>') {
                         state = 3;
                         lessema.append(c);
-                        // Nel caso in cui il file e' terminato ma ho letto qualcosa di valido
-                        // devo lanciare il token (altrimenti perderei l'ultimo token, troncato per l'EOF)
-                        if (inputStream.available() <= 0 || nextCharIsDelimiter()) { //Niente più da leggere
+                        if (inputStream.available() <= 0 || nextCharIsDelimiter()) { //Niente più da leggere o il carattere successivo è un delimitatore
                             return new Token("GREATEROP");
                         }
                         break;
@@ -134,7 +123,7 @@ public class Lexer {
                     state = 10;//PROSSIMO DIAGRAMMA
                     break;
 
-                case 1:// caso legge dopo il carattere minore un aggiore, un uguale, un trattino altrimente restituisce solo minore
+                case 1:
                     if (c == '>') {
                         state = 4; //FINALE
                         lessema.append(c);
@@ -154,7 +143,7 @@ public class Lexer {
                     retrack();
                     return new Token("LESSOP");
 
-                case 3:// dopo aver letto il maggiore, legge il carattere uguale altrimenti restituisce maggiore
+                case 3:
                     if (c == '=') {
                         state = 8; //FINALE
                         lessema.append(c);
@@ -169,46 +158,46 @@ public class Lexer {
             }
             //end switch
 
-            // separator switch
+            //SEPARATORI
             switch (state) {
                 case 10:
                     if (c == '(') {
-                        state = 11;
+                        state = 11; //FINALE
                         lessema.append(c);
                         return new Token("LRBRACKET");
                     }
                     if (c == ')') {
-                        state = 12;
+                        state = 12; //FINALE
                         lessema.append(c);
                         return new Token("RRBRACKET");
                     }
                     if (c == '[') {
-                        state = 13;
+                        state = 13; //FINALE
                         lessema.append(c);
                         return new Token("LSBRACKET");
                     }
                     if (c == ']') {
-                        state = 14;
+                        state = 14; //FINALE
                         lessema.append(c);
                         return new Token("RSBRACKET");
                     }
                     if (c == '{') {
-                        state = 15;
+                        state = 15; //FINALE
                         lessema.append(c);
                         return new Token("LBRACKET");
                     }
                     if (c == '}') {
-                        state = 16;
+                        state = 16; //FINALE
                         lessema.append(c);
                         return new Token("RBRACKET");
                     }
                     if (c == ',') {
-                        state = 17;
+                        state = 17; //FINALE
                         lessema.append(c);
                         return new Token("COMMA");
                     }
                     if (c == ';') {
-                        state = 18;
+                        state = 18; //FINALE
                         lessema.append(c);
                         return new Token("SEMICOMMA");
                     }
@@ -218,26 +207,24 @@ public class Lexer {
                     break;
             }
 
-            //Identifier
+            //IDENTIFICATORI
             switch (state) {
-                case 19:// caso un carattere o trattino basso, legge il prossimo carattere altrimente va nel prossimo diagramma
+                case 19:
 
                     if (Character.isLetter(c) | Character.compare('_', c) == 0) {
                         state = 20;
                         lessema.append(c);
 
-                        // Nel caso in cui il file � terminato ma ho letto qualcosa di valido
-                        // devo lanciare il token (altrimenti perderei l'ultimo token, troncato per l'EOF)
                         if (inputStream.available() <= 0 || nextCharIsDelimiter()) {//Niente più da leggere
-                            retrack();
+
                             return installID(lessema.toString());
                         }
                         break;
                     }
-                    state = 21; //Diagramma successivo
+                    state = 21;//PROSSIMO DIAGRAMMA
                     break;
 
-                case 20:// caso in cui dopo aver letto una lettera o trattino basso legge una lettera o un numero o trattino
+                case 20:
 
                     if (Character.isLetterOrDigit(c) | Character.compare('_', c) == 0) {
                         lessema.append(c);
@@ -247,7 +234,7 @@ public class Lexer {
                         }
                         break;
                     } else {
-                        state = 21;// diagramma successivo
+                        state = 21;//PROSSIMO DIAGRAMMA
                         retrack();
                         return installID(lessema.toString());
                     }
@@ -257,56 +244,51 @@ public class Lexer {
             }//end switch
 
 
-            //Number
+            //NUMERI
             switch (state) {
-                case 21:// caso in cui numero 0 va nello stato 22 se un numero da 1 a 9 procede nello stato 23
+                case 21:
 
                     if (c=='0') {
                         state=22;
                         lessema.append(c);
-                        // Nel caso in cui il file � terminato ma ho letto qualcosa di valido
-                        // devo lanciare il token (altrimenti perderei l'ultimo token, troncato per l'EOF)
                         if (inputStream.available() <= 0 || nextCharIsDelimiter()) {//Niente più da leggere
-                            //retrack();
                             return number(lessema.toString());
                         }
+
 
                         break;
                     }
                     if (Character.isDigit(c) && c!=0) {
                         state=23;
                         lessema.append(c);
-                        // Nel caso in cui il file � terminato ma ho letto qualcosa di valido
-                        // devo lanciare il token (altrimenti perderei l'ultimo token, troncato per l'EOF)
                         if (inputStream.available() <= 0 || nextCharIsDelimiter()) {//Niente più da leggere
-                            //retrack();
                             return number(lessema.toString());
                         }
 
+
                         break;
                     }
-                    state = 28; //Diagramma successivo
+                    lessema.append(c);
+                        state = 100; //STATO DI ERRORE
                     break;
 
-                case 22:// dopo uno 0 posso leggere solo . altrimenti restituisco 0
+                case 22:
                     if (Character.compare('.', c) == 0) {
-                         //serve per la stampa in caso if successivo o ci sia un delimiatatore
                         if (inputStream.available() <= 0 || nextCharIsDelimiter()) { //Niente più da leggere
-                            //retrack();
                             lessema.append(c);
-                            state = 100;// Stato di errore
+                        state = 100; //STATO DI ERRORE
                         } else {
                             lessema.append(c);
                             state = 25;
                         }
                         break;
                     } else {
-                        state = 24;// FINE
+                        state = 24; //FINALE
                         retrack();
                         return number(lessema.toString());
                     }
 
-                case 23:// dopo un numero leggo un altro numero oppure leggo un .
+                case 23:
                     if (Character.isDigit(c)) {
                         lessema.append(c);
                         if (inputStream.available() <= 0 || nextCharIsDelimiter()) { //Niente più da leggere
@@ -319,15 +301,15 @@ public class Lexer {
                         state=25;
                         lessema.append(c);
                         if (inputStream.available() <= 0 || nextCharIsDelimiter()) { //Niente più da leggere
-                            //retrack();
-                            state=100; //Stato di errore
+
+                            state=100; //STATO DI ERRORE
                         }
                         break;
                     }
-                    state = 24;// FINE
+                    state = 24; //FINALE
                     retrack();
                     return number(lessema.toString());
-                case 25:// dopo il punto leggo un numero continuo, altrimenti faccio errore
+                case 25:
                     if (Character.isDigit(c)) {
                         state=26;
                         lessema.append(c);
@@ -337,12 +319,12 @@ public class Lexer {
                         }
                         break;
                     } else {
-                        state = 100; //Stato di errore
+
+                        state = 100; //STATO DI ERRORE
                         retrack();
                         break;
-                        //return installID(lessema.toString());
                     }
-                case 26:// dopo un numero leggo un altro altrimenti restitusco il numero
+                case 26:
                     if (Character.isDigit(c)) {
                         lessema.append(c);
                         if (inputStream.available() <= 0 || nextCharIsDelimiter()) { //Niente più da leggere
@@ -351,138 +333,34 @@ public class Lexer {
                         }
                         break;
                     } else {
-                        state = 27; //FINE
+                        state = 27; //FINALE
                         retrack();
                         return number(lessema.toString());
-                        //return installID(lessema.toString());
                     }
 
                 default:
                     break;
             }//end switch
 
-
-            //Operatori
+            //STATO DI ERRORE
             switch (state) {
-                case 28://caso leggo un + o - * / % ! dirotto nei relativi stati altrimenti errore
-                    if (c == '+') {
-                        state = 29;
-                        lessema.append(c);
-                        // Nel caso in cui il file � terminato ma ho letto qualcosa di valido
-                        // devo lanciare il token (altrimenti perderei l'ultimo token, troncato per l'EOF)
-                        if (inputStream.available() <= 0 || nextCharIsDelimiter()) {//Niente più da leggere
+                case 100:
 
-                            return new Token("OP", "ADDITION");
-                        }
-                        break;
-                    }
-                    if (c == '-') {
-                        state = 30;
-                        lessema.append(c);
-                        // Nel caso in cui il file � terminato ma ho letto qualcosa di valido
-                        // devo lanciare il token (altrimenti perderei l'ultimo token, troncato per l'EOF)
-                        if (inputStream.available() <= 0 || nextCharIsDelimiter()) {//Niente più da leggere
-
-                            return new Token("OP", "SUBTRACTION");
-                        }
-                        break;
-                    }
-
-                    if (c == '*') {
-                        state = 31;//FINALE
-                        lessema.append(c);
-                        return new Token("OP", "MULTIPLICATION");
-                    }
-
-                    if (c == '/') {
-                        state = 32;//FINALE
-                        lessema.append(c);
-                        return new Token("OP", "DIVISION");
-                    }
-
-                    if (c == '%') {
-                        state = 33;//FINAL
-                        lessema.append(c);
-                        return new Token("OP", "MODULE");
-                    }
-
-                    if (c == '!') {
-                        state = 34;//ci può essere not equals
-                        lessema.append(c);
-                        // Nel caso in cui il file � terminato ma ho letto qualcosa di valido
-                        // devo lanciare il token (altrimenti perderei l'ultimo token, troncato per l'EOF)
-                        if (inputStream.available() <= 0 || nextCharIsDelimiter()) {//Niente più da leggere
-
-                            return new Token("OP", "NOT");
-                        }
-                        break;
-                    }
-
-                    state = 100;//prossimo diagramma 39
-                    break;
-
-                case 29:// caso dopo il simbolo + leggo un + altrimenti restituisco un solo +
-                    if (c == '+') {//++ incremento
-                        state = 35;//FINALE
-                        lessema.append(c);
-                        return new Token("OP", "INCREASE");
-
-                    } else {
-                        state = 38;//FINALE
-                        retrack();
-                        return new Token("OP", "ADDITION");
-                    }
-                case 30:// caso dopo il simbolo - leggo un altro - altrimenti restituisco un solo -
-                    if (c == '-') {// -- decremento
-                        state = 36;//FINALE
-                        lessema.append(c);
-                        return new Token("OP", "DECREASE");
-
-                    } else {
-                        state = 38;//FINALE
-                        retrack();
-                        return new Token("OP", "SUBTRACTION");
-                    }
-
-                case 34:// dopo aver letto ! leggo un = altrimenti restituisco solo il !
-                    if (c == '=') {// != not equals
-                        state = 37;//FINALE
-                        lessema.append(c);
-                        return new Token("OP", "NOT_EQUALS");
-
-                    } else {
-                        state = 38;//FINALE
-                        retrack();
-                        return new Token("OP", "NOT");
-                    }
-
-                default:
-                    break;
-            }//end swith prossimo 39
-
-            //Error
-            switch (state) {
-                case 100://stampa errore con lessema che lo ha generato
-                    int s = inputStream.read();
-                    if (s == -1) return new Token("EOF");
-                    else return new Token("ERROR",lessema.toString());
+                    return new Token("ERROR",lessema.toString());
                 default:
                     break;
             }//end swith
-
-
-
         }//end while
     }//end method
 
 
-
     /**
-     *  Controlla se il lessema sia una parola chiave, allora restituisce il token corrispondente
-     *  se no controlla se il lessema è contenuto della tabella dei simboli se stato già inserito e restituisce il token
-     *  altrimenti inserisce un nuovo token nella tabella dei simboli e restituisce il token appena aggiunto.
-     * @param lessema
-     * @return token
+     *
+     * Se il lessema in input corrisponde ad un ID nella tabella delle stringhe restituisce direttamente in token
+     * altrimenti aggiunge un campo nella teballa delle stringhe e poi restituisce il token
+     *
+     * @param lessema lessema preso in input
+     * @return restituisce un token relativo all'id
      */
     private Token installID(String lessema) {
         Token token;
@@ -502,13 +380,17 @@ public class Lexer {
         return keyWordsTable.get(lessema);
     }
 
-    //serve a stampare il token dei numeri in formato.
+
+    /**
+     * Restituisce il token <NUMBER,valore> relativo al lessema che gli viene dato in input
+     * @param lessema lessema preso in inpur
+     * @return Restituisce il token <NUMBER,valore> relativo al lessema che gli viene dato in input
+     */
     private Token number(String lessema) {
         Token token;
         token = new Token("NUMBER", lessema);
         return token;
     }
-
 
 
     /**
@@ -522,11 +404,10 @@ public class Lexer {
         }
     }
 
-
     /**
-     *
-     * @param c
-     * @return se è un delimitatore
+     * Controlla se un carattere è un delimitatore
+     * @param c carattere in input
+     * @return true se c è un delimitatore altrimenti false
      */
     private Boolean isDelimiter(char c) {
         if (c == '\n' || c == '\t' || c == ' ' || c == '\r') return true;
@@ -534,8 +415,8 @@ public class Lexer {
     }
 
     /**
-     * se è il carattere dopo è un en of file restituisce true altrimenti legge carattere successivo e verifica se sia un delimitatore
-     * @return
+     * Controlla se il prossimo carattere da leggere è un delimitatore
+     * @return True se il prossimo carettere da leggere è un delimitatore e se il prossimo carattere è EOF, altrimenti false
      * @throws Exception
      */
     public Boolean nextCharIsDelimiter() throws Exception {
@@ -550,30 +431,42 @@ public class Lexer {
 
     }
 
-
-    public void printSymbolTable(){
-        //int x=0;
-        System.out.println("--------String table--------");
+    /**
+     *
+     * @return Restituisce una stringa che rappresenta la tabella delle stringhe
+     */
+    public String printSymbolTable(){
+        StringBuilder s = new StringBuilder();
+        s.append("--------Symbol table--------\n");
         for (Map.Entry e : symbolTable.entrySet())
         {
-            // x++;
-            System.out.println("| ID: "+e.getKey()+" | Token: "+e.getValue()+" |" );
+
+            s.append("| ID: "+e.getKey()+" | Token: "+e.getValue()+" |\n" );
 
         }
-        System.out.println("------------------------------------" );
+        s.append("------------------------------------\n" );
+        return s.toString();
     }
 
-    public void printKeyWordsTable(){
-        //int x=0;
-        System.out.println("\n--------Key words table--------");
+
+    /**
+     *
+     * @return Restituisce una stringa che rappresenta la tabella delle stringhe
+     */
+    public String printKeyWordsTable(){
+        StringBuilder s = new StringBuilder();
+        s.append("\n--------Key words table--------\n");
         for (Map.Entry e : keyWordsTable.entrySet())
         {
-            //x++;
-            System.out.println("| ID: "+e.getKey()+" | Token: "+e.getValue()+" |" );
+            s.append("| ID: "+e.getKey()+" | Token: "+e.getValue()+" |\n" );
         }
-        System.out.println("------------------------------------" );
+        s.append("------------------------------------\n" );
+        return s.toString();
     }
 
 }
+
+
+
 
 
