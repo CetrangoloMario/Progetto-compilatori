@@ -9,7 +9,8 @@ public class RecDesParser {
         this.arraytokens=new ArrayList<>();
         this.globalPointer=0;
         this.forwordPointer=this.globalPointer;
-
+        this.derivation=new ArrayList<>();
+        derivation.add("The end");
     }
 
     public Boolean run() throws Exception {
@@ -43,8 +44,8 @@ public class RecDesParser {
         if(Program()){
             String token=nextToken();
             if (token.equals("EOF")){
-
                 //System.out.println("Token EOF fine file");
+                derivation.add("P->Program EOF");
                 return true;
             }
         }
@@ -57,6 +58,7 @@ public class RecDesParser {
     static boolean Program() throws Exception{
         if (Stmt()){
             if (ProgramPrimo()){
+                derivation.add("Program->Stmt Program'");
                 return true;
             }
         }
@@ -99,27 +101,33 @@ public class RecDesParser {
                             token = nextToken();
                             if (token.equals("RBRACKET")) {
                                 if (Else())
+                                    derivation.add("Stmt -> IF LRBRACKET Expr RRBRACKET LBRACKET Stmt RBRACKET Else");
                                     return true;
                             } else {
                                 globalPointer = forwordPointer;
+                                derivation.add("!! BACKTRACK \n");
                                 return false;
                             }
                         } else return false;
                     } else {
                         globalPointer = forwordPointer;
+                        derivation.add("!! BACKTRACK \n");
                         return false;
                     }
                 } else {
                     globalPointer = forwordPointer;
+                    derivation.add("!! BACKTRACK \n");
                     return false;
                 }
-            } else return false;
+            } else{
+                return false;
+            }
+
         } else {
             globalPointer = forwordPointer;
+            derivation.add("!! BACKTRACK \n");
             return false;
         }
-        globalPointer=forwordPointer;
-        return false;
     }
 
 
@@ -135,23 +143,30 @@ public class RecDesParser {
                         if (Stmt()) {
                             token = nextToken();
                             if (token.equals("RBRACKET")) {
+                                derivation.add("Stmt -> WHILE LRBRACKET Expr RRBRACKET LBRACKET Stmt RBRACKET");
                                 return true;
                             } else {
                                 globalPointer = forwordPointer;
+                                derivation.add("!! BACKTRACK \n");
                                 return false;
                             }
                         } else return false;
                     } else {
                         globalPointer = forwordPointer;
+                        derivation.add("!! BACKTRACK \n");
                         return false;
                     }
                 } else {
                     globalPointer = forwordPointer;
+                    derivation.add("!! BACKTRACK \n");
                     return false;
                 }
-            } else return false;
+            } else {
+                return false;
+            }
         } else {
             globalPointer = forwordPointer;
+            derivation.add("!! BACKTRACK \n");
             return false;
         }
 
@@ -172,31 +187,43 @@ public class RecDesParser {
                                 if (token.equals("RRBRACKET")) {
                                     token = nextToken();
                                     if (token.equals("SEMICOMMA")) {
+                                        derivation.add("Stmt -> DO LBRACKET Stmt RBRACKET WHILE LRBRACKET Expr RRBRACKET SEMICOMMA");
                                         return true;
                                     } else {
                                         globalPointer = forwordPointer;
+                                        derivation.add("!! BACKTRACK \n");
                                         return false;
                                     }
                                 } else {
                                     globalPointer = forwordPointer;
+                                    derivation.add("!! BACKTRACK \n");
                                     return false;
                                 }
-                            } else return false;
+                            } else {
+                                derivation.add("!! BACKTRACK \n");
+                                return false;
+                            }
                         } else {
                             globalPointer = forwordPointer;
+                            derivation.add("!! BACKTRACK \n");
                             return false;
                         }
                     } else {
                         globalPointer = forwordPointer;
+                        derivation.add("!! BACKTRACK \n");
                         return false;
                     }
                 } else {
                     globalPointer = forwordPointer;
+                    derivation.add("!! BACKTRACK \n");
                     return false;
                 }
-            } else return false;
+            } else {
+                return false;
+            }
         } else {
             globalPointer = forwordPointer;
+            derivation.add("!! BACKTRACK \n");
             return false;
         }
     }
@@ -208,14 +235,19 @@ public class RecDesParser {
             if (Expr()) {
                 token = nextToken();
                 if (token.equals("SEMICOMMA")) {
+                    derivation.add("Stmt -> ID ASSIGNAMENTOP Expr SEMICOMMA");
                     return true;
                 } else {
                     globalPointer = forwordPointer;
+                    derivation.add("!! BACKTRACK \n");
                     return false;
                 }
-            } else return false;
+            } else {
+                return false;
+            }
         } else {
             globalPointer = forwordPointer;
+            derivation.add("!! BACKTRACK \n");
             return false;
         }
     }
@@ -224,29 +256,47 @@ public class RecDesParser {
     static Boolean ProgramPrimo() throws Exception {
         if (Stmt()) {
             if (ProgramPrimo()) {
+                derivation.add("Program -> Stmt Program' ");
                 return true;
-            } else return false;
-        } else return true;
+            } else {
+                return false;
+            }
+        } else {
+            derivation.add("Program-> eps");
+            return true;
+        }
     }
 
     // Relop ->  LESSOP | LESSQEUALSOP | NOTEQUALSOP | GREATEROP | GREATEREQUALSOP | EQUALSOP
     static Boolean Relop() throws Exception {
         forwordPointer = globalPointer;
         String token = nextToken();
-        if (token.equals("LESSOP"))
+        if (token.equals("LESSOP")){
+            derivation.add("Relop-> LESSOP");
             return true;
-        else if (token.equals("LESSEQUALSOP"))
+        }
+        else if (token.equals("LESSEQUALSOP")){
+            derivation.add("Relop-> LESSEQUALSOP");
             return true;
-        else if (token.equals("NOTEQUALSOP"))
+        }
+        else if (token.equals("NOTEQUALSOP")){
+            derivation.add("Relop-> NOTEQUALSOP");
             return true;
-        else if (token.equals("GREATEROP"))
+        }
+        else if (token.equals("GREATEROP")){
+            derivation.add("Relop-> GREATEROP");
             return true;
-        else if (token.equals("GREATEREQUALSOP"))
+        }
+        else if (token.equals("GREATEREQUALSOP")){
+            derivation.add("Relop-> GREATEREQUALSOP");
             return true;
-        else if (token.equals("EQUALSOP"))
+        }
+        else if (token.equals("EQUALSOP")){
+            derivation.add("Relop-> EQUALSOP");
             return true;
-
+        }
         globalPointer=forwordPointer;
+        derivation.add("!! BACKTRACK \n");
         return false;
     }
 
@@ -255,12 +305,17 @@ public class RecDesParser {
         forwordPointer = globalPointer;
         String token = nextToken();
 
-        if (token.equals("ID"))
+        if (token.equals("ID")){
+            derivation.add("F->ID");
             return true;
-        else if (token.equals("NUMBER"))
+        }
+        else if (token.equals("NUMBER")){
+            derivation.add("F->NUMBER");
             return true;
+        }
 
         globalPointer = forwordPointer;
+        derivation.add("!! BACKTRACK \n");
         return false;
 
     }
@@ -269,6 +324,7 @@ public class RecDesParser {
     static Boolean Expr() throws Exception {
         if (F()) {
             if (ExprPrimo()) {
+                derivation.add("Expr->F Expr' ");
                 return true;
             }
         }
@@ -280,11 +336,13 @@ public class RecDesParser {
         if (Relop()) {
             if (F()) {
                 if (ExprPrimo()) {
+                    derivation.add("Expr'->Relop F Expr' ");
                     return true;
                 }
             }
             return false;
         }
+        derivation.add("Expr'-> eps ");
         return true;
     }
 
@@ -299,20 +357,25 @@ public class RecDesParser {
                 if (Stmt()) {
                     tokenName = nextToken();
                     if (tokenName.equals("RBRACKET")) {
+                        derivation.add("Else -> ELSE LBRACKET Stmt RBRACKET");
                         return true;
                     } else {
                         globalPointer = forwordPointer;
+                        derivation.add("!! BACKTRACK \n");
                         return false;
                     }
                 } else {
+
                     return false;
                 }
             } else {
                 globalPointer = forwordPointer;
+                derivation.add("!! BACKTRACK \n");
                 return false;
             }
         } else {
             globalPointer = forwordPointer;
+            derivation.add("!! BACKTRACK \n");
             return true;
         }
     }
@@ -329,10 +392,22 @@ public class RecDesParser {
         return "EOF";
     }
 
+    public void printDerivation(){
+        int x=0;
+        System.out.println("\nStampa delle derivazioni: \n");
+        for (int i=derivation.size()-1; i>=0; i--){
+            x++;
+            System.out.println(x+")\t"+derivation.get(i));
+        }
+        System.out.println("\nStampa delle derivazioni finito");
+    }
+
     private static Lexer lex;
     private static int globalPointer;
     private static ArrayList<Token> arraytokens;
     private static Token res;
     private static int forwordPointer;
     private String inputStream;
+
+    private static ArrayList<String> derivation;
 }

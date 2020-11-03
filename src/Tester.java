@@ -23,8 +23,10 @@ public class Tester {
         RecDesParser parser= new RecDesParser(lex,sourcePath);
         if (parser.run()) {
 
-            System.out.println("Token EOF fine file");
+            //System.out.println("Token EOF fine file");
             System.out.println("Tutto OK");
+
+            parser.printDerivation();
 
         }
         else System.out.println("Errore");
