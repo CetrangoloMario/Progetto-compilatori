@@ -40,6 +40,7 @@ public class Lexer {
         keyWordsTable.put("else", new Token("ELSE"));
         keyWordsTable.put("while", new Token("WHILE"));
         keyWordsTable.put("do", new Token("DO"));
+        keyWordsTable.put("then", new Token("THEN"));
         keyWordsTable.put("eof", new Token("EOF"));
     }
 

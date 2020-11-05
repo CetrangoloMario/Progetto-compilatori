@@ -38,7 +38,7 @@ public class RecDesParser {
     }
 
 
-    // P -> Program Eof
+    //S -> Program Eof
     //se program vede il prossimo token che se fine file restituisce token.
     static Boolean S() throws Exception {
         if(Program()){
