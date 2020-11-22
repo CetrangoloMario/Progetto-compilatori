@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/Cetrangolo_es4_tlp.iml" filepath="$PROJECT_DIR$/Cetrangolo_es4_tlp.iml" />
+      <module fileurl="file://$PROJECT_DIR$/srcjflexcup/srcjflexcup.iml" filepath="$PROJECT_DIR$/srcjflexcup/srcjflexcup.iml" />
+    </modules>
+  </component>
+</project>
