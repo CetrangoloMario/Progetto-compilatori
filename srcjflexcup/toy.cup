@@ -8,7 +8,7 @@ import java_cup.runtime.*;
 terminal SEMI, COMMA, ID, INT, STRING, FLOAT, BOOL;
 terminal PROC, LPAR, RPAR, COLON, CORP, VOID, IF, THEN, ELIF, FI, ELSE, WHILE, DO, OD;
 terminal READ, WRITE, ASSIGN, PLUS, MINUS, TIMES, DIV, EQ, NE, LT, LE, GT, GE;
-terminal AND, OR, NOT, NULL, TRUE, FALSE;
+terminal AND, OR, NOT, NULL, TRUE, FALSE,RETURN;
 terminal Integer INT_CONST;
 terminal Float FLOAT_CONST;
 terminal String STRING_CONST;
@@ -20,7 +20,7 @@ nonterminal ParDecl, IdList, ResultType, StatList, Stat, IfStat, ElifList, Elif,
 nonterminal WhileStat, ReadlnStat, WriteStat, AssignStat, CallProc, Expr;
 
 //Precedenze e associatività
-precedence left NOT;
+precedence right NOT;
 precedence left OR;
 precedence left AND;
 
@@ -51,8 +51,14 @@ IdListInit ::= ID
     | ID ASSIGN Expr
     | IdListInit COMMA ID ASSIGN Expr;
 
-Proc ::= PROC ID LPAR ParamDeclList RPAR ResultTypeList COLON VarDeclList StatList ReturnExprs CORP SEMI
-    | PROC ID LPAR RPAR ResultTypeList COLON VarDeclList StatList ReturnExprs CORP SEMI;
+Proc ::= PROC ID LPAR ParamDeclList RPAR ResultTypeList COLON
+		VarDeclList StatList RETURN ReturnExprs CORP SEMI
+	|PROC ID LPAR ParamDeclList RPAR ResultTypeList COLON
+		VarDeclList RETURN ReturnExprs CORP SEMI
+	| PROC ID LPAR RPAR ResultTypeList COLON
+		VarDeclList StatList RETURN ReturnExprs CORP SEMI
+	| PROC ID LPAR RPAR ResultTypeList COLON
+		VarDeclList RETURN ReturnExprs CORP SEMI;
 
 ResultTypeList ::= ResultType
     | ResultType COMMA ResultTypeList;
@@ -74,6 +80,8 @@ IdList ::= ID
 ResultType ::= Type
     | VOID;
 
+
+/* empty
 StatList ::= Stat
     | Stat StatList;
 
@@ -83,7 +91,18 @@ Stat ::= IfStat SEMI
     | WriteStat SEMI
     | AssignStat SEMI
     | CallProc SEMI
-    | /* empty */;
+    | /* empty */
+
+
+StatList ::= Stat  | Stat StatList;
+
+Stat ::= IfStat SEMI
+	| WhileStat SEMI
+	| ReadlnStat SEMI
+	| WriteStat SEMI
+	| AssignStat SEMI
+	| CallProc SEMI;
+
 
 IfStat ::= IF Expr THEN StatList ElifList Else FI;
 
@@ -99,7 +118,8 @@ Else ::= /* empty */
 /* WhileStat ::= WHILE StatList Expr DO StatList OD
     | WHILE Expr DO StatList OD;            perchè statlist può andare in stat che va in empty*/
 
-WhileStat ::= WHILE StatList Expr DO StatList OD;
+WhileStat ::= WHILE StatList RETURN Expr DO StatList OD
+	| WHILE Expr DO StatList OD;
 
 ReadlnStat ::= READ LPAR IdList RPAR;
 
