@@ -25,7 +25,7 @@ precedence left OR;
 precedence left AND;
 
 precedence left LT,GT, LE, GE, EQ;
-precedence left NE, ASSIGN;
+precedence left NE;
 precedence left PLUS, MINUS;
 precedence left TIMES, DIV;
 
