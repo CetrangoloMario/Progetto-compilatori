@@ -95,8 +95,11 @@ Elif ::= ELIF Expr THEN StatList;
 Else ::= /* empty */
     | ELSE StatList;
 
-WhileStat ::= WHILE StatList Expr DO StatList OD
-    | WHILE Expr DO StatList OD;
+//modificata
+/* WhileStat ::= WHILE StatList Expr DO StatList OD
+    | WHILE Expr DO StatList OD;            perchè statlist può andare in stat che va in empty*/
+
+WhileStat ::= WHILE StatList Expr DO StatList OD;
 
 ReadlnStat ::= READ LPAR IdList RPAR;
 
