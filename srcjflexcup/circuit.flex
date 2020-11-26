@@ -83,13 +83,18 @@ letter=([a-z]|[A-Z])
 letter_=[a-z]|[A-Z]|_
 digit=[0-9]
 digits=(digit)|([1-9][0-9]*)
+float = {integer}((\.({digit}+)))
 integer = (0)|([1-9]{digit}*)
 identifier={letter_}({letter_}|{digit})*
 decimal= {integer}((\.({digit}+))?)
 
 //%state STRING
 
+%state STRING
+%state COMMENT
+
 %%
+<YYINITIAL>{
 							// Now for the actual tokens and assocated actions
 "int"   {return new Symbol(sym.INT);}
 "string"   {return new Symbol(sym.STRING);}
@@ -106,20 +111,25 @@ decimal= {integer}((\.({digit}+))?)
 "while"   {return new Symbol(sym.WHILE);}
 "do"   {return new Symbol(sym.DO);}
 "od"   {return new Symbol(sym.OD);}
-"readln"   {return new Symbol(sym.READLN);}
+"readln"   {return new Symbol(sym.READ);}
 "write"   {return new Symbol(sym.WRITE);}
 "true"   {return new Symbol(sym.TRUE);}
 "false"   {return new Symbol(sym.FALSE);}
 
 "null"   {return new Symbol(sym.NULL);}
 
-{identifier}    { return new Symbol(sym.ID, yytext()); }
+
 
 
 
 
 {delimitator} { /* ignore */ }
 //\"             {string.setLength(0); yybegin(STRING);}
+\"          {string.setLength(0);  yybegin(STRING);}
+"/*"        {yybegin(COMMENT);}
+{identifier} { return new Symbol(sym.ID,yytext()); }
+{integer}   {return new Symbol(sym.INT_CONST,yytext());}
+{float} 	{ return new Symbol(sym.FLOAT_CONST,yytext()); }
 
 
 "<="   {return new Symbol(sym.LE);}
@@ -148,8 +158,42 @@ decimal= {integer}((\.({digit}+))?)
 "/"   {return new Symbol(sym.DIV);}
 
 
-[^]			{ return new Symbol(CircuitSym.ERROR,yytext());}
-<<EOF>> {return new Symbol(CircuitSym.EOF);}
+[^]			{ return new Symbol(sym.ERROR,yytext());}
+<<EOF>> {return new Symbol(sym.EOF);}
+
+}
+
+
+    /*Stringhe*/
+
+    <STRING> {
+
+        \"                         { yybegin(YYINITIAL);
+                                   return new Symbol(sym.STRING_CONST,string.toString());}
+
+        [^\n\r\"\\]+               { string.append( yytext() ); }
+        \\t                        { string.append('\t'); }
+        \\n                        { string.append('\n'); }
+        \\r                        { string.append('\r'); }
+        \\\"                       { string.append('\"'); }
+        \\                         { string.append('\\'); }
+        <<EOF>> {return new Symbol(sym.ERROR,"Stringa costante non completata");}
+
+
+    }
+
+     /*Commenti*/
+
+    <COMMENT> {
+
+            "*/"                         { yybegin(YYINITIAL); /* DO NOTHING */}
+
+            <<EOF>> {return new Symbol(sym.ERROR,"Commento non chiuso");}
+
+
+        }
+
+
 
 
 //<STRING>{
