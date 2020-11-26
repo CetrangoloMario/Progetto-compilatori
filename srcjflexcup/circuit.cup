@@ -20,7 +20,7 @@ nonterminal ParDecl, IdList, ResultType, StatList, Stat, IfStat, ElifList, Elif,
 nonterminal WhileStat, ReadlnStat, WriteStat, AssignStat, CallProc, Expr;
 
 //Precedenze e associatività
-precedence right NOT;
+precedence left NOT;
 precedence left OR;
 precedence left AND;
 
