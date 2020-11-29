@@ -8,7 +8,7 @@ import java_cup.runtime.*;
 terminal SEMI, COMMA, ID, INT, STRING, FLOAT, BOOL;
 terminal PROC, LPAR, RPAR, COLON, CORP, VOID, IF, THEN, ELIF, FI, ELSE, WHILE, DO, OD;
 terminal READ, WRITE, ASSIGN, PLUS, MINUS, TIMES, DIV, EQ, NE, LT, LE, GT, GE;
-terminal AND, OR, NOT, NULL, TRUE, FALSE,RETURN;
+terminal AND, OR, NOT, NULL, TRUE, FALSE,RETURN, UMINUS;
 terminal Integer INT_CONST;
 terminal Float FLOAT_CONST;
 terminal String STRING_CONST;
@@ -20,14 +20,17 @@ nonterminal ParDecl, IdList, ResultType, StatList, Stat, IfStat, ElifList, Elif,
 nonterminal WhileStat, ReadlnStat, WriteStat, AssignStat, CallProc, Expr;
 
 //Precedenze e associatività
-precedence left NOT;
-precedence left OR;
-precedence left AND;
 
 precedence left LT,GT, LE, GE, EQ;
 precedence left NE;
+precedence right NOT;
+precedence left OR;
+precedence left AND;
+
+
 precedence left PLUS, MINUS;
 precedence left TIMES, DIV;
+precedence left UMINUS;
 
 /* Specifiche lessicali e grammaticali del linguaggio Toy*/
 
@@ -130,25 +133,28 @@ AssignStat ::= IdList ASSIGN ExprList;
 CallProc ::= ID LPAR ExprList RPAR
     | ID LPAR RPAR;
 
-Expr ::= NULL
-    | TRUE
-    | FALSE
+Expr ::= NULL       {: RESULT =null; :}
+    | TRUE          {: RESULT =true; :}
+    | FALSE         {: RESULT =false; :}
     | INT_CONST
     | FLOAT_CONST
     | STRING_CONST
     | ID
     | CallProc
-    | Expr PLUS Expr
-    | Expr MINUS Expr
-    | Expr TIMES Expr
-    | Expr DIV Expr
-    | Expr AND Expr
-    | Expr OR Expr
-    | Expr GT Expr
-    | Expr GE Expr
-    | Expr LT Expr
-    | Expr LE Expr
-    | Expr EQ Expr
-    | Expr NE Expr
-    | MINUS Expr %prec MINUS
-    | NOT Expr;
+    | Expr:e1 PLUS Expr:e2      {: RESULT =e1+e2; :}
+    | Expr:e1 MINUS Expr:e2     {: RESULT =e1-e2; :}
+    | Expr:e1 TIMES Expr:e2     {: RESULT =e1*e2; :}
+    | Expr:e1 DIV Expr:e2       {: RESULT =e1/e2; :}
+    | Expr:e1 AND Expr:e2       {: RESULT =e1 && e2; :}
+    | Expr:e1 OR Expr:e2        {: RESULT =e1 || e2; :}
+    | Expr:e1 GT Expr:e2        {: RESULT =e1 > e2; :}
+    | Expr:e1 GE Expr:e2        {: RESULT =e1 >= e2; :}
+    | Expr:e1 LT Expr:e2        {: RESULT =e1 < e2; :}
+    | Expr:e1 LE Expr:e2        {: RESULT =e1 <= e2; :}
+    | Expr:e1 EQ Expr:e2        {: RESULT =e1 == e2; :}
+    | Expr:e1 NE Expr:e2        {: RESULT =e1!=e2; :}
+    | MINUS Expr:e             {: RESULT = -e; :} %prec UMINUS
+    | NOT Expr:e               {: RESULT =!e; :}
+    ;
+
+

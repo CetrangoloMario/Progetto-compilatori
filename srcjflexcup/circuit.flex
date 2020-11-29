@@ -158,7 +158,7 @@ decimal= {integer}((\.({digit}+))?)
 "/"   {return new Symbol(sym.DIV);}
 
 
-[^]			{ return new Symbol(sym.ERROR,yytext());}
+[^]			{ return new Symbol(sym.error,yytext());}
 <<EOF>> {return new Symbol(sym.EOF);}
 
 }
@@ -177,7 +177,7 @@ decimal= {integer}((\.({digit}+))?)
         \\r                        { string.append('\r'); }
         \\\"                       { string.append('\"'); }
         \\                         { string.append('\\'); }
-        <<EOF>> {return new Symbol(sym.ERROR,"Stringa costante non completata");}
+        <<EOF>> {return new Symbol(sym.error,"Stringa costante non completata");}
 
 
     }
@@ -187,8 +187,8 @@ decimal= {integer}((\.({digit}+))?)
     <COMMENT> {
 
             "*/"                         { yybegin(YYINITIAL); /* DO NOTHING */}
-
-            <<EOF>> {return new Symbol(sym.ERROR,"Commento non chiuso");}
+            [^]+               {/* DO NOTHING */}
+            <<EOF>> {return new Symbol(sym.error,"Commento non chiuso");}
 
 
         }

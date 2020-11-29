@@ -1,0 +1,102 @@
+/*1. scrivere un programma Toy che
+visualizzi un menu in cui un utente può scegliere l' operazione aritmetica da svolgere
+richieda all'utente gli input (interi o double) necessari per svolgere l'operazione scelta
+esegua l'operazione, restituisca il risultato e chieda se si vuol continuare
+all'input 0 oppure 1 il programma conclude oppure mostra il menu iniziale, rispettivamente.
+N.B. si utilizzino almeno due funzioni. In generale, si cerchi di utilizzare
+tutte le caratteristiche del linguaggio.*/
+
+int n:=1;
+
+proc main () void:
+    int operazione:=0;
+    int tipo_num=0;
+    bool flag =false;
+
+    while n=1 do
+        if n <> 0 then
+            write("Scegli operazione aritmetrica: ";
+            write("\n 1 = somma, 2 = differenza, 3 = moltiplicazione, 4 = divisione");
+            readln(operazione);
+
+            write("Operazioni effettui su interi o double, 1 o 2");
+            readln(tipo_num);
+            if tipo_num=1 then
+                int x, y:=0;
+                write("\n Inserisci il primo numero: \n");
+                readln(x);
+                write("\n Inserisci il secondo numero: \n");
+                readln(y);
+
+                calcola_int(x,y, operazione);
+            fi;
+
+            if tipo_num=2 then
+                float x, y:=0.0;
+                write("\n Inserisci il primo numero: \n");
+                readln(x);
+                write("\n Inserisci il secondo numero: \n");
+                readln(y);
+
+                calcola_double(x,y, operazione);
+            fi;
+
+
+            while flag=false do
+                write("Vuoi continuare: inserisci 0 per terminare altrimenti 1.\n"
+                readln(n);
+                if n=0 then
+                    write(" Arrivederci\n\n");
+                    flag=true;
+                elif n <> 1 then
+                    flag=false;
+                else
+                    flag=true;
+                fi;
+            od;
+
+        fi;
+
+    od;
+    ->
+
+corp;
+
+
+proc calcola_int (int x, int y,int operazione) void:
+    int result:=0;
+    if operazione=1 then
+        result:= x+y;
+    elif operazione=2 then
+        result:= x-y;
+    elif operazione=3 then
+        result:= x*y;
+    elif operazione=4 then
+        result:= x\y;
+    else
+        write("ok");
+    fi;
+
+    write("Risultato di",x, " e ", y," :\n ",result);
+
+    ->
+corp;
+
+proc calcola_double (float x, float y, int operazione) void:
+    float result:=0.0;
+
+    if operazione=1 then
+            result:= x+y;
+        elif operazione=2 then
+            result:= x-y;
+        elif operazione=3 then
+            result:= x*y;
+        elif operazione=4 then
+            result:= x\y;
+        else
+            write("ok");
+        fi;
+
+    write("Risultato di",x, " e ", y," :\n ",result);
+    ->
+corp;

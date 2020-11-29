@@ -7,6 +7,7 @@
 public class sym {
   /* terminals */
   public static final int GE = 35;
+  public static final int UMINUS = 43;
   public static final int SEMI = 2;
   public static final int INT = 5;
   public static final int MINUS = 27;
@@ -20,7 +21,7 @@ public class sym {
   public static final int COMMA = 3;
   public static final int FI = 18;
   public static final int DIV = 29;
-  public static final int FLOAT_CONST = 44;
+  public static final int FLOAT_CONST = 45;
   public static final int PLUS = 26;
   public static final int ASSIGN = 25;
   public static final int IF = 15;
@@ -29,7 +30,7 @@ public class sym {
   public static final int EOF = 0;
   public static final int RETURN = 42;
   public static final int OD = 22;
-  public static final int INT_CONST = 43;
+  public static final int INT_CONST = 44;
   public static final int TRUE = 40;
   public static final int error = 1;
   public static final int NULL = 39;
@@ -48,7 +49,7 @@ public class sym {
   public static final int PROC = 9;
   public static final int STRING = 6;
   public static final int FALSE = 41;
-  public static final int STRING_CONST = 45;
+  public static final int STRING_CONST = 46;
   public static final int GT = 34;
   public static final int ELIF = 17;
   public static final int DO = 21;
@@ -96,6 +97,7 @@ public class sym {
   "TRUE",
   "FALSE",
   "RETURN",
+  "UMINUS",
   "INT_CONST",
   "FLOAT_CONST",
   "STRING_CONST"
