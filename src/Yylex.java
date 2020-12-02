@@ -595,7 +595,7 @@ class Yylex implements java_cup.runtime.Scanner {
 
 
   /**
-   * Returns the text matched by the current regular expression.
+   * Returns the text matched by the current regular SyntaxTree.expression.
    *
    * @return the matched text.
    */
@@ -685,7 +685,7 @@ class Yylex implements java_cup.runtime.Scanner {
 
 
   /**
-   * Resumes scanning until the next regular expression is matched, the end of input is encountered
+   * Resumes scanning until the next regular SyntaxTree.expression is matched, the end of input is encountered
    * or an I/O-Error occurs.
    *
    * @return the next token.

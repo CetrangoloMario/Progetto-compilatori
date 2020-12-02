@@ -90,8 +90,9 @@ decimal= {integer}((\.({digit}+))?)
 
 //%state STRING
 
-%state STRING
+%state STRING_CONST
 %state COMMENT
+%state LINECOMMENT
 
 %%
 <YYINITIAL>{
@@ -125,8 +126,11 @@ decimal= {integer}((\.({digit}+))?)
 
 {delimitator} { /* ignore */ }
 //\"             {string.setLength(0); yybegin(STRING);}
-\"          {string.setLength(0);  yybegin(STRING);}
-"/*"        {yybegin(COMMENT);}
+/* states */
+	\" { string.setLength(0); yybegin(STRING_CONST); }
+	\/\* { string.setLength(0); yybegin(COMMENT); }
+	\/\/ { string.setLength(0); yybegin(LINECOMMENT); }
+
 {identifier} { return new Symbol(sym.ID,yytext()); }
 {integer}   {return new Symbol(sym.INT_CONST,yytext());}
 {float} 	{ return new Symbol(sym.FLOAT_CONST,yytext()); }
@@ -177,7 +181,8 @@ decimal= {integer}((\.({digit}+))?)
         \\r                        { string.append('\r'); }
         \\\"                       { string.append('\"'); }
         \\                         { string.append('\\'); }
-        <<EOF>> {return new Symbol(sym.error,"Stringa costante non completata");}
+        <<EOF>> {System.err.println("Stringa costante non completata");
+                    return Symbol(sym.EOF);}
 
 
     }
@@ -186,13 +191,25 @@ decimal= {integer}((\.({digit}+))?)
 
     <COMMENT> {
 
-            "*/"                         { yybegin(YYINITIAL); /* DO NOTHING */}
-            [^]+               {/* DO NOTHING */}
-            <<EOF>> {return new Symbol(sym.error,"Commento non chiuso");}
+            \*\/		{ ;
+            			  yybegin(YYINITIAL);
+            			}
+
+            [^]+               {string.append(yytext());}
+            <<EOF>> {System.err.println("Commento non chiuso");}
 
 
         }
+<LINECOMMENT>{
 
+	<<EOF>>	{ yybegin(YYINITIAL);
+			 }
+	\n	{;
+		 yybegin(YYINITIAL);
+		 }
+	[^\n]	{ /* ignore */ }
+
+}
 
 
 

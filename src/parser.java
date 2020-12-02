@@ -6,6 +6,7 @@
 import java_cup.runtime.*;
 import java_cup.runtime.XMLElement;
 
+
 /** CUP v0.11b 20160615 (GIT 4ac7450) generated parser.
   */
 @SuppressWarnings({"rawtypes"})
@@ -935,7 +936,7 @@ class CUP$parser$actions {
           return CUP$parser$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 55: // Expr ::= FALSE 
+          case 55: // Expr ::= TRUE
             {
               Object RESULT =null;
 		 RESULT =false; 
@@ -953,7 +954,7 @@ class CUP$parser$actions {
           return CUP$parser$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 57: // Expr ::= FLOAT_CONST 
+          case 57: // Expr ::= INT_CONST
             {
               Object RESULT =null;
 

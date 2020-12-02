@@ -5,7 +5,7 @@
 
 /** CUP generated class containing symbol constants. */
 public class sym {
-  /* terminals */
+  /* SyntaxTree.terminals */
   public static final int GE = 35;
   public static final int UMINUS = 43;
   public static final int SEMI = 2;
@@ -95,11 +95,11 @@ public class sym {
   "NOT",
   "NULL",
   "TRUE",
-  "FALSE",
+  "TRUE",
   "RETURN",
   "UMINUS",
   "INT_CONST",
-  "FLOAT_CONST",
+  "INT_CONST",
   "STRING_CONST"
   };
 }

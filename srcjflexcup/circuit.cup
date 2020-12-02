@@ -1,8 +1,22 @@
 import java_cup.runtime.*;
-
+import SyntaxTree.terminals.*;
+import SyntaxTree.nonterminals.*;
+import SyntaxTree.expression.*;
 /* Preliminaries to set up and use the scanner.  */
 //init with {: scanner.init();              :};
 //scan with {: return scanner.next_token(); :};
+
+parser code{:
+	Yylex lexer;
+
+	public parser(Yylex lexer){
+	    super(lexer);
+	    this.lexer = lexer;
+    }
+    :};
+
+ scan with {: return lexer.next_token(); :};
+
 
 /* TERMINALI */
 terminal SEMI, COMMA, ID, INT, STRING, FLOAT, BOOL;
@@ -43,7 +57,7 @@ nonterminal CallProcOP CallProc;
 nonterminal ExpressionOP Expr;
 
 //Precedenze e associatività
-
+precedence nonassoc ELSE;
 precedence left LT,GT, LE, GE, EQ;
 precedence left NE;
 precedence right NOT;

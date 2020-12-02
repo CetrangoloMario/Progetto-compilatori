@@ -3,6 +3,7 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/Cetrangolo_es4_tlp.iml" filepath="$PROJECT_DIR$/Cetrangolo_es4_tlp.iml" />
+      <module fileurl="file://$PROJECT_DIR$/SyntaxTree/SyntaxTree.iml" filepath="$PROJECT_DIR$/SyntaxTree/SyntaxTree.iml" />
       <module fileurl="file://$PROJECT_DIR$/srcjflexcup/srcjflexcup.iml" filepath="$PROJECT_DIR$/srcjflexcup/srcjflexcup.iml" />
     </modules>
   </component>
