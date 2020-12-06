@@ -7,16 +7,16 @@ import nodes.nonterminals.*;
 
 public interface Visitor {
 
-	public Object visit(ExpressionOp n);
+	public Object visit(ExpressionOP n);
 
-	public Object visit(plusOp n);
-	public Object visit(minusOp n);
-	public Object visit(andOp n);
-	public Object visit(divOp n);
-	public Object visit(timesOp n);
-	public Object visit(eqOp n);
-	public Object visit(neOp n);
-	public Object visit(notOp n);
+	public Object visit(PlusOP n);
+	public Object visit(MinusOP n);
+	public Object visit(AndOP n);
+	public Object visit(DivOP n);
+	public Object visit(TimesOP n);
+	public Object visit(EqOP n);
+	public Object visit(NeOP n);
+	public Object visit(NotOP n);
 	//public Object visit(TRUE n);
 	//public Object visit(FALSE n);
 	//public Object visit(TNULL n);
@@ -24,35 +24,35 @@ public interface Visitor {
 	//public Object visit(INT_CONST n);
 	//public Object visit(STRING_CONST n);
 	//public Object visit(FLOAT_CONST n);
-	public Object visit(uminusOp n);
-	public Object visit(leOp n);
-	public Object visit(ltOp n);
-	public Object visit(gtOp n);
-	public Object visit(geOp n);
-	public Object visit(orOp n);
+	public Object visit(UminusOP n);
+	public Object visit(LeOP n);
+	public Object visit(LtOP n);
+	public Object visit(GtOP n);
+	public Object visit(GeOP n);
+	public Object visit(OrOP n);
 	public Object visit(Constant n);
 	//public Object visit(VOID n);
 
 
-	public Object visit(AssignStatOp n);
-	public Object visit(BodyOp n);
-	public Object visit(CallProcOp n);
-	public Object visit(ElifOp n);
-	public Object visit(ElseOp n);
-	public Object visit(IdInitOp n);
-	public Object visit(IfStatOp n);
-	public Object visit(ParDeclOp n);
-	public Object visit(ProcBodyOp n);
-	public Object visit(ProcOp n);
-	public Object visit(ProgramOp n);
-	public Object visit(ReadlnStatOp n);
-	public Object visit(ResultTypeOp n);
-	public Object visit(ReturnExprsOp n);
-	public Object visit(StatOp n);
-	public Object visit(TypeOp n);
-	public Object visit(VarDeclOp n);
-	public Object visit(WhileStatOp n);
-	public Object visit(WriteStatOp n);
+	public Object visit(AssignOP n);
+	public Object visit(BodyOP n);
+	public Object visit(CallProcOP n);
+	public Object visit(ElifOP n);
+	public Object visit(ElseOP n);
+	public Object visit(IdInitOP n);
+	public Object visit(IfOP n);
+	public Object visit(ParDeclOP n);
+	public Object visit(ProcBodyOP n);
+	public Object visit(ProcOP n);
+	public Object visit(ProgramOP n);
+	public Object visit(ReadlnOP n);
+	public Object visit(ResultTypeOP n);
+	public Object visit(ReturnExprsOP n);
+	public Object visit(StatOP n);
+	public Object visit(TypeOP n);
+	public Object visit(VarDeclOP n);
+	public Object visit(WhileOP n);
+	public Object visit(WriteOP n);
 
 
 

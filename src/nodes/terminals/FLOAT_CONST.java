@@ -1,10 +1,10 @@
 package nodes.terminals;
 
 
-import nodes.expression.ExpressionOp;
+import nodes.expression.ExpressionOP;
 import visitor.Visitor;
 
-public class FLOAT_CONST extends ExpressionOp {
+public class FLOAT_CONST extends ExpressionOP {
 
     FLOAT_CONST(float child){
         this.child = child;

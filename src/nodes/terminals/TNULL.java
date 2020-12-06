@@ -1,10 +1,10 @@
 package nodes.terminals;
 
 
-import nodes.expression.ExpressionOp;
+import nodes.expression.ExpressionOP;
 import visitor.Visitor;
 
-public class TNULL extends ExpressionOp {
+public class TNULL extends ExpressionOP {
 
 
     public Object accept(Visitor v){

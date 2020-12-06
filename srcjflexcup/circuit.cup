@@ -49,7 +49,7 @@ nonterminal ArrayList<Constant> IdList;
 nonterminal ResultTypeOP ResultType;
 nonterminal ArrayList<StatOP> StatList;
 nonterminal StatOP Stat;
-nonterminal IfStatOP IfStat;
+nonterminal IfOP IfStat;
 nonterminal ArrayList<ElifOP> ElifList;
 nonterminal ElifOP Elif;
 nonterminal ElseOP Else;
@@ -138,7 +138,7 @@ Stat ::= IfStat:i SEMI {:RESULT =new StatOP(i);:}
 	| CallProc:c SEMI {:RESULT =new StatOP(c);:};
 	//| /* empty */; //TOLTO DEL PROF
 
-IfStat ::= IF Expr:e THEN StatList:sl ElifList:el Else:els FI {:RESULT = new IfStatOP(e,new BodyOP(sl),el,els);:};
+IfStat ::= IF Expr:e THEN StatList:sl ElifList:el Else:els FI {:RESULT = new IfOP(e,new BodyOP(sl),el,els);:};
 
 ElifList ::= /* empty */ {:RESULT = new ArrayList<ElifOP>();:}
 	| Elif:e ElifList:list {:((ArrayList<ElifOP>)list).add(e); RESULT = list;:};
@@ -161,8 +161,8 @@ CallProc ::= ID:e1 LPAR ExprList:list RPAR {:RESULT = new CallProcOP(new Constan
 	| ID:e1 LPAR RPAR {:RESULT = new CallProcOP(new Constant("ID",e1)); :};
 
 Expr ::= NULL                   {:RESULT =  new Constant("NULL",null);:}
-	| TRUE                      {:RESULT =  new Constant("BOOL_CONST","TRUE");:}
-	| FALSE                     {:RESULT =  new Constant("BOOL_CONST","FALSE");:}
+	| TRUE                      {:RESULT =  new Constant("TRUE",null);:}
+	| FALSE                     {:RESULT =  new Constant("FALSE",null);:}
 	| INT_CONST:e               {:RESULT = new Constant("INT_CONST",e);:}
 	| FLOAT_CONST:e             {:RESULT = new Constant("FLOAT_CONST",e);:}
 	| STRING_CONST:e            {:RESULT = new Constant("STRING_CONST",e);:}

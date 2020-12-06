@@ -1,10 +1,10 @@
 package nodes.terminals;
 
 
-import nodes.expression.ExpressionOp;
+import nodes.expression.ExpressionOP;
 import visitor.Visitor;
 
-public class STRING_CONST extends ExpressionOp {
+public class STRING_CONST extends ExpressionOP {
 
     public Object accept(Visitor v){
         return v.visit(this);

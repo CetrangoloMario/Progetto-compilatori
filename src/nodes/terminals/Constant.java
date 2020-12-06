@@ -1,9 +1,9 @@
 package nodes.terminals;
 
-import nodes.expression.ExpressionOp;
+import nodes.expression.ExpressionOP;
 import visitor.Visitor;
 
-public class Constant extends ExpressionOp {
+public class Constant extends ExpressionOP {
 
     String name;
     String value;

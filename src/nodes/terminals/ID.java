@@ -1,10 +1,10 @@
 package nodes.terminals;
 
 
-import nodes.expression.ExpressionOp;
+import nodes.expression.ExpressionOP;
 import visitor.Visitor;
 
-public class ID extends ExpressionOp {
+public class ID extends ExpressionOP {
 
     ID(String child){
         this.child = child;
