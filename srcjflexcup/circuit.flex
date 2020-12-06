@@ -170,7 +170,7 @@ decimal= {integer}((\.({digit}+))?)
 
     /*Stringhe*/
 
-    <STRING> {
+    <STRING_CONST> {
 
         \"                         { yybegin(YYINITIAL);
                                    return new Symbol(sym.STRING_CONST,string.toString());}
