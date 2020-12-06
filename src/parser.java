@@ -623,7 +623,7 @@ class CUP$parser$actions {
 		int eleft = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).left;
 		int eright = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).right;
 		ExpressionOP e = (ExpressionOP)((java_cup.runtime.Symbol) CUP$parser$stack.peek()).value;
-		ArrayList<IdInitOP> list = new ArrayList<IdInitOP>(); list.add(new IdInitOP(new AssignStatOP(new Constant("ID",id),e))); RESULT = list;
+		ArrayList<IdInitOP> list = new ArrayList<IdInitOP>(); list.add(new IdInitOP(new AssignOP(new Constant("ID",id),e))); RESULT = list;
               CUP$parser$result = parser.getSymbolFactory().newSymbol("IdListInit",0, ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-2)), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
           return CUP$parser$result;
@@ -641,7 +641,7 @@ class CUP$parser$actions {
 		int eleft = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).left;
 		int eright = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).right;
 		ExpressionOP e = (ExpressionOP)((java_cup.runtime.Symbol) CUP$parser$stack.peek()).value;
-		 ((ArrayList<IdInitOP>)list).add(new IdInitOP(new AssignStatOP(new Constant("ID",id),e))); RESULT = list;
+		 ((ArrayList<IdInitOP>)list).add(new IdInitOP(new AssignOP(new Constant("ID",id),e))); RESULT = list;
               CUP$parser$result = parser.getSymbolFactory().newSymbol("IdListInit",0, ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-4)), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
           return CUP$parser$result;

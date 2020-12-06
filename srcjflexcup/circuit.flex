@@ -87,12 +87,11 @@ float = {integer}((\.({digit}+)))
 integer = (0)|([1-9]{digit}*)
 identifier={letter_}({letter_}|{digit})*
 decimal= {integer}((\.({digit}+))?)
-
+spazi_bianchi = [\r|\n|\r\n]+ | [ \t\f]
 //%state STRING
 
 %state STRING_CONST
 %state COMMENT
-%state LINECOMMENT
 
 %%
 <YYINITIAL>{
@@ -122,14 +121,37 @@ decimal= {integer}((\.({digit}+))?)
 
 
 
+"<="   {return new Symbol(sym.LE);}
+"<>"   {return new Symbol(sym.NE);}
+">="   {return new Symbol(sym.GE);}
+"="   {return new Symbol(sym.EQ);}
+
+"<"   {return new Symbol(sym.LT);}
+">"   {return new Symbol(sym.GT);}
+
+"&&"   {return new Symbol(sym.AND);}
+"||"   {return new Symbol(sym.OR);}
+"!"   {return new Symbol(sym.NOT);}
+"->"   {return new Symbol(sym.RETURN);}
+
+";"     {return new Symbol(sym.SEMI);}
+","     {return new Symbol(sym.COMMA);}
+"("   {return new Symbol(sym.LPAR);}
+")"   {return new Symbol(sym.RPAR);}
+":="   {return new Symbol(sym.ASSIGN);}
+":"   {return new Symbol(sym.COLON);}
+
+"+"   {return new Symbol(sym.PLUS);}
+"-"   {return new Symbol(sym.MINUS);}
+"*"   {return new Symbol(sym.TIMES);}
+"/"   {return new Symbol(sym.DIV);}
+
 
 
 {delimitator} { /* ignore */ }
 //\"             {string.setLength(0); yybegin(STRING);}
-/* states */
-	\" { string.setLength(0); yybegin(STRING_CONST); }
-	\/\* { string.setLength(0); yybegin(COMMENT); }
-	\/\/ { string.setLength(0); yybegin(LINECOMMENT); }
+
+
 
 {identifier} { return new Symbol(sym.ID,yytext()); }
 {integer}   {return new Symbol(sym.INT_CONST,yytext());}
@@ -161,28 +183,27 @@ decimal= {integer}((\.({digit}+))?)
 "*"   {return new Symbol(sym.TIMES);}
 "/"   {return new Symbol(sym.DIV);}
 
-
-[^]			{ return new Symbol(sym.error,yytext());}
-<<EOF>> {return new Symbol(sym.EOF);}
+/* states */
+	\" { string.setLength(0); yybegin(STRING_CONST); }
+	\/\* { string.setLength(0); yybegin(COMMENT); }
 
 }
 
 
-    /*Stringhe*/
+  /*Stringhe*/
 
     <STRING_CONST> {
+        <<EOF>>	{ System.err.println("Stringa costante non chiusa");
+        			  return new Symbol(sym.EOF);}
+        \" {
+        		 yybegin(YYINITIAL);
+        		 return new Symbol(sym.STRING_CONST, string.toString());
+        		}
+        	. { string.append(yytext()); }
+        	\\\\ { string.append('\\'); }
+        	\\\" { string.append('\"'); }
+        	{spazi_bianchi} { string.append(yytext()); }
 
-        \"                         { yybegin(YYINITIAL);
-                                   return new Symbol(sym.STRING_CONST,string.toString());}
-
-        [^\n\r\"\\]+               { string.append( yytext() ); }
-        \\t                        { string.append('\t'); }
-        \\n                        { string.append('\n'); }
-        \\r                        { string.append('\r'); }
-        \\\"                       { string.append('\"'); }
-        \\                         { string.append('\\'); }
-        <<EOF>> {System.err.println("Stringa costante non completata");
-                    return Symbol(sym.EOF);}
 
 
     }
@@ -190,26 +211,24 @@ decimal= {integer}((\.({digit}+))?)
      /*Commenti*/
 
     <COMMENT> {
+         <<EOF>> {System.err.println("Commento non chiuso"); return new Symbol(sym.error,yytext());}
+            \*\/		{ ;yybegin(YYINITIAL);}
 
-            \*\/		{ ;
-            			  yybegin(YYINITIAL);
-            			}
 
-            [^]+               {string.append(yytext());}
-            <<EOF>> {System.err.println("Commento non chiuso");}
-
+        	.	{ string.append(yytext()); }
+        	\/\*		{ string.append(yytext()); }
+        	\/\*\*	{ string.append(yytext()); }
+        	{spazi_bianchi}	{ string.append(yytext()); }
 
         }
-<LINECOMMENT>{
 
-	<<EOF>>	{ yybegin(YYINITIAL);
-			 }
-	\n	{;
-		 yybegin(YYINITIAL);
-		 }
-	[^\n]	{ /* ignore */ }
 
-}
+[^]			{ return new Symbol(sym.error,yytext());}
+<<EOF>> {return new Symbol(sym.EOF);}
+
+
+
+
 
 
 

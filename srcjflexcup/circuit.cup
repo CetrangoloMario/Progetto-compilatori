@@ -95,8 +95,8 @@ Type ::= INT {:RESULT = new TypeOP("int");:}
 
 IdListInit ::= ID:id {:ArrayList<IdInitOP> list = new ArrayList<IdInitOP>(); list.add(new IdInitOP(new Constant("ID",id))); RESULT = list;:}
 	| IdListInit:list COMMA ID:id {: ((ArrayList<IdInitOP>)list).add(new IdInitOP(new Constant("ID",id))); RESULT = list;:}
-	| ID:id ASSIGN Expr:e {:ArrayList<IdInitOP> list = new ArrayList<IdInitOP>(); list.add(new IdInitOP(new AssignStatOP(new Constant("ID",id),e))); RESULT = list;:}
-	| IdListInit:list COMMA ID:id ASSIGN Expr:e {: ((ArrayList<IdInitOP>)list).add(new IdInitOP(new AssignStatOP(new Constant("ID",id),e))); RESULT = list;:};
+	| ID:id ASSIGN Expr:e {:ArrayList<IdInitOP> list = new ArrayList<IdInitOP>(); list.add(new IdInitOP(new AssignOP(new Constant("ID",id),e))); RESULT = list;:}
+	| IdListInit:list COMMA ID:id ASSIGN Expr:e {: ((ArrayList<IdInitOP>)list).add(new IdInitOP(new AssignOP(new Constant("ID",id),e))); RESULT = list;:};
 
 Proc ::= PROC ID:id LPAR ParamDeclList:pl RPAR ResultTypeList:rtl COLON
 		VarDeclList:vdl StatList:sl RETURN ReturnExprs:re CORP SEMI {: RESULT= new ProcOP(new Constant("ID",id),pl,rtl,new ProcBodyOP(vdl,sl,re));:}

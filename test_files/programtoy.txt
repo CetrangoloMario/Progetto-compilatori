@@ -1,28 +1,23 @@
-/*1. scrivere un programma Toy che
-visualizzi un menu in cui un utente può scegliere l' operazione aritmetica da svolgere
-richieda all'utente gli input (interi o double) necessari per svolgere l'operazione scelta
-esegua l'operazione, restituisca il risultato e chieda se si vuol continuare
-all'input 0 oppure 1 il programma conclude oppure mostra il menu iniziale, rispettivamente.
-N.B. si utilizzino almeno due funzioni. In generale, si cerchi di utilizzare
-tutte le caratteristiche del linguaggio.*/
+
 
 int n:=1;
 
 proc main () void:
-    int operazione:=0;
-    int tipo_num=0;
-    bool flag =false;
+    int operazione, tipo_num:=0;
+    int x, y:=0;
+    float z,w:=0.0;
+    bool flag :=false;
 
     while n=1 do
         if n <> 0 then
-            write("Scegli operazione aritmetrica: ";
+            write("Scegli operazione aritmetrica: ");
             write("\n 1 = somma, 2 = differenza, 3 = moltiplicazione, 4 = divisione");
             readln(operazione);
 
             write("Operazioni effettui su interi o double, 1 o 2");
             readln(tipo_num);
             if tipo_num=1 then
-                int x, y:=0;
+
                 write("\n Inserisci il primo numero: \n");
                 readln(x);
                 write("\n Inserisci il secondo numero: \n");
@@ -32,26 +27,26 @@ proc main () void:
             fi;
 
             if tipo_num=2 then
-                float x, y:=0.0;
-                write("\n Inserisci il primo numero: \n");
-                readln(x);
-                write("\n Inserisci il secondo numero: \n");
-                readln(y);
 
-                calcola_double(x,y, operazione);
+                write("\n Inserisci il primo numero: \n");
+                readln(z);
+                write("\n Inserisci il secondo numero: \n");
+                readln(w);
+
+                calcola_double(z,w, operazione);
             fi;
 
 
             while flag=false do
-                write("Vuoi continuare: inserisci 0 per terminare altrimenti 1.\n"
+                write("Vuoi continuare: inserisci 0 per terminare altrimenti 1.\n");
                 readln(n);
                 if n=0 then
                     write(" Arrivederci\n\n");
-                    flag=true;
+                    flag:=true;
                 elif n <> 1 then
-                    flag=false;
+                    flag:=false;
                 else
-                    flag=true;
+                    flag:=true;
                 fi;
             od;
 
@@ -63,7 +58,7 @@ proc main () void:
 corp;
 
 
-proc calcola_int (int x, int y,int operazione) void:
+proc calcola_int (int x,  y, operazione) void:
     int result:=0;
     if operazione=1 then
         result:= x+y;
@@ -72,7 +67,7 @@ proc calcola_int (int x, int y,int operazione) void:
     elif operazione=3 then
         result:= x*y;
     elif operazione=4 then
-        result:= x\y;
+        result:= x/y;
     else
         write("ok");
     fi;
@@ -82,7 +77,7 @@ proc calcola_int (int x, int y,int operazione) void:
     ->
 corp;
 
-proc calcola_double (float x, float y, int operazione) void:
+proc calcola_double (float x, y, operazione) void:
     float result:=0.0;
 
     if operazione=1 then
@@ -92,7 +87,7 @@ proc calcola_double (float x, float y, int operazione) void:
         elif operazione=3 then
             result:= x*y;
         elif operazione=4 then
-            result:= x\y;
+            result:= x/y;
         else
             write("ok");
         fi;
