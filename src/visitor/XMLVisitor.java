@@ -25,10 +25,11 @@ public class XMLVisitor implements Visitor {
     public XMLVisitor() {
 
         try {
-            DocumentBuilderFactory documentFactory = DocumentBuilderFactory.newInstance();
-            DocumentBuilder documentBuilder = documentFactory.newDocumentBuilder();
-            this.document = documentBuilder.newDocument();
-
+            //Definisce un api per la costruzione di alberi di oggetti DOM da documenti XML
+            DocumentBuilderFactory documentFactory = DocumentBuilderFactory.newInstance();//ottiene una nuova istanza (ricorda è un singleton)
+            DocumentBuilder documentBuilder = documentFactory.newDocumentBuilder();//istanze del documento DOM da XML
+            this.document = documentBuilder.newDocument();//un nuovo Document per costruire un albero DOM
+            //la variabile di istanza rappresenta un documento xml.
 
         } catch (ParserConfigurationException e) {
             e.printStackTrace();
@@ -47,8 +48,11 @@ public class XMLVisitor implements Visitor {
 
     @Override //TODO
     public Object visit(PlusOP n) {
+        //Element è un interfaccia e rappresenta un elemento in un documento xml, può avere attributi associati (Simile alla classe NODE)
         Element node = document.createElement(n.getClass().getSimpleName());
+                                                //crea un elemento di tipo specificato
 
+        //metodo appendChild della classe Node serve ad aggiungere un nodo alla fine dell'elenco del nodo padre specificato
         node.appendChild((Node) n.getLeft().accept(this));
         node.appendChild((Node) n.getRight().accept(this));
 
@@ -203,16 +207,16 @@ public class XMLVisitor implements Visitor {
         Element node = document.createElement(n.getClass().getSimpleName());
 
 
-        if (n.getId() != null) {
+        if (n.getId() != null) {//se ce constant a cui assegnare allora appende il nodo ID..
             node.appendChild((Text) n.getId().accept(this));
         }
 
-        if (n.getExpression() != null) {
+        if (n.getExpression() != null) {//se c'è espressione
             node.appendChild((Node) n.getExpression().accept(this));
         }
 
         if (n.getExpressionList() != null) {
-            Collections.reverse(n.getExpressionList());
+            Collections.reverse(n.getExpressionList());//inverte ordine sono inseriti al contrario
             for (ExpressionOP e : n.getExpressionList()) {
 
                 node.appendChild((Node) e.accept(this));
@@ -220,7 +224,7 @@ public class XMLVisitor implements Visitor {
             }
         }
 
-        if (n.getIdList() != null) {
+        if (n.getIdList() != null) {//lista di elementi Constsant id
             Collections.reverse(n.getIdList());
             for (Constant id : n.getIdList()) {
 
