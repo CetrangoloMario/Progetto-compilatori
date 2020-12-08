@@ -43,6 +43,7 @@ public class XMLVisitor implements Visitor {
     public Object visit(ExpressionOP n) {
         /*Text node = document.createTextNode("Expression");
         return node;*/
+
         return null;
     }
 
@@ -242,7 +243,7 @@ public class XMLVisitor implements Visitor {
         Collections.reverse(n.getStatList());
         for (StatOP stat : n.getStatList()) {
 
-            node.appendChild((Text) stat.accept(this));
+            node.appendChild((Node) stat.accept(this));
 
         }
 
@@ -308,7 +309,7 @@ public class XMLVisitor implements Visitor {
         Collections.reverse(n.getElifList());
         for (ElifOP e : n.getElifList()) {
 
-            node.appendChild((Text) e.accept(this));
+            node.appendChild((Node) e.accept(this));
         }
 
         node.appendChild((Node) n.getElseOp().accept(this));
@@ -334,7 +335,7 @@ public class XMLVisitor implements Visitor {
     @Override
     public Object visit(ProcBodyOP n) {
         Element node = document.createElement(n.getClass().getSimpleName());
-        Collections.reverse(n.getVarDeclList());
+        //Collections.reverse(n.getVarDeclList());
         for (VarDeclOP v : n.getVarDeclList()) {
             node.appendChild((Node) v.accept(this));
         }
@@ -371,7 +372,7 @@ public class XMLVisitor implements Visitor {
         for (ResultTypeOP r : n.getResultTypeList()) {
 
             //TODO Forse (Node)
-            node.appendChild((Text) r.accept(this));
+            node.appendChild((Node) r.accept(this));
 
         }
 
@@ -384,7 +385,7 @@ public class XMLVisitor implements Visitor {
     public Object visit(ProgramOP n) {
 
         Element node = document.createElement(n.getClass().getSimpleName());
-        Collections.reverse(n.getVarDecList());
+        //Collections.reverse(n.getVarDecList());
         for (VarDeclOP v : n.getVarDecList()) {
 
             node.appendChild((Node) v.accept(this));
