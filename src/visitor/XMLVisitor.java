@@ -38,7 +38,7 @@ public class XMLVisitor implements Visitor {
 
     }
 
-    //TODO
+
     @Override
     public Object visit(ExpressionOP n) {
         /*Text node = document.createTextNode("Expression");
@@ -46,7 +46,7 @@ public class XMLVisitor implements Visitor {
         return null;
     }
 
-    @Override //TODO
+    @Override
     public Object visit(PlusOP n) {
         //Element è un interfaccia e rappresenta un elemento in un documento xml, può avere attributi associati (Simile alla classe NODE)
         Element node = document.createElement(n.getClass().getSimpleName());
@@ -59,7 +59,7 @@ public class XMLVisitor implements Visitor {
         return node;
     }
 
-    @Override //TODO
+    @Override
     public Object visit(MinusOP n) {
         Element node = document.createElement(n.getClass().getSimpleName());
 
@@ -69,7 +69,7 @@ public class XMLVisitor implements Visitor {
         return node;
     }
 
-    @Override //TODO
+    @Override
     public Object visit(AndOP n) {
         Element node = document.createElement(n.getClass().getSimpleName());
 
@@ -79,7 +79,7 @@ public class XMLVisitor implements Visitor {
         return node;
     }
 
-    @Override //TODO
+    @Override
     public Object visit(DivOP n) {
         Element node = document.createElement(n.getClass().getSimpleName());
 
@@ -89,7 +89,7 @@ public class XMLVisitor implements Visitor {
         return node;
     }
 
-    @Override //TODO
+    @Override
     public Object visit(TimesOP n) {
         Element node = document.createElement(n.getClass().getSimpleName());
 
@@ -99,7 +99,7 @@ public class XMLVisitor implements Visitor {
         return node;
     }
 
-    @Override //TODO
+    @Override
     public Object visit(EqOP n) {
         Element node = document.createElement(n.getClass().getSimpleName());
 
@@ -109,7 +109,7 @@ public class XMLVisitor implements Visitor {
         return node;
     }
 
-    @Override //TODO
+    @Override
     public Object visit(NeOP n) {
         Element node = document.createElement(n.getClass().getSimpleName());
 
@@ -119,7 +119,7 @@ public class XMLVisitor implements Visitor {
         return node;
     }
 
-    @Override //TODO
+    @Override
     public Object visit(NotOP n) {
         Element node = document.createElement(n.getClass().getSimpleName());
 
@@ -128,7 +128,7 @@ public class XMLVisitor implements Visitor {
         return node;
     }
 
-    @Override //TODO
+    @Override
     public Object visit(UminusOP n) {
         Element node = document.createElement(n.getClass().getSimpleName());
 
@@ -137,7 +137,7 @@ public class XMLVisitor implements Visitor {
         return node;
     }
 
-    @Override //TODO
+    @Override
     public Object visit(LeOP n) {
         Element node = document.createElement(n.getClass().getSimpleName());
 
@@ -147,7 +147,7 @@ public class XMLVisitor implements Visitor {
         return node;
     }
 
-    @Override //TODO
+    @Override
     public Object visit(LtOP n) {
         Element node = document.createElement(n.getClass().getSimpleName());
 
@@ -157,7 +157,7 @@ public class XMLVisitor implements Visitor {
         return node;
     }
 
-    @Override //TODO
+    @Override
     public Object visit(GtOP n) {
         Element node = document.createElement(n.getClass().getSimpleName());
 
@@ -167,7 +167,7 @@ public class XMLVisitor implements Visitor {
         return node;
     }
 
-    @Override //TODO
+    @Override
     public Object visit(GeOP n) {
         Element node = document.createElement(n.getClass().getSimpleName());
 
@@ -177,7 +177,7 @@ public class XMLVisitor implements Visitor {
         return node;
     }
 
-    @Override //TODO
+    @Override
     public Object visit(OrOP n) {
         Element node = document.createElement(n.getClass().getSimpleName());
 
@@ -188,7 +188,7 @@ public class XMLVisitor implements Visitor {
     }
 
     @Override
-    public Object visit(Constant n) {
+    public Object visit(Constant n) {//deve comporre la stringa da stampare usa classe TEXT
         String textElement = "(" + n.getName();
 
         if (n.getValue() != null) {
@@ -236,27 +236,50 @@ public class XMLVisitor implements Visitor {
         return node;
     }
 
-    @Override //TODO
+    @Override
     public Object visit(BodyOP n) {
-        Text node = document.createTextNode("BodyOp");
+        Element node = document.createElement(n.getClass().getSimpleName());//nodo BodyOP
+        Collections.reverse(n.getStatList());
+        for (StatOP stat : n.getStatList()) {
+
+            node.appendChild((Text) stat.accept(this));
+
+        }
+
         return node;
     }
 
-    @Override //TODO
+    @Override
     public Object visit(CallProcOP n) {
-        Text node = document.createTextNode("CallProcOp");
+        Element node = document.createElement(n.getClass().getSimpleName());
+
+        node.appendChild((Text) n.getId().accept(this));
+
+        if (n.getExprList()!=null){
+            Collections.reverse(n.getExprList());
+            for (ExpressionOP ex : n.getExprList()) {
+
+                node.appendChild((Text) ex.accept(this));
+            }
+        }
+
         return node;
     }
 
-    @Override //TODO
+    @Override
     public Object visit(ElifOP n) {
-        Text node = document.createTextNode("ElifOp");
+        Element node = document.createElement(n.getClass().getSimpleName());
+
+        node.appendChild((Node) n.getExpr().accept(this));
+        node.appendChild((Node) n.getBody().accept(this));
+
         return node;
     }
 
-    @Override //TODO
+    @Override
     public Object visit(ElseOP n) {
-        Text node = document.createTextNode("ElseOp");
+        Element node = document.createElement(n.getClass().getSimpleName());
+        node.appendChild((Node) n.getBody().accept(this));
         return node;
     }
 
@@ -265,19 +288,31 @@ public class XMLVisitor implements Visitor {
         Element node = document.createElement(n.getClass().getSimpleName());
 
         if (n.getId() != null) {
-            node.appendChild((Text) n.getId().accept(this));
+            node.appendChild((Text) n.getId().accept(this));//chiama accept su istanza Constant
         }
 
-        if (n.getAssignament() != null) {
+        if (n.getAssignament() != null) {//secondo costruttore vedere assignOP
             node.appendChild((Node) n.getAssignament().accept(this));
         }
 
         return node;
     }
 
-    @Override //TODO
+    @Override
     public Object visit(IfOP n) {
-        Text node = document.createTextNode("IfOP");
+        Element node = document.createElement(n.getClass().getSimpleName());
+
+        node.appendChild((Node) n.getExpr().accept(this));
+        node.appendChild((Node) n.getBody().accept(this));
+
+        Collections.reverse(n.getElifList());
+        for (ElifOP e : n.getElifList()) {
+
+            node.appendChild((Text) e.accept(this));
+        }
+
+        node.appendChild((Node) n.getElseOp().accept(this));
+
         return node;
     }
 
@@ -325,7 +360,7 @@ public class XMLVisitor implements Visitor {
         node.appendChild((Text) n.getIdOp().accept(this));
 
         if (n.getParDeclList() != null) {
-            //Collections.reverse(n.getParDeclList());
+            Collections.reverse(n.getParDeclList());
             for (ParDeclOP p : n.getParDeclList()) {
 
                 node.appendChild((Node) p.accept(this));
@@ -335,8 +370,8 @@ public class XMLVisitor implements Visitor {
         Collections.reverse(n.getResultTypeList());
         for (ResultTypeOP r : n.getResultTypeList()) {
 
-            //TODO Forese (Text)
-            node.appendChild((Node) r.accept(this));
+            //TODO Forse (Node)
+            node.appendChild((Text) r.accept(this));
 
         }
 
@@ -364,9 +399,16 @@ public class XMLVisitor implements Visitor {
         return node;
     }
 
-    @Override //TODO
+    @Override
     public Object visit(ReadlnOP n) {
-        Text node = document.createTextNode("ReadOp");
+        Element node = document.createElement(n.getClass().getSimpleName());
+
+        Collections.reverse(n.getIdList());
+        for (Constant e : n.getIdList()) {
+
+            node.appendChild((Text) e.accept(this));
+
+        }
         return node;
     }
 
@@ -448,7 +490,7 @@ public class XMLVisitor implements Visitor {
         Element node = document.createElement(n.getClass().getSimpleName());
 
         node.appendChild((Text) n.getType().accept(this));
-       // Collections.reverse(n.getIdList());
+        Collections.reverse(n.getIdList());
         for (IdInitOP i : n.getIdList()) {
 
             node.appendChild((Node) i.accept(this));
@@ -458,15 +500,35 @@ public class XMLVisitor implements Visitor {
         return node;
     }
 
-    @Override //TODO
+    @Override
     public Object visit(WhileOP n) {
-        Text node = document.createTextNode("WhileOP");
+        Element node = document.createElement(n.getClass().getSimpleName());
+
+        if(n.getBodyOp2()!=null){//allora primo costruttore
+
+            node.appendChild((Node) n.getBodyOp1().accept(this));
+            node.appendChild((Node) n.getExpressionOp().accept(this));
+            node.appendChild((Node) n.getBodyOp2().accept(this));
+        }
+        else{//altrimenti seconda produzione del while
+            node.appendChild((Node) n.getExpressionOp().accept(this));
+            node.appendChild((Node) n.getBodyOp1().accept(this));
+        }
+
         return node;
     }
 
-    @Override //TODO
+    @Override
     public Object visit(WriteOP n) {
-        Text node = document.createTextNode("WriteOp");
+        Element node = document.createElement(n.getClass().getSimpleName());
+
+        Collections.reverse(n.getExpressionOpList());
+        for (ExpressionOP e : n.getExpressionOpList()) {
+
+            node.appendChild((Node) e.accept(this));
+
+        }
+
         return node;
     }
 

@@ -6,6 +6,9 @@ import visitor.Visitor;
 import java.util.ArrayList;
 
 public class ReadlnOP {
+    public ReadlnOP(ArrayList<Constant> idList) {
+        IdList = idList;
+    }
 
     public ArrayList<Constant> getIdList() {
         return IdList;
@@ -15,9 +18,7 @@ public class ReadlnOP {
         IdList = idList;
     }
 
-    public ReadlnOP(ArrayList<Constant> idList) {
-        IdList = idList;
-    }
+
 
     public Object accept(Visitor v){
         return v.visit(this);

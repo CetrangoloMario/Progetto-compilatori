@@ -5,6 +5,11 @@ import visitor.Visitor;
 
 public class ResultTypeOP {
 
+    public TypeOP getType() {
+        return type;
+    }
+
+
     public ResultTypeOP(TypeOP type) {
         this.type = type;
     }
@@ -13,9 +18,7 @@ public class ResultTypeOP {
         this.voidOp = voidOp;
     }
 
-    public TypeOP getType() {
-        return type;
-    }
+
 
     public void setType(TypeOP type) {
         this.type = type;
