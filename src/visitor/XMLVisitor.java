@@ -308,11 +308,14 @@ public class XMLVisitor implements Visitor {
 
         Collections.reverse(n.getElifList());
         for (ElifOP e : n.getElifList()) {
-
-            node.appendChild((Node) e.accept(this));
+            if(e!=null) {
+                node.appendChild((Node) e.accept(this));
+            }
+        }
+        if(n.getElseOp()!=null) {
+            node.appendChild((Node) n.getElseOp().accept(this));
         }
 
-        node.appendChild((Node) n.getElseOp().accept(this));
 
         return node;
     }
