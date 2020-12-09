@@ -217,7 +217,7 @@ public class XMLVisitor implements Visitor {
         }
 
         if (n.getExpressionList() != null) {
-            Collections.reverse(n.getExpressionList());//inverte ordine sono inseriti al contrario
+            //Collections.reverse(n.getExpressionList());//inverte ordine sono inseriti al contrario
             for (ExpressionOP e : n.getExpressionList()) {
 
                 node.appendChild((Node) e.accept(this));
@@ -226,7 +226,7 @@ public class XMLVisitor implements Visitor {
         }
 
         if (n.getIdList() != null) {//lista di elementi Constsant id
-            Collections.reverse(n.getIdList());
+            //Collections.reverse(n.getIdList());
             for (Constant id : n.getIdList()) {
 
                 node.appendChild((Text) id.accept(this));
@@ -240,11 +240,23 @@ public class XMLVisitor implements Visitor {
     @Override
     public Object visit(BodyOP n) {
         Element node = document.createElement(n.getClass().getSimpleName());//nodo BodyOP
-        Collections.reverse(n.getStatList());
+        //Collections.reverse(n.getStatList());
         for (StatOP stat : n.getStatList()) {
 
             node.appendChild((Node) stat.accept(this));
 
+        }
+
+        return node;
+    }
+
+    @Override
+    public Object visit(ParamOP n){
+        Element node = document.createElement(n.getClass().getSimpleName());
+
+        for (ExpressionOP ex : n.getExpressionList()) {
+
+            node.appendChild((Node) ex.accept(this));
         }
 
         return node;
@@ -256,12 +268,8 @@ public class XMLVisitor implements Visitor {
 
         node.appendChild((Text) n.getId().accept(this));
 
-        if (n.getExprList()!=null){
-            Collections.reverse(n.getExprList());
-            for (ExpressionOP ex : n.getExprList()) {
-
-                node.appendChild((Text) ex.accept(this));
-            }
+        if (n.getParamOP()!=null){
+            node.appendChild((Node) n.getParamOP().accept(this));
         }
 
         return node;
@@ -306,7 +314,7 @@ public class XMLVisitor implements Visitor {
         node.appendChild((Node) n.getExpr().accept(this));
         node.appendChild((Node) n.getBody().accept(this));
 
-        Collections.reverse(n.getElifList());
+        //Collections.reverse(n.getElifList());
         for (ElifOP e : n.getElifList()) {
             if(e!=null) {
                 node.appendChild((Node) e.accept(this));
@@ -344,7 +352,7 @@ public class XMLVisitor implements Visitor {
         }
 
         if (n.getStatList() != null) {
-            Collections.reverse(n.getStatList());
+            //Collections.reverse(n.getStatList());
             for (StatOP s : n.getStatList()) {
 
                 node.appendChild((Node) s.accept(this));
@@ -364,14 +372,14 @@ public class XMLVisitor implements Visitor {
         node.appendChild((Text) n.getIdOp().accept(this));
 
         if (n.getParDeclList() != null) {
-            Collections.reverse(n.getParDeclList());
+            //Collections.reverse(n.getParDeclList());
             for (ParDeclOP p : n.getParDeclList()) {
 
                 node.appendChild((Node) p.accept(this));
 
             }
         }
-        Collections.reverse(n.getResultTypeList());
+        //Collections.reverse(n.getResultTypeList());
         for (ResultTypeOP r : n.getResultTypeList()) {
 
             //TODO Forse (Node)
@@ -394,7 +402,7 @@ public class XMLVisitor implements Visitor {
             node.appendChild((Node) v.accept(this));
 
         }
-        Collections.reverse(n.getProcList());
+        //Collections.reverse(n.getProcList());
         for (ProcOP p : n.getProcList()) {
 
             node.appendChild((Node) p.accept(this));
@@ -407,7 +415,7 @@ public class XMLVisitor implements Visitor {
     public Object visit(ReadlnOP n) {
         Element node = document.createElement(n.getClass().getSimpleName());
 
-        Collections.reverse(n.getIdList());
+        //Collections.reverse(n.getIdList());
         for (Constant e : n.getIdList()) {
 
             node.appendChild((Text) e.accept(this));
@@ -436,7 +444,7 @@ public class XMLVisitor implements Visitor {
         Element node = document.createElement(n.getClass().getSimpleName());
 
         if (n.getExprList() != null) {
-            Collections.reverse(n.getExprList());
+            //Collections.reverse(n.getExprList());
             for (ExpressionOP e : n.getExprList()) {
 
                 node.appendChild((Node) e.accept(this));
@@ -494,7 +502,7 @@ public class XMLVisitor implements Visitor {
         Element node = document.createElement(n.getClass().getSimpleName());
 
         node.appendChild((Text) n.getType().accept(this));
-        Collections.reverse(n.getIdList());
+        //Collections.reverse(n.getIdList());
         for (IdInitOP i : n.getIdList()) {
 
             node.appendChild((Node) i.accept(this));
@@ -526,7 +534,7 @@ public class XMLVisitor implements Visitor {
     public Object visit(WriteOP n) {
         Element node = document.createElement(n.getClass().getSimpleName());
 
-        Collections.reverse(n.getExpressionOpList());
+        //Collections.reverse(n.getExpressionOpList());
         for (ExpressionOP e : n.getExpressionOpList()) {
 
             node.appendChild((Node) e.accept(this));

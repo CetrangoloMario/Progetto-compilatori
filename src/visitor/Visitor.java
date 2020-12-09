@@ -53,7 +53,5 @@ public interface Visitor {
 	public Object visit(VarDeclOP n);
 	public Object visit(WhileOP n);
 	public Object visit(WriteOP n);
-
-
-
+    public Object visit(ParamOP n);
 }

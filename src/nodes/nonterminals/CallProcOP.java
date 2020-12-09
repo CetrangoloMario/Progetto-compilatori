@@ -10,15 +10,15 @@ public class CallProcOP extends ExpressionOP {
 
 
     Constant id;
-    ArrayList<ExpressionOP> exprList;
+    ParamOP paramOP;
 
     public CallProcOP(Constant id) {
         this.id = id;
     }
 
-    public CallProcOP(Constant id, ArrayList<ExpressionOP> exprList) {
+    public CallProcOP(Constant id, ParamOP paramlist) {
         this.id = id;
-        this.exprList = exprList;
+        this.paramOP = paramlist;
     }
 
     public Constant getId() {
@@ -29,12 +29,12 @@ public class CallProcOP extends ExpressionOP {
         this.id = id;
     }
 
-    public ArrayList<ExpressionOP> getExprList() {
-        return exprList;
+    public ParamOP getParamOP() {
+        return paramOP;
     }
 
-    public void setExprList(ArrayList<ExpressionOP> exprList) {
-        this.exprList = exprList;
+    public void setParamOP(ParamOP paramOP) {
+        this.paramOP = paramOP;
     }
 
     public Object accept(Visitor v){

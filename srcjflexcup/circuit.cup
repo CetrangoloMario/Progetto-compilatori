@@ -128,7 +128,7 @@ ResultType ::= Type:t {: RESULT = new ResultTypeOP(t);:}
     | VOID {:RESULT = new ResultTypeOP(new Constant("VOID"));:};
 
 StatList ::= Stat:s  {:ArrayList<StatOP> list = new ArrayList<StatOP>(); list.add(s); RESULT = list;:}
-    | Stat:s StatList:list {: ((ArrayList<StatOP>)list).add(s); RESULT = list;:};
+    | StatList:list Stat:s{: ((ArrayList<StatOP>)list).add(s); RESULT = list;:};        //Invertita stat statlist per ordine di inserimento.
 
 Stat ::= IfStat:i SEMI {:RESULT =new StatOP(i);:}
 	| WhileStat:w SEMI {:RESULT =new StatOP(w);:}
@@ -157,7 +157,7 @@ WriteStat ::=  WRITE LPAR ExprList:list RPAR {:RESULT = new WriteOP(list);:};
 
 AssignStat ::= IdList:idList ASSIGN  ExprList:eList {:RESULT = new AssignOP(idList,eList);:};
 
-CallProc ::= ID:e1 LPAR ExprList:list RPAR {:RESULT = new CallProcOP(new Constant("ID",e1), new ArrayList<ExpressionOP>()); :}
+CallProc ::= ID:e1 LPAR ExprList:list RPAR {:RESULT = new CallProcOP(new Constant("ID",e1),new ParamOP(list)); :}//modifica
 	| ID:e1 LPAR RPAR {:RESULT = new CallProcOP(new Constant("ID",e1)); :};
 
 Expr ::= NULL                   {:RESULT =  new Constant("NULL",null);:}
