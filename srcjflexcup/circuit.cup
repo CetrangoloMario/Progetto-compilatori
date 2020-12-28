@@ -84,7 +84,7 @@ VarDeclList ::= VarDecl:e VarDeclList:list {:((ArrayList<VarDeclOP>)list).add(e)
 	|  /* empty */ {:RESULT = new ArrayList<VarDeclOP>();:};//null
 
 ProcList ::= Proc:e {:ArrayList<ProcOP> list = new ArrayList<ProcOP>(); list.add(e); RESULT = list;:}//NON TENGO LA LISTA, A CHI AGGIUNGO PROC??? TODO
-	| Proc:e ProcList:list {:((ArrayList<ProcOP>)list).add(e);  RESULT = list;:};
+	| ProcList:list Proc:e  {:((ArrayList<ProcOP>)list).add(e);  RESULT = list;:}; //invertita per ordine della lista quando viene inserita.
 
 VarDecl ::= Type:type IdListInit:idList SEMI {: RESULT =  new VarDeclOP(type, idList);:};
 
@@ -108,13 +108,13 @@ Proc ::= PROC ID:id LPAR ParamDeclList:pl RPAR ResultTypeList:rtl COLON
       	VarDeclList:vdl RETURN ReturnExprs:re CORP SEMI {: RESULT= new ProcOP(new Constant("ID",id),rtl,new ProcBodyOP(vdl,re));:};
 
 ResultTypeList ::= ResultType:r {:ArrayList<ResultTypeOP> list = new ArrayList<ResultTypeOP>(); list.add(r); RESULT = list;:}
-	| ResultType:r COMMA ResultTypeList:list {:((ArrayList<ResultTypeOP>)list).add(r); RESULT = list;:};
+	| ResultTypeList:list COMMA ResultType:r {:((ArrayList<ResultTypeOP>)list).add(r); RESULT = list;:};  // modificata per invertire inserimento nella lista.
 
 ReturnExprs::=  ExprList:el {:RESULT = new ReturnExprsOP(el);:}
 	| /* empty */ {:RESULT = new ReturnExprsOP(new Constant("VOID"));:};
 
 ExprList ::= Expr:e {:ArrayList<ExpressionOP> list = new ArrayList<ExpressionOP>(); list.add(e); RESULT = list;:}
-	| Expr:e COMMA ExprList:list {:((ArrayList<ExpressionOP>)list).add(e); RESULT = list;:};
+	| ExprList:list COMMA Expr:e   {:((ArrayList<ExpressionOP>)list).add(e); RESULT = list;:};  //modifica per ordine
 
 ParamDeclList ::= ParDecl:p {:ArrayList<ParDeclOP> list = new ArrayList<ParDeclOP>(); list.add(p); RESULT = list;:}
     | ParamDeclList:list SEMI ParDecl:p {: ((ArrayList<ParDeclOP>)list).add(p); RESULT = list;:};
@@ -157,7 +157,7 @@ WriteStat ::=  WRITE LPAR ExprList:list RPAR {:RESULT = new WriteOP(list);:};
 
 AssignStat ::= IdList:idList ASSIGN  ExprList:eList {:RESULT = new AssignOP(idList,eList);:};
 
-CallProc ::= ID:e1 LPAR ExprList:list RPAR {:RESULT = new CallProcOP(new Constant("ID",e1),new ParamOP(list)); :}//modifica
+CallProc ::= ID:e1 LPAR ExprList:list RPAR {:RESULT = new CallProcOP(new Constant("ID",e1),new ParamOP(list)); :}//modifica aggiunta paramOP
 	| ID:e1 LPAR RPAR {:RESULT = new CallProcOP(new Constant("ID",e1)); :};
 
 Expr ::= NULL                   {:RESULT =  new Constant("NULL",null);:}
