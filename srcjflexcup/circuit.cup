@@ -73,7 +73,7 @@ precedence right NOT;
 
 precedence left PLUS, MINUS;
 precedence left TIMES, DIV;
-precedence left UMINUS;
+precedence right UMINUS;
 
 /* Specifiche lessicali e grammaticali del linguaggio Toy*/
 
