@@ -1,0 +1,3 @@
+notOp;bool;bool
+uminusOp;float;float
+uminusOp;int;int
