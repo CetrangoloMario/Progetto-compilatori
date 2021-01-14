@@ -2,11 +2,21 @@ package symbolTable;
 
 import java.util.HashMap;
 
+
+
 public class Tabella {
 
+    //diversi costruttori
     public Tabella(Tabella padre) {
         this.elementi = new HashMap<>();
         this.padre = padre;
+        this.indicePadre = 0;
+    }
+
+    public Tabella(Tabella padre, int indicePadre) {
+        this.elementi = new HashMap<>();
+        this.padre = padre;
+        this.indicePadre = indicePadre;
     }
 
     public Tabella() {
@@ -22,6 +32,10 @@ public class Tabella {
         this.elementi = elementi;
     }
 
+    /**
+     * getter e setter
+     *
+     */
     public HashMap<String, Item> getElementi() {
         return elementi;
     }
@@ -42,6 +56,11 @@ public class Tabella {
         elementi.put(key, item);
     }
 
+    /*
+    cerca tra gli elementi della table corrente se contiene il simbolo
+    altrimenti controlla quella del padre
+    se non trova restituisce null.
+     */
     public Item find(String symbol) {
         if (elementi.containsKey(symbol))
             return elementi.get(symbol);
@@ -53,14 +72,11 @@ public class Tabella {
 
     @Override
     public String toString() {
-        return "\nTabella{" +
-                "elementi=" + elementi +
-                ", padre=" + padre +
-                '}';
+        return "\nTabella{" +"elementi=" + elementi +", padre=" + padre + '}';
     }
-
 
 
     HashMap<String, Item> elementi;
     Tabella padre;
+    int indicePadre;
 }

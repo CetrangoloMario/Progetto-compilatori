@@ -1,49 +1,80 @@
 package symbolTable;
 
+import java.util.ArrayList;
 import java.util.Stack;
 
+//Problema riscontrato quando si usa lo stack si cancellava elemento al top, quindi nella
+//successiva visita quella di Clang, perdevo le tabelle, due strade o salvare in un altro stack
+// e portarselo appress o usare un array list e facendo in modo che di non togliere riferimento.
+// ma avere nella tabella figlio puntatore a quella del padre.
+
+/**
+ * Type enviroment è un insieme di tabelle, al top (pensandolo come stack abbiamo tabella corrente)
+ */
 public class TypeEnvironment {
     public TypeEnvironment() {
-        this.typeEnvironment = new Stack<Tabella>();
+        index = 0; //indice alla tabella corrente
+        indexVisit = -1;
+        this.typeEnvironment = new ArrayList<Tabella>();
     }
 
-    public Stack<Tabella> getTypeEnvironment() {
+    public ArrayList<Tabella> getTypeEnvironment() {
         return typeEnvironment;
     }
 
-    public void setTypeEnvironment(Stack<Tabella> typeEnvironment) {
+    public void setTypeEnvironment(ArrayList<Tabella> typeEnvironment) {
         this.typeEnvironment = typeEnvironment;
     }
 
     // restituisce null se non trova l'elemento
     public Item lookup(String symbol) {
-        return typeEnvironment.peek().find(symbol);
+        return typeEnvironment.get(index).find(symbol);//prende la tabella corrente e fa ricerca
     }
 
+    //Avviare un nuovo ambito
     public void enterScope() {
         Tabella newTable;
-        if(typeEnvironment.size() > 0)
-            newTable = new Tabella(typeEnvironment.peek());
-        else
+        if (typeEnvironment.size() > 0) //abbiamo tabelle già inserite
+            newTable = new Tabella(typeEnvironment.get(index), index); //crea una nuova tabella usando il riferimento a quella del padre
+        else // altrimenti crea da zero
             newTable = new Tabella();
-        typeEnvironment.push(newTable);
+        index = typeEnvironment.size();
+        typeEnvironment.add(newTable);
     }
-
+    /*
+    public void enterScopeClang() {
+        indexVisit++;
+        index = indexVisit;
+    }
+*/
+    //Quando esco dallo scope devo ritornare alla tabella del padre.
     public void exitScope() {
-        typeEnvironment.pop();
+        index = typeEnvironment.get(index).indicePadre;
     }
 
     public void addId(String id, Item item) {
-        if(probe(id))
-           // throw new Error("Errore di dichiarazione multipla");
+        if (probe(id)) {
             System.err.println("Errore di dichiarazione multipla");
-        Tabella table = typeEnvironment.peek();
+            System.exit(1);
+        }
+        Tabella table = typeEnvironment.get(index);
         table.addItem(id, item);
     }
 
+
     public boolean probe(String id) {
-        return typeEnvironment.peek().getElementi().containsKey(id);
+        return typeEnvironment.get(index).getElementi().containsKey(id);
     }
 
-    Stack<Tabella> typeEnvironment;
+    public int getIndex() {
+        return index;
+    }
+
+    public void setIndex(int index) {
+        this.index = index;
+    }
+
+    ArrayList<Tabella> typeEnvironment;
+    int index;
+    int indexVisit;
 }
