@@ -31,6 +31,20 @@ Stat ::= IfStat SEMI
 WhileStat ::= WHILE StatList Expr DO StatList OD; risolto obbligando stat non essere vuoto
 
 
+// modifiche alla grammatica per ordine di inserimento nella lista.
 
+ResultTypeList ::= ResultType:r
+    | ResultTypeList:list COMMA ResultType:r
+
+ExprList ::= Expr:e
+    | ExprList:list COMMA Expr:e
+
+StatList ::= Stat:s
+    | StatList:list Stat:s
+
+
+////modifica aggiunta paramOP
+CallProc ::= ID:e1 LPAR ExprList:list RPAR {:RESULT = new CallProcOP(new Constant("ID",e1),new ParamOP(list)); :}//modifica aggiunta paramOP
+	| ID:e1 LPAR RPAR {:RESULT = new CallProcOP(new Constant("ID",e1)); :};
 
 

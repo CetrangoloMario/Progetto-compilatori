@@ -73,7 +73,7 @@ precedence right NOT;
 
 precedence left PLUS, MINUS;
 precedence left TIMES, DIV;
-precedence right UMINUS;
+precedence right UMINUS;// era in dubbio verificare, molti mettono associatività a sinistra, ma è uguale al not lavora con quello di seguito.
 
 /* Specifiche lessicali e grammaticali del linguaggio Toy*/
 
