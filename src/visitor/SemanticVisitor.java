@@ -236,7 +236,62 @@ public class SemanticVisitor implements Visitor{
 
     @Override
     public Object visit(AssignOP n) {
-        return null;
+        ArrayList<String> idTipoList= new ArrayList<>();
+        ArrayList<String> expTipoList= new ArrayList<>();
+
+        if(n.getId() != null){
+            idTipoList.add((String) n.getId().accept(this));
+        }
+
+
+        if(n.getExpression() != null){
+            Object x= n.getExpression().accept(this);
+
+            if (x.getClass().getSimpleName().equals("ArrayList")){
+                ArrayList<String> tipoLista= (ArrayList<String>) x;
+                for (String tipo: tipoLista){
+                    expTipoList.add(tipo);
+                }
+
+            }else{
+                expTipoList.add((String) x);
+            }
+        }
+
+        if( n.getIdList() != null){
+
+            for(Constant id: n.getIdList()){
+                idTipoList.add((String) id.accept(this));
+            }
+        }
+
+        if (n.getExpressionList() != null){
+
+            for(ExpressionOP e : n.getExpressionList()){
+                Object x= e.accept(this);
+
+                if(x.getClass().getSimpleName().equals("ArrayList")){
+                    ArrayList<String> tipoLista= (ArrayList<String>) x;
+
+                    for( String tipo: tipoLista){
+                        expTipoList.add(tipo);
+                    }
+                }else{
+                    expTipoList.add((String) x);
+                }
+            }
+        }
+
+        //deco controllare che abbiano lo stesso tipo i contenuti nella stessa posizione dell'array
+        for ( int i=0; i < expTipoList.size(); i++ ){
+
+            if (!expTipoList.get(i).equals(idTipoList.get(i))){
+                System.err.println("AssignOp: errore assegnamento controllo dei tipi idList e expList");
+                System.exit(1);
+            }
+        }
+
+        return true;
     }
 
     @Override
