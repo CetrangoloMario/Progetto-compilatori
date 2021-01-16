@@ -8,7 +8,9 @@ import symbolTable.Item;
 import symbolTable.TypeEnvironment;
 import tableOpType.OpType;
 
+import javax.naming.ldap.ExtendedRequest;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 // prende in input AST prodotto dall'analisi sintattica, fa il type checking sui tipi
 // crea tabelle dei simboli nel nodo program op e procop.
@@ -296,12 +298,60 @@ public class SemanticVisitor implements Visitor{
 
     @Override
     public Object visit(BodyOP n) {
-        return null;
+
+        for( StatOP s: n.getStatList()){
+            s.accept(this);
+        }
+        return true;
     }
 
     @Override
     public Object visit(CallProcOP n) {
-        return null;
+
+        String sign= (String) n.getId().accept(this);
+        String[] param= sign.split("->");
+        String[] paramTemp= param[0].trim().split(" ");
+        String[] returnTemp= param[1].trim().split(" ");
+
+        ArrayList<String> paramTipoList= new ArrayList<>(Arrays.asList(paramTemp));
+        ArrayList<String> returnTipoList= new ArrayList<>(Arrays.asList(returnTemp));
+
+        ArrayList<String> expList= new ArrayList<>();
+
+        while( paramTipoList.remove("")){
+
+        }
+        while (returnTipoList.remove("")){
+
+        }
+
+        int size=paramTipoList.size();
+
+        ArrayList<String> paramOpList= (ArrayList<String>) n.getParamOP().accept(this);
+
+        //se non ho parametri
+        if (size==0 && paramOpList == null)
+            return returnTipoList;
+        else if (paramOpList == null && size !=0){
+            System.err.println("\nErrore CallProc: Funzione si aspetta "+size+" parametri, ne sono stati passati 0\n");
+            System.exit(1);
+        }
+
+        //altri casi si poteva mettere questo al posto else if sopra
+        if (size!=paramOpList.size()){
+            System.err.println("\nErrore CallProc: Funzione si aspetta "+size+" parametri, ne sono stati passati "+paramOpList.size()+"\n");
+            System.exit(1);
+        }
+
+        for (int i=0; i<paramOpList.size(); i++){
+            if (! paramOpList.get(i).equals(paramTipoList.get(i))){
+                System.err.println("\n Errore CallProc: Funzione si aspetta "+size+" parametri, ne sono stati passati "+paramOpList.size()+"\n");
+                System.exit(1);
+            }
+        }
+
+
+        return returnTipoList;
     }
 
     @Override
@@ -386,7 +436,26 @@ public class SemanticVisitor implements Visitor{
 
     @Override
     public Object visit(ParamOP n) {
-        return null;
+
+        ArrayList<String> paramOpList= new ArrayList<>();
+
+        if(n.getExpressionList() != null){
+            for (ExpressionOP exp : n.getExpressionList()){
+                Object x = exp.accept(this);
+
+                if (x.getClass().getSimpleName().equals("ArrayList")){
+                    ArrayList<String> tipoLista= (ArrayList<String>) x;
+                    for (String tipo: tipoLista){
+                        paramOpList.add(tipo);
+                    }
+                } else {
+                    paramOpList.add((String) x);
+                }
+            }
+        } //else
+           // return null;
+
+        return paramOpList;
     }
 
 
