@@ -1,9 +1,11 @@
 package visitor;
 
 
+import com.sun.org.apache.bcel.internal.Const;
 import nodes.expression.*;
 import nodes.nonterminals.*;
 import nodes.terminals.Constant;
+import sun.font.DelegatingShape;
 import symbolTable.Item;
 import symbolTable.TypeEnvironment;
 import tableOpType.OpType;
@@ -356,82 +358,330 @@ public class SemanticVisitor implements Visitor{
 
     @Override
     public Object visit(ElifOP n) {
-        return null;
+
+        String exptipo= (String) n.getExpr().accept(this);
+        if (!exptipo.equals("bool")){
+            System.err.println("Elif: missmatch dell'espressione non è boolean");
+            System.exit(1);
+        }
+
+        n.getBody().accept(this);
+
+        return true;
     }
 
     @Override
     public Object visit(ElseOP n) {
-        return null;
+
+        n.getBody().accept(this);
+        return true;
     }
 
     @Override
     public Object visit(IdInitOP n) {
-        return null;
+
+        if(n.getId() !=null){
+            n.getId().accept(this);
+        }
+
+        if (n.getAssignament()!= null){
+            n.getAssignament().accept(this);
+        }
+
+        return n;
     }
 
     @Override
     public Object visit(IfOP n) {
-        return null;
+
+        String expTipo= (String) n.getExpr().accept(this);
+
+        if(!expTipo.equals("bool")){
+            System.err.println("If: missmatch espressione");
+            System.exit(1);
+        }
+
+        n.getBody().accept(this);
+
+        for (ElifOP e: n.getElifList()) {
+            e.accept(this);
+        }
+
+        if (n.getElseOp() != null){
+            n.getElseOp().accept(this);
+        }
+
+        return true;
     }
 
     @Override
     public Object visit(ParDeclOP n) {
-        return null;
+
+        String tipo= (String) n.getType().accept(this);
+
+        for (Constant id: n.getIdList()){
+            typeEnvironment.addId(id.getValue(), new Item(id.getValue(), tipo, "var"));
+            id.accept(this);
+        }
+        return true;
     }
 
     @Override
     public Object visit(ProcBodyOP n) {
-        return null;
+
+        for (VarDeclOP vdl : n.getVarDeclList()){
+            vdl.accept(this);
+        }
+
+        if (n.getStatList()!=null){
+            for (StatOP s: n.getStatList()){
+                s.accept(this);
+            }
+        }
+
+        return n.getReturnExprs().accept(this);
     }
 
     @Override
     public Object visit(ProcOP n) {
-        return null;
+
+        typeEnvironment.enterScope();
+
+        n.getIdOp().accept(this);
+
+        if (n.getParDeclList()!=null){
+            for (ParDeclOP pdl: n.getParDeclList()){
+                pdl.accept(this);
+            }
+        }
+
+        for (ResultTypeOP rt: n.getResultTypeList()){
+            rt.accept(this);
+        }
+
+        if (n.getResultTypeList().contains("void") && n.getResultTypeList().size() != 1){
+            System.err.println("ProcOP: La funzione non può avere altri tipi se contiene void come valore di ritorno ");
+        }
+
+        ArrayList<String> resultExprLista= (ArrayList<String>) n.getProcBody().accept(this);
+
+        //System.out.println(n.getResultTypeList());
+        //System.out.println(resultExprLista);
+
+        if (n.getResultTypeList().size()!= resultExprLista.size()){
+            System.err.println("Proc err 1: errore tipi di ritorno della funzione, diversi numero");
+            System.exit(1);
+        }
+
+        for (int i=0; i<n.getResultTypeList().size(); i++){
+            if (n.getResultTypeList().get(i).getType() != null){
+
+                if (! n.getResultTypeList().get(i).getType().getType().equals(resultExprLista.get(i))){
+                    System.err.println("Proc err 2: errore tipi di ritorno della funzione non combaciano");
+                    System.exit(1);
+                }
+            } else {
+                if (!n.getResultTypeList().get(i).getVoidOp().getName().equals(resultExprLista.get(i))){
+                    System.err.println("Proc err 3: errore due tipi di ritorno della funzione");
+                    System.exit(1);
+                }
+            }
+        }
+
+        typeEnvironment.exitScope();
+        return true;
     }
 
     @Override
     public Object visit(ProgramOP n) {
-        return null;
+        typeEnvironment.enterScope();
+
+        for (VarDeclOP vdl: n.getVarDecList()){
+            vdl.accept(this);
+        }
+
+        for (ProcOP p: n.getProcList()){
+            String paramString="";
+            String resultString="";
+
+            if (p.getParDeclList()!= null){
+                for (ParDeclOP par: p.getParDeclList()){
+                    ArrayList<Constant> idLista= par.getIdList();
+
+                    for (Constant c: idLista){
+                        paramString += par.getType().getType() + " ";
+                    }
+                }
+            }
+
+            if (p.getResultTypeList() != null){
+                for (ResultTypeOP param: p.getResultTypeList()) {
+                    if (param.getType() == null) {
+                        resultString += "void";
+                        break;
+                    }
+                    resultString+= param.getType().getType() + " ";
+                }
+            }
+
+            typeEnvironment.addId(p.getIdOp().getValue(), new Item( p.getIdOp().getValue(), paramString+ "->" + resultString, "proc"));
+            p.accept(this);
+        }
+
+        Item i= typeEnvironment.lookup("main");
+        if (i==null){
+            System.err.println("Il main non esiste");
+            System.exit(1);
+        }
+
+        typeEnvironment.exitScope();
+        return true;
     }
 
     @Override
     public Object visit(ReadlnOP n) {
-        return null;
+
+        for (Constant c: n.getIdList()){
+            Item i = typeEnvironment.lookup(c.getValue());
+
+            if (! i.getCostrutto().equals("proc"))
+                c.accept(this);
+            else{
+                System.err.println(" Non è possibile inserire una funzione in un'operazione di READ");
+                System.exit(1);
+            }
+        }
+
+        return true;
     }
 
     @Override
     public Object visit(ResultTypeOP n) {
-        return null;
+
+        if (n.getType() != null){
+            n.getType().accept(this);
+        }
+
+        if (n.getVoidOp() != null){
+            n.getVoidOp().accept(this);
+        }
+
+        return true;
     }
 
     @Override
     public Object visit(ReturnExprsOP n) {
-        return null;
+
+        ArrayList<String> returnTipoLista= new ArrayList<>();
+
+        if (n.getExprList()!= null){
+            for (ExpressionOP exp: n.getExprList()){
+
+                Object x= exp.accept(this);
+                if (x.getClass().getSimpleName().equals("ArrayList")){
+                    ArrayList<String> tipoLista= (ArrayList<String>) x;
+
+                    for (String tipo: tipoLista){
+                        returnTipoLista.add(tipo);
+                    }
+                } else {
+                    returnTipoLista.add((String) x);
+                }
+            }
+        }
+        else if (n.getVoidOp() != null){
+            n.getVoidOp().accept(this);
+            returnTipoLista.add("void");
+        }
+
+        return returnTipoLista;
     }
 
     @Override
     public Object visit(StatOP n) {
+        if (n.getIfStatOp() != null) {
+            return n.getIfStatOp().accept(this);
+        }
+
+        if (n.getWhileStatOp() != null) {
+            return n.getWhileStatOp().accept(this);
+        }
+
+        if (n.getReadlnStatOp() != null) {
+            return n.getReadlnStatOp().accept(this);
+        }
+
+        if (n.getWriteStatOp() != null) {
+            return n.getWriteStatOp().accept(this);
+        }
+
+        if (n.getAssignStatOp() != null) {
+            return n.getAssignStatOp().accept(this);
+        }
+
+        if (n.getCallProcOp() != null) {
+            return n.getCallProcOp().accept(this);
+        }
+
         return null;
     }
 
     @Override
     public Object visit(TypeOP n) {
-        return null;
+        return n.getType();
     }
 
     @Override
     public Object visit(VarDeclOP n) {
-        return null;
+
+        String tipo= (String) n.getType().accept(this);
+
+        for ( IdInitOP x: n.getIdList()){
+
+            if (x.getId() != null){
+                typeEnvironment.addId(x.getId().getValue(), new Item(x.getId().getValue(), tipo, "var"));
+            }
+            else if (x.getAssignament() != null){
+                if (x.getAssignament().getId() != null){
+                    typeEnvironment.addId(x.getAssignament().getId().getValue(), new Item(x.getAssignament().getId().getValue(), tipo, "var"));
+                }
+                else if (x.getAssignament().getIdList() != null){
+                    for (Constant id: x.getAssignament().getIdList()){
+                        typeEnvironment.addId(id.getValue(), new Item(id.getValue(), tipo, "var"));
+                    }
+                }
+            }
+            x.accept(this);
+        }
+        return true;
     }
 
     @Override
     public Object visit(WhileOP n) {
-        return null;
+
+        if (n.getBodyOp1()!=null){
+            n.getBodyOp1().accept(this);
+        }
+
+        String expTipo= checkExpression("while", n.getExpressionOp().accept(this));
+
+        if (! expTipo.equals("bool")){
+            System.err.println("while: Errore di tipo dell'espressione");
+            System.exit(1);
+        }
+
+        n.getBodyOp2().accept(this);
+        return true;
     }
 
     @Override
     public Object visit(WriteOP n) {
-        return null;
+
+        for (ExpressionOP exp: n.getExpressionOpList()){
+            exp.accept(this);
+        }
+
+        return true;
     }
 
     @Override
