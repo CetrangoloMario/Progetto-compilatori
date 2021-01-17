@@ -215,10 +215,10 @@ spazi_bianchi = [\r|\n|\r\n]+ | [ \t\f]
             \*\/		{ ;yybegin(YYINITIAL);}
 
 
-        	.	{ string.append(yytext()); }//matcha tutti caratteri trane interruzione di riga.
-        	\/\*		{ string.append(yytext()); }
-        	\/\*\*	{ string.append(yytext()); }
-        	{spazi_bianchi}	{ string.append(yytext()); }
+        	.	{  }//matcha tutti caratteri trane interruzione di riga.
+        	\/\*		{}
+        	\/\*\*	{ }
+        	{spazi_bianchi}	{ }
 
         }
 

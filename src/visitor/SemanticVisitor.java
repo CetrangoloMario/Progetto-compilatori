@@ -96,7 +96,10 @@ public class SemanticVisitor implements Visitor{
 
         String resultType= optype.checkOpType2("eqOp", t1,t2);
 
-        if (resultType == null) System.err.println("eqOp: mismatch\n t1: "+ t1+ " t2: "+t2+"\n");
+        if (resultType == null){
+            System.out.println(resultType+" , "+ n.getLeft().accept(this)+ " , "+ n.getRight().accept(this));
+            System.err.println("eqOp: mismatch\n t1: "+ t1+ " t2: "+t2+"\n");
+        }
 
         return resultType;
     }
@@ -251,7 +254,7 @@ public class SemanticVisitor implements Visitor{
         if(n.getExpression() != null){
             Object x= n.getExpression().accept(this);
 
-            if (x.getClass().getSimpleName().equals("ArrayList")){
+            if (x.getClass().getSimpleName().equalsIgnoreCase("ArrayList")){
                 ArrayList<String> tipoLista= (ArrayList<String>) x;
                 for (String tipo: tipoLista){
                     expTipoList.add(tipo);
@@ -274,7 +277,7 @@ public class SemanticVisitor implements Visitor{
             for(ExpressionOP e : n.getExpressionList()){
                 Object x= e.accept(this);
 
-                if(x.getClass().getSimpleName().equals("ArrayList")){
+                if(x.getClass().getSimpleName().equalsIgnoreCase("ArrayList")){
                     ArrayList<String> tipoLista= (ArrayList<String>) x;
 
                     for( String tipo: tipoLista){
@@ -289,7 +292,10 @@ public class SemanticVisitor implements Visitor{
         //deco controllare che abbiano lo stesso tipo i contenuti nella stessa posizione dell'array
         for ( int i=0; i < expTipoList.size(); i++ ){
 
-            if (!expTipoList.get(i).equals(idTipoList.get(i))){
+           // System.out.println("\n  Controllo AssignOP "+ expTipoList.get(i)+ " \n" +
+              //      " "+idTipoList.get(i)+"\nfine\n ");
+
+            if (!expTipoList.get(i).equalsIgnoreCase(idTipoList.get(i))){
                 System.err.println("AssignOp: errore assegnamento controllo dei tipi idList e expList");
                 System.exit(1);
             }
@@ -335,19 +341,24 @@ public class SemanticVisitor implements Visitor{
         if (size==0 && paramOpList == null)
             return returnTipoList;
         else if (paramOpList == null && size !=0){
-            System.err.println("\nErrore CallProc: Funzione si aspetta "+size+" parametri, ne sono stati passati 0\n");
+            System.err.println("\nErrore 1 CallProc: Funzione si aspetta "+size+" parametri, ne sono stati passati 0\n");
             System.exit(1);
         }
 
         //altri casi si poteva mettere questo al posto else if sopra
         if (size!=paramOpList.size()){
-            System.err.println("\nErrore CallProc: Funzione si aspetta "+size+" parametri, ne sono stati passati "+paramOpList.size()+"\n");
+            System.out.println("Funz call: \n"+n.getId().getValue()+
+                    ""+paramTipoList+"\n"+paramOpList);
+            System.err.println("\nErrore 2 CallProc: Funzione si aspetta "+size+" parametri, ne sono stati passati "+paramOpList.size()+"\n");
             System.exit(1);
         }
 
         for (int i=0; i<paramOpList.size(); i++){
-            if (! paramOpList.get(i).equals(paramTipoList.get(i))){
-                System.err.println("\n Errore CallProc: Funzione si aspetta "+size+" parametri, ne sono stati passati "+paramOpList.size()+"\n");
+            if (! paramOpList.get(i).equalsIgnoreCase(paramTipoList.get(i))){
+                System.out.println("Funz call: \n"+n.getId().getValue()+
+                        ""+paramTipoList+"\n"+paramOpList);
+
+                System.err.println("\n Errore 3 CallProc: tipi diversi "+paramOpList.get(i)+"\n"+paramTipoList+"\n");
                 System.exit(1);
             }
         }
@@ -360,7 +371,7 @@ public class SemanticVisitor implements Visitor{
     public Object visit(ElifOP n) {
 
         String exptipo= (String) n.getExpr().accept(this);
-        if (!exptipo.equals("bool")){
+        if (!exptipo.equalsIgnoreCase("bool")){
             System.err.println("Elif: missmatch dell'espressione non è boolean");
             System.exit(1);
         }
@@ -396,7 +407,7 @@ public class SemanticVisitor implements Visitor{
 
         String expTipo= (String) n.getExpr().accept(this);
 
-        if(!expTipo.equals("bool")){
+        if(!expTipo.equalsIgnoreCase("bool")){
             System.err.println("If: missmatch espressione");
             System.exit(1);
         }
@@ -461,10 +472,12 @@ public class SemanticVisitor implements Visitor{
 
         if (n.getResultTypeList().contains("void") && n.getResultTypeList().size() != 1){
             System.err.println("ProcOP: La funzione non può avere altri tipi se contiene void come valore di ritorno ");
+            System.exit(1);
         }
 
         ArrayList<String> resultExprLista= (ArrayList<String>) n.getProcBody().accept(this);
 
+        System.out.println("Funzione: "+ n.getIdOp().getValue());
         System.out.println(n.getResultTypeList());
         System.out.println(resultExprLista);
 
@@ -474,14 +487,16 @@ public class SemanticVisitor implements Visitor{
         }
 
         for (int i=0; i<n.getResultTypeList().size(); i++){
+
             if (n.getResultTypeList().get(i).getType() != null){
 
-                if (! n.getResultTypeList().get(i).getType().getType().equals(resultExprLista.get(i))){
+                if (! n.getResultTypeList().get(i).getType().getType().equalsIgnoreCase(resultExprLista.get(i))){
                     System.err.println("Proc err 2: errore tipi di ritorno della funzione non combaciano");
                     System.exit(1);
                 }
             } else {
-                if (!n.getResultTypeList().get(i).getVoidOp().getName().equals(resultExprLista.get(i))){
+                if (!n.getResultTypeList().get(i).getVoidOp().getName().equalsIgnoreCase(resultExprLista.get(i))){
+                    System.out.println("\n"+n.getResultTypeList().get(i).getVoidOp().getName()+"\n"+resultExprLista.get(i)+"\n\n");
                     System.err.println("Proc err 3: errore due tipi di ritorno della funzione");
                     System.exit(1);
                 }
@@ -544,7 +559,7 @@ public class SemanticVisitor implements Visitor{
         for (Constant c: n.getIdList()){
             Item i = typeEnvironment.lookup(c.getValue());
 
-            if (! i.getCostrutto().equals("proc"))
+            if (! i.getCostrutto().equalsIgnoreCase("proc"))
                 c.accept(this);
             else{
                 System.err.println(" Non è possibile inserire una funzione in un'operazione di READ");
@@ -578,7 +593,7 @@ public class SemanticVisitor implements Visitor{
             for (ExpressionOP exp: n.getExprList()){
 
                 Object x= exp.accept(this);
-                if (x.getClass().getSimpleName().equals("ArrayList")){
+                if (x.getClass().getSimpleName().equalsIgnoreCase("ArrayList")){
                     ArrayList<String> tipoLista= (ArrayList<String>) x;
 
                     for (String tipo: tipoLista){
@@ -665,7 +680,7 @@ public class SemanticVisitor implements Visitor{
 
         String expTipo= checkExpression("while", n.getExpressionOp().accept(this));
 
-        if (! expTipo.equals("bool")){
+        if (! expTipo.equalsIgnoreCase("bool")){
             System.err.println("while: Errore di tipo dell'espressione");
             System.exit(1);
         }
@@ -693,7 +708,7 @@ public class SemanticVisitor implements Visitor{
             for (ExpressionOP exp : n.getExpressionList()){
                 Object x = exp.accept(this);
 
-                if (x.getClass().getSimpleName().equals("ArrayList")){
+                if (x.getClass().getSimpleName().equalsIgnoreCase("ArrayList")){
                     ArrayList<String> tipoLista= (ArrayList<String>) x;
                     for (String tipo: tipoLista){
                         paramOpList.add(tipo);
@@ -720,7 +735,7 @@ public class SemanticVisitor implements Visitor{
     private String checkExpression(String name, Object o){
         String t="";
 
-        if(o.getClass().getSimpleName().equals("ArrayList")) {
+        if(o.getClass().getSimpleName().equalsIgnoreCase("ArrayList")) {
             ArrayList<String> e = (ArrayList<String>) o;
 
             if (e.size() != 1) {

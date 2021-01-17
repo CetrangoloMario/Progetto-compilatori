@@ -22,14 +22,17 @@ parser code{:
 
 
 /* TERMINALI */
-terminal INT, BOOL, FLOAT, STRING, SEMI, COMMA,  PROC, LPAR, RPAR,
-         COLON, CORP,IF, THEN, ELIF, FI, ELSE, WHILE, DO, OD,
-         READ, WRITE, ASSIGN, PLUS, MINUS, TIMES, DIV, EQ, NE, LT,
-         LE, GT, GE, AND, OR, NOT, UMINUS, RETURN, FALSE,TRUE,VOID,NULL ;
+
 terminal String ID;
 terminal String INT_CONST;
 terminal String FLOAT_CONST;
 terminal String STRING_CONST;
+
+terminal INT, BOOL, FLOAT, STRING, SEMI, COMMA,  PROC, LPAR, RPAR,
+         COLON, CORP,IF, THEN, ELIF, FI, ELSE, WHILE, DO, OD,
+         READ, WRITE, ASSIGN, PLUS, MINUS, TIMES, DIV, EQ, NE, LT,
+         LE, GT, GE, AND, OR, NOT, UMINUS, RETURN, FALSE,TRUE,VOID,NULL ;
+
 
 /* NON TERMINALI */
 
@@ -39,6 +42,17 @@ nonterminal ArrayList<VarDeclOP> VarDeclList;
 nonterminal ArrayList<ProcOP> ProcList;
 nonterminal VarDeclOP VarDecl;
 nonterminal TypeOP Type;
+nonterminal WhileOP WhileStat;
+nonterminal AssignOP AssignStat;
+nonterminal CallProcOP CallProc;
+nonterminal ExpressionOP Expr;
+nonterminal ReadlnOP ReadlnStat;
+nonterminal WriteOP WriteStat;
+nonterminal StatOP Stat;
+nonterminal IfOP IfStat;
+nonterminal ArrayList<ElifOP> ElifList;
+nonterminal ElifOP Elif;
+nonterminal ElseOP Else;
 nonterminal ProcOP Proc;
 nonterminal ArrayList<ResultTypeOP> ResultTypeList;
 nonterminal ReturnExprsOP ReturnExprs;
@@ -48,29 +62,19 @@ nonterminal ParDeclOP ParDecl;
 nonterminal ArrayList<Constant> IdList;
 nonterminal ResultTypeOP ResultType;
 nonterminal ArrayList<StatOP> StatList;
-nonterminal StatOP Stat;
-nonterminal IfOP IfStat;
-nonterminal ArrayList<ElifOP> ElifList;
-nonterminal ElifOP Elif;
-nonterminal ElseOP Else;
-nonterminal WhileOP WhileStat;
-nonterminal AssignOP AssignStat;
-nonterminal CallProcOP CallProc;
-nonterminal ExpressionOP Expr;
-nonterminal ReadlnOP ReadlnStat;
-nonterminal WriteOP WriteStat;
+
 
 //ProcBodyOP BodyOP IdInitOP
 
 //Precedenze e associatività
 //precedence nonassoc ELSE;
-precedence left LT,GT, LE, GE, EQ;
-precedence left NE;
+
 
 precedence left OR;
 precedence left AND;
-precedence right NOT;
-
+precedence right NOT; //contrellare uso IF
+precedence left LT,GT, LE, GE, EQ;
+precedence left NE;
 precedence left PLUS, MINUS;
 precedence left TIMES, DIV;
 precedence right UMINUS;// era in dubbio verificare, molti mettono associatività a sinistra, ma è uguale al not lavora con quello di seguito.
@@ -161,12 +165,12 @@ CallProc ::= ID:e1 LPAR ExprList:list RPAR {:RESULT = new CallProcOP(new Constan
 	| ID:e1 LPAR RPAR {:RESULT = new CallProcOP(new Constant("ID",e1)); :};
 
 Expr ::= NULL                   {:RESULT =  new Constant("NULL",null);:}
-	| TRUE                      {:RESULT =  new Constant("TRUE",null);:}
-	| FALSE                     {:RESULT =  new Constant("FALSE",null);:}
-	| INT_CONST:e               {:RESULT = new Constant("INT_CONST",e);:}
-	| FLOAT_CONST:e             {:RESULT = new Constant("FLOAT_CONST",e);:}
-	| STRING_CONST:e            {:RESULT = new Constant("STRING_CONST",e);:}
-	| ID:e                      {:System.out.println("<ID,"+e+">");RESULT = new Constant("ID",e);:}
+	| TRUE                      {:RESULT =  new Constant("bool","true");:}
+	| FALSE                     {:RESULT =  new Constant("bool","false");:}
+	| INT_CONST:e               {:RESULT = new Constant("int",e);:}
+	| FLOAT_CONST:e             {:RESULT = new Constant("float",e);:}
+	| STRING_CONST:e            {:RESULT = new Constant("string",e);:}
+	| ID:e                      {:RESULT = new Constant("ID",e);:}
     | CallProc:c                {:RESULT = c;:}
 	| Expr:e1  PLUS Expr:e2     {:RESULT = new PlusOP(e1,e2 );:}
 	| Expr:e1  MINUS Expr:e2    {:RESULT =  new MinusOP(e1,e2 );:}

@@ -4,6 +4,14 @@
 
 string nome := "Michele";
 
+proc writeNewLines(int n)void :
+	while n >0 do
+		write("\n");
+		n := n -1;
+	od;
+	->
+corp;
+
 proc multAddDiff ()int, int, int :
 	int primo, secondo, mul, add, diff;
 	
@@ -17,13 +25,6 @@ proc multAddDiff ()int, int, int :
 corp;
 
 
-proc writeNewLines(int n)void :
-	while n >0 do
-		write("\n");
-		n := n -1;
-	od;
-	->
-corp;
 
 
 proc main()void :

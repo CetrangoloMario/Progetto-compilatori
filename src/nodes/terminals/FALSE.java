@@ -10,6 +10,6 @@ public class FALSE extends ExpressionOP {
         return v.visit(this);
     }
 
-    static String terminal = "false";
+    static String terminal = "FALSE";
 
 }

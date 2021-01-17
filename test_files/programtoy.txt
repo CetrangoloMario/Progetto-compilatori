@@ -2,6 +2,46 @@
 
 int n:=1;
 
+
+
+proc calcola_int (int x,  y, operazione) void:
+    int result:=0;
+    if operazione=1 then
+        result:= x+y;
+    elif operazione=2 then
+        result:= x-y;
+    elif operazione=3 then
+        result:= x*y;
+    elif operazione=4 then
+        result:= x/y;
+    else
+        write("ok");
+    fi;
+
+    write("Risultato di",x, " e ", y," :\n ",result);
+
+    ->
+corp;
+
+proc calcola_double (float x, y; int operazione) void:
+    float result:=0.0;
+
+    if operazione=1 then
+            result:= x+y;
+        elif operazione=2 then
+            result:= x-y;
+        elif operazione=3 then
+            result:= x*y;
+        elif operazione=4 then
+            result:= x/y;
+        else
+            write("ok");
+        fi;
+
+    write("Risultato di",x, " e ", y," :\n ",result);
+    ->
+corp;
+
 proc main () void:
     int operazione, tipo_num:=0;
     int x, y:=0;
@@ -55,43 +95,4 @@ proc main () void:
     od;
     ->
 
-corp;
-
-
-proc calcola_int (int x,  y, operazione) void:
-    int result:=0;
-    if operazione=1 then
-        result:= x+y;
-    elif operazione=2 then
-        result:= x-y;
-    elif operazione=3 then
-        result:= x*y;
-    elif operazione=4 then
-        result:= x/y;
-    else
-        write("ok");
-    fi;
-
-    write("Risultato di",x, " e ", y," :\n ",result);
-
-    ->
-corp;
-
-proc calcola_double (float x, y, operazione) void:
-    float result:=0.0;
-
-    if operazione=1 then
-            result:= x+y;
-        elif operazione=2 then
-            result:= x-y;
-        elif operazione=3 then
-            result:= x*y;
-        elif operazione=4 then
-            result:= x/y;
-        else
-            write("ok");
-        fi;
-
-    write("Risultato di",x, " e ", y," :\n ",result);
-    ->
 corp;

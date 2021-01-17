@@ -11,10 +11,10 @@ proc factorial(int n)int:
     else
 	result := n * factorial(n - 1);
     fi;
-    ->  result
+    -> result
 corp;
 
-proc main()void:
+proc main() void:
 
     while
 	    write("Enter n, or >= 10 to exit: ");

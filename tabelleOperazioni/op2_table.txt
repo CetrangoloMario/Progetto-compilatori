@@ -50,3 +50,4 @@ plusOp;float;int;float
 minusOp;float;int;float
 timesOp;float;int;float
 divOp;float;int;float
+eqOp;bool;bool;bool
