@@ -20,7 +20,7 @@ public class SemanticVisitor implements Visitor{
 
     public SemanticVisitor (){
         optype= new OpType();
-        typeEnvironment=new TypeEnvironment();
+        typeEnvironment= new TypeEnvironment();
     }
 
     @Override
@@ -254,7 +254,7 @@ public class SemanticVisitor implements Visitor{
         if(n.getExpression() != null){
             Object x= n.getExpression().accept(this);
 
-            if (x.getClass().getSimpleName().equalsIgnoreCase("ArrayList")){
+            if (x.getClass().getSimpleName().equals("ArrayList")){
                 ArrayList<String> tipoLista= (ArrayList<String>) x;
                 for (String tipo: tipoLista){
                     expTipoList.add(tipo);
@@ -277,7 +277,7 @@ public class SemanticVisitor implements Visitor{
             for(ExpressionOP e : n.getExpressionList()){
                 Object x= e.accept(this);
 
-                if(x.getClass().getSimpleName().equalsIgnoreCase("ArrayList")){
+                if(x.getClass().getSimpleName().equals("ArrayList")){
                     ArrayList<String> tipoLista= (ArrayList<String>) x;
 
                     for( String tipo: tipoLista){
@@ -289,14 +289,18 @@ public class SemanticVisitor implements Visitor{
             }
         }
 
+        if ( expTipoList.size()!= idTipoList.size()){
+            System.err.println("AssignOP 1: Errore Assegnamento");
+            System.exit(1);
+        }
+
+
         //deco controllare che abbiano lo stesso tipo i contenuti nella stessa posizione dell'array
         for ( int i=0; i < expTipoList.size(); i++ ){
-
            // System.out.println("\n  Controllo AssignOP "+ expTipoList.get(i)+ " \n" +
               //      " "+idTipoList.get(i)+"\nfine\n ");
-
             if (!expTipoList.get(i).equalsIgnoreCase(idTipoList.get(i))){
-                System.err.println("AssignOp: errore assegnamento controllo dei tipi idList e expList");
+                System.err.println("AssignOp 2: errore assegnamento controllo dei tipi idList e expList");
                 System.exit(1);
             }
         }
@@ -310,6 +314,7 @@ public class SemanticVisitor implements Visitor{
         for( StatOP s: n.getStatList()){
             s.accept(this);
         }
+        //System.out.println("BodyOP true");
         return true;
     }
 
@@ -331,38 +336,47 @@ public class SemanticVisitor implements Visitor{
         }
         while (returnTipoList.remove("")){
 
+
         }
 
         int size=paramTipoList.size();
 
-        ArrayList<String> paramOpList= (ArrayList<String>) n.getParamOP().accept(this);
+        ArrayList<ExpressionOP> paramOpLista= (ArrayList<ExpressionOP>) n.getParamOP().accept(this);
 
-        //se non ho parametri
-        if (size==0 && paramOpList == null)
-            return returnTipoList;
-        else if (paramOpList == null && size !=0){
-            System.err.println("\nErrore 1 CallProc: Funzione si aspetta "+size+" parametri, ne sono stati passati 0\n");
+        if (paramOpLista != null){
+
+            for (ExpressionOP exp: paramOpLista ){
+
+                Object x= exp.accept(this);
+
+                if (x.getClass().getSimpleName().equals("ArrayList")) {
+
+                    ArrayList<String> tipoLista=(ArrayList<String>) x;
+
+                    for (String tipo: tipoLista){
+                        expList.add(tipo);
+                    }
+                }else {
+                    expList.add((String) x);
+                }
+            }
+        } else {
+            System.err.println("CallProc: Errore 1 la funzione si aspett "+ size +" parametri, passati 0");
             System.exit(1);
         }
 
-        //altri casi si poteva mettere questo al posto else if sopra
-        if (size!=paramOpList.size()){
-            System.out.println("Funz call: \n"+n.getId().getValue()+
-                    ""+paramTipoList+"\n"+paramOpList);
-            System.err.println("\nErrore 2 CallProc: Funzione si aspetta "+size+" parametri, ne sono stati passati "+paramOpList.size()+"\n");
+        if (size!= expList.size()){
+            System.err.println("CallProc: Errore 2 il numero parametri non combacia");
             System.exit(1);
         }
 
-        for (int i=0; i<paramOpList.size(); i++){
-            if (! paramOpList.get(i).equalsIgnoreCase(paramTipoList.get(i))){
-                System.out.println("Funz call: \n"+n.getId().getValue()+
-                        ""+paramTipoList+"\n"+paramOpList);
+        for (int i=0; i<expList.size(); i++){
 
-                System.err.println("\n Errore 3 CallProc: tipi diversi "+paramOpList.get(i)+"\n"+paramTipoList+"\n");
+            if (! expList.get(i).equals(paramTipoList.get(i))){
+                System.err.println("Callproc: Errore 3 passaggio parametri non combacia tipo");
                 System.exit(1);
             }
         }
-
 
         return returnTipoList;
     }
@@ -503,6 +517,7 @@ public class SemanticVisitor implements Visitor{
             }
         }
 
+
         typeEnvironment.exitScope();
         return true;
     }
@@ -548,6 +563,10 @@ public class SemanticVisitor implements Visitor{
             System.err.println("Il main non esiste");
             System.exit(1);
         }
+        if (!i.getCostrutto().equals("proc")){
+            System.err.println("Il main non esiste");
+            System.exit(1);
+        }
 
         typeEnvironment.exitScope();
         return true;
@@ -557,12 +576,18 @@ public class SemanticVisitor implements Visitor{
     public Object visit(ReadlnOP n) {
 
         for (Constant c: n.getIdList()){
-            Item i = typeEnvironment.lookup(c.getValue());
 
-            if (! i.getCostrutto().equalsIgnoreCase("proc"))
-                c.accept(this);
-            else{
-                System.err.println(" Non è possibile inserire una funzione in un'operazione di READ");
+            if (c.getName().equals("ID")){
+
+                Item i= typeEnvironment.lookup(c.getValue());
+                if (!i.getCostrutto().equals("proc"))
+                    c.accept(this);
+                else {
+                    System.err.println("Non è possibile inserire una funzione in un'operazione di READ");
+                    System.exit(1);
+                }
+            }else {
+                System.err.println("è consentito l'inserimento soltanto di ID in un'operazione di READ");
                 System.exit(1);
             }
         }
@@ -593,7 +618,7 @@ public class SemanticVisitor implements Visitor{
             for (ExpressionOP exp: n.getExprList()){
 
                 Object x= exp.accept(this);
-                if (x.getClass().getSimpleName().equalsIgnoreCase("ArrayList")){
+                if (x.getClass().getSimpleName().equals("ArrayList")){
                     ArrayList<String> tipoLista= (ArrayList<String>) x;
 
                     for (String tipo: tipoLista){
@@ -619,6 +644,7 @@ public class SemanticVisitor implements Visitor{
         }
 
         if (n.getWhileStatOp() != null) {
+            //System.out.println(n.getWhileStatOp().toString());
             return n.getWhileStatOp().accept(this);
         }
 
@@ -638,7 +664,7 @@ public class SemanticVisitor implements Visitor{
             return n.getCallProcOp().accept(this);
         }
 
-        return null;
+        return true;
     }
 
     @Override
@@ -676,16 +702,21 @@ public class SemanticVisitor implements Visitor{
 
         if (n.getBodyOp1()!=null){
             n.getBodyOp1().accept(this);
+            //System.out.println(n.getBodyOp1().getStatList().toString());
         }
 
         String expTipo= checkExpression("while", n.getExpressionOp().accept(this));
-
-        if (! expTipo.equalsIgnoreCase("bool")){
+        System.out.println(expTipo);
+        System.out.println(n.getExpressionOp().toString());
+        if (! expTipo.equals("bool")){
             System.err.println("while: Errore di tipo dell'espressione");
             System.exit(1);
         }
 
-        n.getBodyOp2().accept(this);
+        if (n.getBodyOp2() != null) {
+            n.getBodyOp2().accept(this);
+            //System.out.println(n.getBodyOp2().getStatList());
+        }
         return true;
     }
 
@@ -702,13 +733,15 @@ public class SemanticVisitor implements Visitor{
     @Override
     public Object visit(ParamOP n) {
 
+        /*
+
         ArrayList<String> paramOpList= new ArrayList<>();
 
         if(n.getExpressionList() != null){
             for (ExpressionOP exp : n.getExpressionList()){
                 Object x = exp.accept(this);
 
-                if (x.getClass().getSimpleName().equalsIgnoreCase("ArrayList")){
+                if (x.getClass().getSimpleName().equals("ArrayList")){
                     ArrayList<String> tipoLista= (ArrayList<String>) x;
                     for (String tipo: tipoLista){
                         paramOpList.add(tipo);
@@ -717,10 +750,14 @@ public class SemanticVisitor implements Visitor{
                     paramOpList.add((String) x);
                 }
             }
-        } //else
-           // return null;
+        } else{
+            System.out.println("ParamOP restituisce null");
+            return null;
+        }*/
 
-        return paramOpList;
+        //System.out.println(n.getExpressionList());
+
+        return n.getExpressionList();
     }
 
 
@@ -735,7 +772,7 @@ public class SemanticVisitor implements Visitor{
     private String checkExpression(String name, Object o){
         String t="";
 
-        if(o.getClass().getSimpleName().equalsIgnoreCase("ArrayList")) {
+        if(o.getClass().getSimpleName().equals("ArrayList")) {
             ArrayList<String> e = (ArrayList<String>) o;
 
             if (e.size() != 1) {

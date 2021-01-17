@@ -5,10 +5,13 @@
 string nome := "Michele";
 
 proc writeNewLines(int n)void :
-	while n >0 do
-		write("\n");
-		n := n -1;
-	od;
+
+	while
+	    n>0
+	do
+    	write("\n");
+    	n := n-1;
+  	od;
 	->
 corp;
 
@@ -24,16 +27,11 @@ proc multAddDiff ()int, int, int :
 
 corp;
 
-
-
-
-proc main()void :
+proc main() void :
 	int a, b, c:=0;
 	a, b, c := multAddDiff();
-	write ("Ciao ", nome);
+	write("Ciao ", nome);
 	writeNewLines(2);
-	write("I tuoi valori sono:\n", a, " per la moltiplicazione\n", b, 
-		" per la somma, e \n", c, " per la differenza");
-
+	write("I tuoi valori sono:\n", a, " per la moltiplicazione\n", b," per la somma, e \n", c, " per la differenza");
     ->
 corp;
