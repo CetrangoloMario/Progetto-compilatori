@@ -340,11 +340,11 @@ public class SemanticVisitor implements Visitor{
         }
 
         int size=paramTipoList.size();
-
-        ArrayList<ExpressionOP> paramOpLista= (ArrayList<ExpressionOP>) n.getParamOP().accept(this);
-
-        if (paramOpLista != null){
-
+//blocccoioooo porca
+        System.out.println("1");
+        if (n.getParamOP().getExpressionList() != null){
+            System.out.println("2");
+            ArrayList<ExpressionOP> paramOpLista= (ArrayList<ExpressionOP>) n.getParamOP().accept(this);
             for (ExpressionOP exp: paramOpLista ){
 
                 Object x= exp.accept(this);
