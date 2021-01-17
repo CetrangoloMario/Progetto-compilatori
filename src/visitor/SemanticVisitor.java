@@ -465,8 +465,8 @@ public class SemanticVisitor implements Visitor{
 
         ArrayList<String> resultExprLista= (ArrayList<String>) n.getProcBody().accept(this);
 
-        //System.out.println(n.getResultTypeList());
-        //System.out.println(resultExprLista);
+        System.out.println(n.getResultTypeList());
+        System.out.println(resultExprLista);
 
         if (n.getResultTypeList().size()!= resultExprLista.size()){
             System.err.println("Proc err 1: errore tipi di ritorno della funzione, diversi numero");

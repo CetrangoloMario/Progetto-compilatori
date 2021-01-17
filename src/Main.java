@@ -35,7 +35,7 @@ main esercitazione 4
 
             XMLVisitor visitorXML = new XMLVisitor();
             //metodo da realizzare ancora
-            // TypeEnvironment typeEnv= visitor.execute(program);
+             TypeEnvironment typeEnv= visitor.executeVisit(program);
         } catch (Exception e) {
             e.printStackTrace();
         }
