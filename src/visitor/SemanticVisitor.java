@@ -331,19 +331,29 @@ public class SemanticVisitor implements Visitor{
 
         ArrayList<String> expList= new ArrayList<>();
 
+        //if (!paramTipoList.isEmpty())
         while( paramTipoList.remove("")){
-
         }
+
+        //if (!returnTipoList.isEmpty())
         while (returnTipoList.remove("")){
-
-
         }
 
+        /*
+        if (paramTipoList.isEmpty() && n.getParamOP().accept(this)== null) {
+            System.out.println("aiaiai");
+            return returnTipoList;
+        }*/
         int size=paramTipoList.size();
-//blocccoioooo porca
-        System.out.println("1");
+        if (n.getParamOP()==null) return  returnTipoList;
+
+        if (size==0 && n.getParamOP().getExpressionList()== null)
+            return returnTipoList;
+
+
+        //System.out.println("1");
         if (n.getParamOP().getExpressionList() != null){
-            System.out.println("2");
+
             ArrayList<ExpressionOP> paramOpLista= (ArrayList<ExpressionOP>) n.getParamOP().accept(this);
             for (ExpressionOP exp: paramOpLista ){
 
@@ -369,6 +379,8 @@ public class SemanticVisitor implements Visitor{
             System.err.println("CallProc: Errore 2 il numero parametri non combacia");
             System.exit(1);
         }
+
+
 
         for (int i=0; i<expList.size(); i++){
 
@@ -754,8 +766,32 @@ public class SemanticVisitor implements Visitor{
             System.out.println("ParamOP restituisce null");
             return null;
         }*/
-
         //System.out.println(n.getExpressionList());
+
+       /* ArrayList<String> listaRitorno;
+        if (n.getExpressionList()!=null){
+
+            for (ExpressionOP exp: n.getExpressionList()){
+
+                Object x= exp.accept(this);
+
+                if (x.getClass().getSimpleName().equals("ArrayList")){
+
+                    ArrayList<String> tipoLista=(ArrayList<String>) x;
+
+                    for (String tipo:tipoLista){
+                        listaRitorno.add()
+                    }
+                }
+
+
+            }
+            }
+
+            */
+
+
+
 
         return n.getExpressionList();
     }

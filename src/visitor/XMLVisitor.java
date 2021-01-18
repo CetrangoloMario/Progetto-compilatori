@@ -254,9 +254,11 @@ public class XMLVisitor implements Visitor {
     public Object visit(ParamOP n){
         Element node = document.createElement(n.getClass().getSimpleName());
 
-        for (ExpressionOP ex : n.getExpressionList()) {
+        if (n.getExpressionList()!=null) {
+            for (ExpressionOP ex : n.getExpressionList()) {
 
-            node.appendChild((Node) ex.accept(this));
+                node.appendChild((Node) ex.accept(this));
+            }
         }
 
         return node;
