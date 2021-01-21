@@ -48,3 +48,31 @@ CallProc ::= ID:e1 LPAR ExprList:list RPAR {:RESULT = new CallProcOP(new Constan
 	| ID:e1 LPAR RPAR {:RESULT = new CallProcOP(new Constant("ID",e1)); :};
 
 
+
+# OPERAZIONI
+
+## OPTYPE1
+
+| OP1 | OPERAND | RESULT |
+|:---:|:---:|:---:|
+| ! | BOOLEAN | BOOLEAN |
+| - | FLOAT | FLOAT |
+| - | INT| INT |
+
+## OPTYPE2
+
+|OP2|FIRST OPERAND|SECOND OPERAND|RESULT|
+|:---:|:---:|:---:|:---:|
+| < == > <= >= <> | BOOLEAN | BOOLEAN | BOOLEAN|
+| < == > <= >= <> | INT | INT | BOOLEAN|
+| < == > <= >= <> | FLOAT | FLOAT | BOOLEAN|
+| < == > <= >= <> | FLOAT | INT | BOOLEAN|
+| < == > <= >= <> | INT | FLOAT | BOOLEAN|
+| < == > <= >= <> | STRING | STRING | BOOLEAN|
+| AND OR | BOOLEAN | BOOLEAN | BOOLEAN|
+| + - * / | INT | INT| INT|
+| + - * / | FLOAT | FLOAT | FLOAT|
+| + - * / | INT | FLOAT| FLOAT |
+| + - * / | FLOAT | INT| FLOAT |
+
+
