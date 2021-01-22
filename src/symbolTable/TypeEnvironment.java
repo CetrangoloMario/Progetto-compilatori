@@ -41,12 +41,13 @@ public class TypeEnvironment {
         index = typeEnvironment.size();
         typeEnvironment.add(newTable);
     }
-    /*
+
     public void enterScopeClang() {
         indexVisit++;
         index = indexVisit;
     }
-*/
+
+
     //Quando esco dallo scope devo ritornare alla tabella del padre.
     public void exitScope() {
         index = typeEnvironment.get(index).indicePadre;
