@@ -653,16 +653,16 @@ public class CToyVisitor implements Visitor{
         dontWrite = true;
         for (ExpressionOP e : n.getExpressionOpList()) {
             organizzaFile(", ");
-            String type = "";
+            String tipo = "";
             if (e.getClass().getSimpleName().equals("CallProcOp")) {
 
             }
             Object o = e.accept(this);
             if (o.getClass().getSimpleName().equals("ArrayList")) {
-                ArrayList<String> types = (ArrayList<String>) o;
-                for (int i = 0; i < types.size(); i++) {
+                ArrayList<String> tipoLista = (ArrayList<String>) o;
+                for (int i = 0; i < tipoLista.size(); i++) {
                     dontWrite = false;
-                    switch (types.get(i)) {
+                    switch (tipoLista.get(i)) {
                         case "bool":
                         case "int":
                             organizzaFile("%d");
@@ -678,9 +678,9 @@ public class CToyVisitor implements Visitor{
                     dontWrite = true;
                 }
             } else {
-                type = (String) o;
+                tipo = (String) o;
                 dontWrite = false;
-                switch (type) {
+                switch (tipo) {
                     case "bool":
                     case "int":
                         organizzaFile("%d");
@@ -704,6 +704,6 @@ public class CToyVisitor implements Visitor{
 
     @Override
     public Object visit(ParamOP n) {
-        return null;
+        return true;
     }
 }
