@@ -162,9 +162,9 @@ WriteStat ::=  WRITE LPAR ExprList:list RPAR {:RESULT = new WriteOP(list);:};
 AssignStat ::= IdList:idList ASSIGN  ExprList:eList {:RESULT = new AssignOP(idList,eList);:};
 
 CallProc ::= ID:e1 LPAR ExprList:list RPAR {:RESULT = new CallProcOP(new Constant("ID",e1),new ParamOP(list)); :}//modifica aggiunta paramOP
-	| ID:e1 LPAR RPAR {:RESULT = new CallProcOP(new Constant("ID",e1)); :};
+	| ID:e1 LPAR RPAR {:RESULT = new CallProcOP(new Constant("ID",e1)); :};//senza parametri
 
-Expr ::= NULL                   {:RESULT =  new Constant("NULL",null);:}
+Expr ::= NULL                   {:RESULT =  new Constant("NULL");:}
 	| TRUE                      {:RESULT =  new Constant("bool","true");:}
 	| FALSE                     {:RESULT =  new Constant("bool","false");:}
 	| INT_CONST:e               {:RESULT = new Constant("int",e);:}

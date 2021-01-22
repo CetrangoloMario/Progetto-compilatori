@@ -28,10 +28,16 @@ public class SemanticVisitor implements Visitor{
         return null;
     }
 
+    /**
+     * controllo se i due tipi sono compatibili
+     * @param n
+     * @return
+     */
     @Override
     public Object visit(PlusOP n) {
 
         String t1= checkExpression("plusOp", n.getLeft().accept(this));
+        //System.out.println("t1"+t1);
         String t2= checkExpression("plusOp", n.getRight().accept(this));
 
         String resultType= optype.checkOpType2("plusOp", t1,t2);
@@ -43,6 +49,7 @@ public class SemanticVisitor implements Visitor{
 
     @Override
     public Object visit(MinusOP n) {
+
         String t1= checkExpression("minusOp", n.getLeft().accept(this));
         String t2= checkExpression("minusOp", n.getRight().accept(this));
 
@@ -223,16 +230,17 @@ public class SemanticVisitor implements Visitor{
             Item i = typeEnvironment.lookup( n.getValue());
 
             if(i==null) {
-                System.err.println(n.getValue() + " ID non trovato");
+                System.err.println(n.getValue() + ": ID non trovato");
                 System.exit(1);
             }
 
             if(i.getCostrutto()=="proc"){
                 String sign= i.getTipo();
+                //System.out.println("sign proc:" +sign);
                 String [] val= sign.split("->");
                 String [] vals= val[1].trim().split(" ");
 
-                return i.getTipo();
+                return i.getTipo();//mi serve nella callproc
             }
 
             return i.getTipo();
@@ -249,7 +257,6 @@ public class SemanticVisitor implements Visitor{
         if(n.getId() != null){
             idTipoList.add((String) n.getId().accept(this));
         }
-
 
         if(n.getExpression() != null){
             Object x= n.getExpression().accept(this);
@@ -320,9 +327,9 @@ public class SemanticVisitor implements Visitor{
 
     @Override
     public Object visit(CallProcOP n) {
-
-        String sign= (String) n.getId().accept(this);
-        String[] param= sign.split("->");
+    //prendo i parametri e val ritorno
+        String sign= (String) n.getId().accept(this);//mi restituisce il campo dell'item  Vedi visit per Constant
+        String[] param= sign.split("->");//contiene in pos 0 parametri e pos 1 valori ritorno
         String[] paramTemp= param[0].trim().split(" ");
         String[] returnTemp= param[1].trim().split(" ");
 
@@ -334,17 +341,17 @@ public class SemanticVisitor implements Visitor{
         //if (!paramTipoList.isEmpty())
         while( paramTipoList.remove("")){
         }
-
         //if (!returnTipoList.isEmpty())
         while (returnTipoList.remove("")){
         }
-
         /*
         if (paramTipoList.isEmpty() && n.getParamOP().accept(this)== null) {
             System.out.println("aiaiai");
             return returnTipoList;
         }*/
+
         int size=paramTipoList.size();
+        //se non ho ParamOP è vuota
         if (n.getParamOP()==null) return  returnTipoList;
 
         if (size==0 && n.getParamOP().getExpressionList()== null)
@@ -380,8 +387,7 @@ public class SemanticVisitor implements Visitor{
             System.exit(1);
         }
 
-
-
+        //controllo i vari tipi se combaciano
         for (int i=0; i<expList.size(); i++){
 
             if (! expList.get(i).equals(paramTipoList.get(i))){
@@ -397,6 +403,7 @@ public class SemanticVisitor implements Visitor{
     public Object visit(ElifOP n) {
 
         String exptipo= (String) n.getExpr().accept(this);
+
         if (!exptipo.equalsIgnoreCase("bool")){
             System.err.println("Elif: missmatch dell'espressione non è boolean");
             System.exit(1);
@@ -434,7 +441,7 @@ public class SemanticVisitor implements Visitor{
         String expTipo= (String) n.getExpr().accept(this);
 
         if(!expTipo.equalsIgnoreCase("bool")){
-            System.err.println("If: missmatch espressione");
+            System.err.println("If: missmatch espressione non è booleano");
             System.exit(1);
         }
 
@@ -496,6 +503,7 @@ public class SemanticVisitor implements Visitor{
             rt.accept(this);
         }
 
+        //controllo se ritorna void deve avere solo 1 tipo di ritorno
         if (n.getResultTypeList().contains("void") && n.getResultTypeList().size() != 1){
             System.err.println("ProcOP: La funzione non può avere altri tipi se contiene void come valore di ritorno ");
             System.exit(1);
@@ -504,23 +512,25 @@ public class SemanticVisitor implements Visitor{
         ArrayList<String> resultExprLista= (ArrayList<String>) n.getProcBody().accept(this);
 
         System.out.println("Funzione: "+ n.getIdOp().getValue());
-        System.out.println(n.getResultTypeList());
+        System.out.println( n.getResultTypeList());
         System.out.println(resultExprLista);
 
+        //controllo che il numero di valori di ritorno si trova con quelli restituiti dalla proc
         if (n.getResultTypeList().size()!= resultExprLista.size()){
             System.err.println("Proc err 1: errore tipi di ritorno della funzione, diversi numero");
             System.exit(1);
         }
 
         for (int i=0; i<n.getResultTypeList().size(); i++){
-
+            //se non è null
             if (n.getResultTypeList().get(i).getType() != null){
-
+                //Controllo i tipi se combaciano
                 if (! n.getResultTypeList().get(i).getType().getType().equalsIgnoreCase(resultExprLista.get(i))){
                     System.err.println("Proc err 2: errore tipi di ritorno della funzione non combaciano");
                     System.exit(1);
                 }
-            } else {
+            } else {//se void
+                //devo controllare quando void
                 if (!n.getResultTypeList().get(i).getVoidOp().getName().equalsIgnoreCase(resultExprLista.get(i))){
                     System.out.println("\n"+n.getResultTypeList().get(i).getVoidOp().getName()+"\n"+resultExprLista.get(i)+"\n\n");
                     System.err.println("Proc err 3: errore due tipi di ritorno della funzione");
@@ -528,7 +538,6 @@ public class SemanticVisitor implements Visitor{
                 }
             }
         }
-
 
         typeEnvironment.exitScope();
         return true;
@@ -559,7 +568,7 @@ public class SemanticVisitor implements Visitor{
             if (p.getResultTypeList() != null){
                 for (ResultTypeOP param: p.getResultTypeList()) {
                     if (param.getType() == null) {
-                        resultString += "void";
+                        resultString += "void";//nota
                         break;
                     }
                     resultString+= param.getType().getType() + " ";
@@ -576,7 +585,7 @@ public class SemanticVisitor implements Visitor{
             System.exit(1);
         }
         if (!i.getCostrutto().equals("proc")){
-            System.err.println("Il main non esiste");
+            System.err.println("Il main non esiste come proc");
             System.exit(1);
         }
 
@@ -693,11 +702,11 @@ public class SemanticVisitor implements Visitor{
 
             if (x.getId() != null){
                 typeEnvironment.addId(x.getId().getValue(), new Item(x.getId().getValue(), tipo, "var"));
-            }
+            }//se assegnamento
             else if (x.getAssignament() != null){
                 if (x.getAssignament().getId() != null){
                     typeEnvironment.addId(x.getAssignament().getId().getValue(), new Item(x.getAssignament().getId().getValue(), tipo, "var"));
-                }
+                }//lista
                 else if (x.getAssignament().getIdList() != null){
                     for (Constant id: x.getAssignament().getIdList()){
                         typeEnvironment.addId(id.getValue(), new Item(id.getValue(), tipo, "var"));
@@ -717,9 +726,10 @@ public class SemanticVisitor implements Visitor{
             //System.out.println(n.getBodyOp1().getStatList().toString());
         }
 
+        //controllo che espressione dia solo un valore bool
         String expTipo= checkExpression("while", n.getExpressionOp().accept(this));
-        System.out.println(expTipo);
-        System.out.println(n.getExpressionOp().toString());
+        //System.out.println(expTipo);
+        //System.out.println(n.getExpressionOp().toString());
         if (! expTipo.equals("bool")){
             System.err.println("while: Errore di tipo dell'espressione");
             System.exit(1);
@@ -789,10 +799,6 @@ public class SemanticVisitor implements Visitor{
             }
 
             */
-
-
-
-
         return n.getExpressionList();
     }
 
@@ -807,7 +813,7 @@ public class SemanticVisitor implements Visitor{
      */
     private String checkExpression(String name, Object o){
         String t="";
-
+        //se oggetto è un arratylist, lo converte array di stringhe e controlla sia un solo elemento e lo restituisce
         if(o.getClass().getSimpleName().equals("ArrayList")) {
             ArrayList<String> e = (ArrayList<String>) o;
 
@@ -818,6 +824,7 @@ public class SemanticVisitor implements Visitor{
                 t = e.get(0);
             }
         }
+        // altrimenti se non nè un arraylist prende oggetto e lo restituisce
         else {
             t= (String) o;
         }

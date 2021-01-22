@@ -244,7 +244,6 @@ public class CToyVisitor implements Visitor{
                 n.getIdList().get(i).accept(this);
                 organizzaFile(" = ");
                 n.getExpressionList().get(i).accept(this);
-
             }
         } else if (n.getId() !=null && n.getExpression() != null){
             n.getId().accept(this);
@@ -705,5 +704,11 @@ public class CToyVisitor implements Visitor{
     @Override
     public Object visit(ParamOP n) {
         return true;
+    }
+
+    public void executeVisit(ProgramOP root, TypeEnvironment typeEnvironment){
+        this.typeEnvironment=typeEnvironment;
+        typeEnvironment.setIndex(0);
+        root.accept(this);
     }
 }

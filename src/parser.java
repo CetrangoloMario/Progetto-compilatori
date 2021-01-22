@@ -1209,7 +1209,7 @@ class CUP$parser$actions {
           case 53: // Expr ::= NULL 
             {
               ExpressionOP RESULT =null;
-		RESULT =  new Constant("NULL",null);
+		RESULT =  new Constant("NULL");
               CUP$parser$result = parser.getSymbolFactory().newSymbol("Expr",9, ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
           return CUP$parser$result;

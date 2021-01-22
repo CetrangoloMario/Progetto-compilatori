@@ -1,5 +1,6 @@
 import nodes.nonterminals.ProgramOP;
 import symbolTable.TypeEnvironment;
+import visitor.CToyVisitor;
 import visitor.SemanticVisitor;
 import visitor.XMLVisitor;
 
@@ -37,12 +38,14 @@ public class Main {
         try {
             ProgramOP program = (ProgramOP) p.parse().value;
             SemanticVisitor visitorSemantico = new SemanticVisitor();
+            CToyVisitor visitorC= new CToyVisitor("CToyVisitor");
 
             XMLVisitor visitorXML = new XMLVisitor();
             visitorXML.executeVisit(program,"C:/Users/cetra/Desktop/Cetrangolo_es5_scg/src/AST.xml");
-
             //metodo da realizzare ancora
              TypeEnvironment typeEnv= visitorSemantico.executeVisit(program);
+             visitorC.executeVisit(program,typeEnv);
+
         } catch (Exception e) {
             e.printStackTrace();
         }
