@@ -54,7 +54,7 @@ CallProc ::= ID:e1 LPAR ExprList:list RPAR {:RESULT = new CallProcOP(new Constan
 ## OPTYPE1
 
 | OP1 | OPERAND | RESULT |
-|:---:|:---:|:---:|
+
 | ! | BOOLEAN | BOOLEAN |
 | - | FLOAT | FLOAT |
 | - | INT| INT |
@@ -62,7 +62,7 @@ CallProc ::= ID:e1 LPAR ExprList:list RPAR {:RESULT = new CallProcOP(new Constan
 ## OPTYPE2
 
 |OP2|FIRST OPERAND|SECOND OPERAND|RESULT|
-|:---:|:---:|:---:|:---:|
+
 | < == > <= >= <> | BOOLEAN | BOOLEAN | BOOLEAN|
 | < == > <= >= <> | INT | INT | BOOLEAN|
 | < == > <= >= <> | FLOAT | FLOAT | BOOLEAN|
