@@ -1,6 +1,8 @@
  int n := 0;
+ int i := 5;
+ int j:= 3;
 
  proc main() void:
-
+        n:=i+j;
     ->
  corp;

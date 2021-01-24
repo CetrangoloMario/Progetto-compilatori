@@ -83,8 +83,7 @@ precedence right UMINUS;// era in dubbio verificare, molti mettono associativit√
 
 Program ::= VarDeclList:vl ProcList:pl {: RESULT = new ProgramOP(vl, pl) ;:};
 
-VarDeclList ::= VarDecl:e VarDeclList:list {:((ArrayList<VarDeclOP>)list).add(e);
-                                            RESULT = list;:}
+VarDeclList ::= VarDeclList:list VarDecl:e  {:((ArrayList<VarDeclOP>)list).add(e); RESULT = list;:} //invertito la lista
 	|  /* empty */ {:RESULT = new ArrayList<VarDeclOP>();:};//null
 
 ProcList ::= Proc:e {:ArrayList<ProcOP> list = new ArrayList<ProcOP>(); list.add(e); RESULT = list;:}//NON TENGO LA LISTA, A CHI AGGIUNGO PROC??? TODO

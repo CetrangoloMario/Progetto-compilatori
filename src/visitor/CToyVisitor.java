@@ -18,8 +18,8 @@ public class CToyVisitor implements Visitor{
     private String nomeFile;
     private FileWriter fw;
     /*per printf e scanf*/
-    private Boolean dontWrite;
-    private String tempToWrite;
+    private Boolean dontWrite;//serve per bloccare la scrittura funz nelle read write
+    private String tempToWrite;// mantiene temporaneamente prima di scrivere
 
     /*per dichiarare i puntatori*/
     private String header_file;
@@ -30,7 +30,7 @@ public class CToyVisitor implements Visitor{
     private OpType optype;
     TypeEnvironment typeEnvironment;
 
-    public CToyVisitor(String nomeFile){
+    public CToyVisitor(String nomeFile){//inizializza e crea il file
 
         optype= new OpType();
         tempToWrite="";
@@ -50,6 +50,7 @@ public class CToyVisitor implements Visitor{
 
     }
 
+    //serve per concatenare il testo
     private void organizzaFile (String str){
         if (dontWrite){
             tempToWrite+= str;
@@ -58,6 +59,7 @@ public class CToyVisitor implements Visitor{
         }
     }
 
+    //scrive
     public void scriviFile(){
         try{
             String str= header_file + toWrite;
@@ -76,11 +78,14 @@ public class CToyVisitor implements Visitor{
         return null;
     }
 
+    //
     @Override
     public Object visit(PlusOP n) {
         String t1= (String) n.getLeft().accept(this);
+        //System.out.println(t1); restituisce il tipo
         organizzaFile(" + ");
         String t2= (String) n.getRight().accept(this);
+        //System.out.println(t2);
 
         return optype.checkOpType2("plusOp", t1, t2);
     }
@@ -221,15 +226,19 @@ public class CToyVisitor implements Visitor{
 
             if (n.getName().equals("string")) {
                 organizzaFile("\"" + n.getValue() + "\"");
+
             } else if (n.getName().equals("ID")){
+
                 Item i = typeEnvironment.lookup(n.getValue());
                 organizzaFile(""+ n.getValue()+ "");
+
                 return i.getTipo();
-            } else {
+            } else {//se non è una stringa e id
                 organizzaFile(n.getValue());
             }
-        } else {
-            if (!n.getName().equals("void")){
+        } else {//Constant NULL
+            if (!n.getName().equalsIgnoreCase("void")){
+                //System.out.println("se non è void"+n.getName());
                 organizzaFile(n.getName());
             }
         }
@@ -240,15 +249,19 @@ public class CToyVisitor implements Visitor{
     public Object visit(AssignOP n) {
 
         if (n.getIdList()!= null && n.getExpressionList() != null){
+
             for (int i= 0; i<n.getIdList().size(); i++){
+
                 n.getIdList().get(i).accept(this);
                 organizzaFile(" = ");
                 n.getExpressionList().get(i).accept(this);
             }
         } else if (n.getId() !=null && n.getExpression() != null){
+
             n.getId().accept(this);
             organizzaFile(" = ");
             n.getExpression().accept(this);
+
         }
 
         return true;
@@ -477,7 +490,7 @@ public class CToyVisitor implements Visitor{
 
         header_file = "#include <stdio.h>\n";
         header_file += "#include <stdbool.h>\n";
-        header_file += "#include <string.h>\n";
+        header_file += "#include <string.h>\n\n";
 
         for (VarDeclOP vdl: n.getVarDecList()){
             vdl.accept(this);
