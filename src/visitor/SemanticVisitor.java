@@ -336,6 +336,9 @@ public class SemanticVisitor implements Visitor{
         ArrayList<String> paramTipoList= new ArrayList<>(Arrays.asList(paramTemp));
         ArrayList<String> returnTipoList= new ArrayList<>(Arrays.asList(returnTemp));
 
+       // paramTipoList.remove(paramTipoList.size()-1);
+        //returnTipoList.remove(returnTipoList.size()-1);
+
         ArrayList<String> expList= new ArrayList<>();
 
         //if (!paramTipoList.isEmpty())

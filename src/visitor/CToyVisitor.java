@@ -280,25 +280,35 @@ public class CToyVisitor implements Visitor{
 
         Item func= typeEnvironment.lookup(n.getId().getValue());
         String sign= func.getTipo();
+
         String [] param= sign.split("->");
         String [] returnTemp= param[1].trim().split(" ");
 
+
+/*        System.out.println("param Temp");
+        for (String x : param){
+            System.out.println(x);
+        }*/
         ArrayList<String> returnTipoLista= new ArrayList<>(Arrays.asList(returnTemp));
+
+        if (returnTipoLista.get(returnTipoLista.size()-1).equalsIgnoreCase("void"))
+            returnTipoLista.remove(returnTipoLista.size()-1);
 
         while (returnTipoLista.remove("")){
         }
 
         for ( int i=0; i<returnTipoLista.size(); i++){
+
             String parametri= returnTipoLista.get(i)+" "+ returnTipoLista.get(i)+"_ret"+i+";\n";
 
             int j=i;
-            while (typeEnvironment.lookup(returnTipoLista.get(i)+ "_ret"+ i)!=null){
+            while (typeEnvironment.lookup(returnTipoLista.get(i)+ "_ret"+ j)!=null){
                 j++;
             }
 
-            typeEnvironment.addId(returnTipoLista.get(i) + "_ret"+i, new Item(returnTipoLista.get(i)+"_ret"+ i, returnTipoLista.get(i), "var"));
+            typeEnvironment.addId(returnTipoLista.get(i) + "_ret"+j, new Item(returnTipoLista.get(i)+"_ret"+ j, returnTipoLista.get(i), "var"));
 
-            organizzaFile(returnTipoLista.get(i)+ " "+ returnTipoLista.get(i)+"_ret"+ i+":\n");
+            organizzaFile(returnTipoLista.get(i)+ " "+ returnTipoLista.get(i)+"_ret"+ j+";\n");
         }
 
         n.getId().accept(this);
@@ -445,7 +455,7 @@ public class CToyVisitor implements Visitor{
         organizzaFile("\n void ");
         n.getIdOp().accept(this);
 
-        organizzaFile(" (");
+        organizzaFile(" ( ");
         if (n.getParDeclList() != null){
 
             for (int i=0; i<n.getParDeclList().size(); i++){
@@ -459,12 +469,14 @@ public class CToyVisitor implements Visitor{
         for (int i=0; i<n.getResultTypeList().size(); i++){
 
             if (n.getParDeclList() != null && i==0){
-                if (n.getParDeclList().size()>0){
+                if (i!= n.getParDeclList().size()-1){
                     organizzaFile(", ");
                 }
             }
 
+            //System.out.println(n.getResultTypeList().get(i).accept(this));
             n.getResultTypeList().get(i).accept(this);
+
 
             if (n.getResultTypeList().get(i).getVoidOp() == null){
                 if (i!= n.getResultTypeList().size()-1){

@@ -54,6 +54,7 @@ public class TypeEnvironment {
     }
 
     public void addId(String id, Item item) {
+        //se già presente
         if (probe(id)) {
             System.err.println("Errore di dichiarazione multipla");
             System.exit(1);
@@ -62,7 +63,11 @@ public class TypeEnvironment {
         table.addItem(id, item);
     }
 
-
+    /**
+     * restituisce true se contiene id
+     * @param id
+     * @return boolean
+     */
     public boolean probe(String id) {
         return typeEnvironment.get(index).getElementi().containsKey(id);
     }
