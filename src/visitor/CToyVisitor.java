@@ -250,12 +250,41 @@ public class CToyVisitor implements Visitor{
 
         if (n.getIdList()!= null && n.getExpressionList() != null){
 
-            for (int i= 0; i<n.getIdList().size(); i++){
+            if (n.getIdList().size()==n.getExpressionList().size()){
+                for (int i= 0; i<n.getIdList().size(); i++){
 
-                n.getIdList().get(i).accept(this);
-                organizzaFile(" = ");
-                n.getExpressionList().get(i).accept(this);
+                    organizzaFile("\t");
+                    n.getIdList().get(i).accept(this);
+              //System.out.println("idList "+n.getIdList().get(i).getName()+" "+n.getIdList().get(i).getValue());
+                    organizzaFile(" = ");
+                    n.getExpressionList().get(i).accept(this);
+
+                    if (i!=n.getIdList().size()-1)
+                        organizzaFile(";\n");
+
+                }
             }
+           else{
+                //Caso a,b,c:=0;
+                int idlistsize=n.getIdList().size();
+                int explistsize=n.getExpressionList().size();
+                int j=0;
+                for (int i=0; i<(idlistsize-explistsize); i++){
+                    n.getIdList().get(i);
+
+                    j=i;
+                }
+                for (int i=j; i<n.getIdList().size(); i++){
+                    int ind=0;
+                    n.getIdList().get(i).accept(this);
+                    //  System.out.println("idList "+n.getIdList().get(i).getName()+" "+n.getIdList().get(i).getValue());
+                    organizzaFile(" = ");
+                    n.getExpressionList().get(ind).accept(this);
+                    ind++;
+                }
+
+            }
+
         } else if (n.getId() !=null && n.getExpression() != null){
 
             n.getId().accept(this);
@@ -270,6 +299,7 @@ public class CToyVisitor implements Visitor{
     @Override
     public Object visit(BodyOP n) {
         for (StatOP st: n.getStatList()){
+            organizzaFile("\t");
             st.accept(this);
         }
         return true;
@@ -353,12 +383,12 @@ public class CToyVisitor implements Visitor{
     @Override
     public Object visit(ElifOP n) {
 
-        organizzaFile("else { if(");
+        organizzaFile("\n\telse { if(");
         n.getExpr().accept(this);
-        organizzaFile(") {");
+        organizzaFile(") {\n\t\t");
 
         n.getBody().accept(this);
-        organizzaFile(" }");
+        organizzaFile("\t }\n");
 
         return true;
     }
@@ -366,9 +396,9 @@ public class CToyVisitor implements Visitor{
     @Override
     public Object visit(ElseOP n) {
 
-        organizzaFile(" else {\n");
+        organizzaFile("\t else {\n\t\t");
         n.getBody().accept(this);
-        organizzaFile("\n}\n");
+        organizzaFile("\n\t}\n");
 
         return true;
     }
@@ -391,11 +421,12 @@ public class CToyVisitor implements Visitor{
     @Override
     public Object visit(IfOP n) {
 
-        organizzaFile("if (");
+        organizzaFile("\n\tif (");
         n.getExpr().accept(this);
-        organizzaFile(") { \n");
+        organizzaFile(") { \n\t\t");
         n.getBody().accept(this);
-        organizzaFile("\n}\n");
+        organizzaFile("\n\t}\n");
+
 
         for (ElifOP el: n.getElifList()){
             el.accept(this);
@@ -404,8 +435,16 @@ public class CToyVisitor implements Visitor{
         if (n.getElseOp() != null)
             n.getElseOp().accept(this);
         //chiudere le parentesi elseif concatenati
-        for (int i=0; i<n.getElifList().size(); i++){
-            organizzaFile("\n}\n");
+        //for (int i=0; i<n.getElifList().size(); i++){
+          //  organizzaFile("\n}\n");
+        //}
+
+        for (int i=n.getElifList().size(); i>0; i--){
+            String str="";
+            for (int j=0; j<i; j++){
+                str+="\t";
+            }
+            organizzaFile("\n"+str+"}\n");
         }
 
         return true;
@@ -414,11 +453,10 @@ public class CToyVisitor implements Visitor{
 
     @Override
     public Object visit(ParDeclOP n) {
-
-        n.getType().accept(this);
-        organizzaFile(" ");
-
+//parametri all'interno della callproc
         for (int i=0; i<n.getIdList().size(); i++){
+            n.getType().accept(this);
+            organizzaFile(" ");
             n.getIdList().get(i).accept(this);
 
             //se abbiamo più variabili
@@ -452,7 +490,8 @@ public class CToyVisitor implements Visitor{
 
         typeEnvironment.enterScopeClang();
 
-        organizzaFile("\n void ");
+        organizzaFile("\n void ");//da cambiare
+
         n.getIdOp().accept(this);
 
         organizzaFile(" ( ");
@@ -478,11 +517,14 @@ public class CToyVisitor implements Visitor{
             n.getResultTypeList().get(i).accept(this);
 
 
+            //uso dei puntatori per passare il parametro per salvare risultato
             if (n.getResultTypeList().get(i).getVoidOp() == null){
                 if (i!= n.getResultTypeList().size()-1){
                     organizzaFile(" *"+ n.getResultTypeList().get(i).getType().getType() + "_par"+ i+ ", ");
+
                 } else {
                     organizzaFile(" *"+n.getResultTypeList().get(i).getType().getType()+ "_par"+ i);
+
                 }
             }
         }
@@ -490,7 +532,7 @@ public class CToyVisitor implements Visitor{
         organizzaFile(")");
         organizzaFile("{\n");
         n.getProcBody().accept(this);
-        organizzaFile("\n}\n");
+        organizzaFile("\n\t}\n");
 
         typeEnvironment.exitScope();
         return true;
@@ -512,6 +554,7 @@ public class CToyVisitor implements Visitor{
             proc.accept(this);
         }
 
+        //parametri per valoi di ritorno da inizializzare
         for (String param: tempReturnParam){
             header_file+= param;
         }
@@ -531,7 +574,7 @@ public class CToyVisitor implements Visitor{
     public Object visit(ReadlnOP n) {
 
         tempToWrite="";
-        organizzaFile("scanf(\" ");
+        organizzaFile("\tscanf(\" ");
         dontWrite=true;
 
         for (Constant c: n.getIdList()){
@@ -606,17 +649,23 @@ public class CToyVisitor implements Visitor{
     public Object visit(StatOP n) {
 
         if (n.getIfStatOp() != null) {
+            organizzaFile("\t");
              n.getIfStatOp().accept(this);
         } else if (n.getWhileStatOp() != null) {
+            organizzaFile("\t");
              n.getWhileStatOp().accept(this);
         }else if (n.getReadlnStatOp() != null) {
+            organizzaFile("\t");
              n.getReadlnStatOp().accept(this);
         }else if (n.getWriteStatOp() != null) {
+            organizzaFile("\t");
              n.getWriteStatOp().accept(this);
         }else if (n.getAssignStatOp() != null) {
+            organizzaFile("\t");
              n.getAssignStatOp().accept(this);
              organizzaFile(";\n");
         }else if (n.getCallProcOp() != null) {
+            organizzaFile("\t");
              n.getCallProcOp().accept(this);
             organizzaFile(";\n");
         }
@@ -650,13 +699,14 @@ public class CToyVisitor implements Visitor{
     @Override
     public Object visit(WhileOP n) {
 
-        if (n.getBodyOp1()!=null){
-            n.getBodyOp1().accept(this);
-        }
+
         organizzaFile("while( ");
         n.getExpressionOp().accept(this);
         organizzaFile(" ){\n");
 
+        if (n.getBodyOp1()!=null){
+            n.getBodyOp1().accept(this);
+        }
         if (n.getBodyOp2()!=null){
             n.getBodyOp2().accept(this);
         }
@@ -664,7 +714,7 @@ public class CToyVisitor implements Visitor{
             n.getBodyOp1().accept(this);
         }*/
 
-        organizzaFile("\n}\n");
+        organizzaFile("\t}\n");
         organizzaFile(tempToWrite);
         return true;
     }
@@ -673,7 +723,7 @@ public class CToyVisitor implements Visitor{
     public Object visit(WriteOP n) {
 
         tempToWrite = "";
-        organizzaFile("printf(\" ");
+        organizzaFile("\tprintf(\" ");
         dontWrite = true;
         for (ExpressionOP e : n.getExpressionOpList()) {
             organizzaFile(", ");
