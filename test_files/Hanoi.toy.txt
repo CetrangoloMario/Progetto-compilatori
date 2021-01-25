@@ -29,10 +29,10 @@ proc hanoi(int n, fromPeg, usingPeg, toPeg)void:
 corp;
 
 proc main()void:
-    int n := 0;
+    int g,n := 0;
 
     write("How many pegs? ");
-    readln(n);
+    readln(n,g);
     hanoi(n, 1, 2, 3);
     ->
 corp;

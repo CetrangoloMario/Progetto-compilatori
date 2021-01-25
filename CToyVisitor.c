@@ -2,48 +2,33 @@
 #include <stdbool.h>
 #include <string.h>
 
+#DEFINE NULL 0
 
- void printPeg ( int peg){
-
-	
-	if (peg == 1) { 
-					printf(" %s " , "left");
-
-	}
-
-	else { if(peg == 2) {
-					printf(" %s " , "center");
-	 }
-	 else {
-					printf(" %s " , "right");
-
-	}
-
-	}
-
-	}
-
- void hanoi ( int n, int fromPeg, int usingPeg, int toPeg){
-
-	
-	if (n != 0) { 
-				hanoi (n - 1, fromPeg, toPeg, usingPeg);
-			printf(" %s " , "Move disk from ");
-		printPeg (fromPeg);
-			printf(" %s " , " peg to ");
-		printPeg (toPeg);
-			printf(" %s " , " peg.\n");
-		hanoi (n - 1, usingPeg, fromPeg, toPeg);
-
-	}
-
-	}
-
- void main ( ){
 int n = 0;
 
-		printf(" %s " , "How many pegs? ");
-		scanf(" %d ", &n);
-	hanoi (n, 1, 2, 3);
+ void factorial (int n, int *int_par0){
+	int result = 0;
+
+	
+	if (n == 0) { 
+					result = 1;
+
+	}
+	 else {
+					result = n * int int_ret0;
+factorial (n - 1,  &int_ret0);
+
+	}
+*int_par0 = result;
+	}
+
+ void main (){
+	
+	while( n < 10 ){
+			printf("%s" , "Enter n, or >= 10 to exit: ");
+			scanf("%d", &n);
+			printf("%s%d%s%d%s" , "Factorial of ", n, " is ", int int_ret0;
+factorial (n,  &int_ret0), "\n");
+	}
 
 	}

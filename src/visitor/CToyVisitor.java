@@ -490,11 +490,11 @@ public class CToyVisitor implements Visitor{
 
         typeEnvironment.enterScopeClang();
 
-        organizzaFile("\n void ");//da cambiare
+        organizzaFile("\n void ");//tutte le fuzioni sono void
 
         n.getIdOp().accept(this);
 
-        organizzaFile(" ( ");
+        organizzaFile(" (");
         if (n.getParDeclList() != null){
 
             for (int i=0; i<n.getParDeclList().size(); i++){
@@ -508,7 +508,7 @@ public class CToyVisitor implements Visitor{
         for (int i=0; i<n.getResultTypeList().size(); i++){
 
             if (n.getParDeclList() != null && i==0){
-                if (i!= n.getParDeclList().size()-1){
+                if (n.getParDeclList().size()>0){
                     organizzaFile(", ");
                 }
             }
@@ -530,7 +530,7 @@ public class CToyVisitor implements Visitor{
         }
 
         organizzaFile(")");
-        organizzaFile("{\n");
+        organizzaFile("{\n\t");
         n.getProcBody().accept(this);
         organizzaFile("\n\t}\n");
 
@@ -545,6 +545,7 @@ public class CToyVisitor implements Visitor{
         header_file = "#include <stdio.h>\n";
         header_file += "#include <stdbool.h>\n";
         header_file += "#include <string.h>\n\n";
+        header_file += "#DEFINE NULL 0\n\n";
 
         for (VarDeclOP vdl: n.getVarDecList()){
             vdl.accept(this);
@@ -574,7 +575,7 @@ public class CToyVisitor implements Visitor{
     public Object visit(ReadlnOP n) {
 
         tempToWrite="";
-        organizzaFile("\tscanf(\" ");
+        organizzaFile("\tscanf(\"");
         dontWrite=true;
 
         for (Constant c: n.getIdList()){
@@ -601,7 +602,7 @@ public class CToyVisitor implements Visitor{
                     break;
             }
 
-            organizzaFile(" ");
+            organizzaFile("");
             dontWrite=true;
         }
 
@@ -723,13 +724,14 @@ public class CToyVisitor implements Visitor{
     public Object visit(WriteOP n) {
 
         tempToWrite = "";
-        organizzaFile("\tprintf(\" ");
+        organizzaFile("\tprintf(\"");
         dontWrite = true;
         for (ExpressionOP e : n.getExpressionOpList()) {
             organizzaFile(", ");
             String tipo = "";
-            if (e.getClass().getSimpleName().equals("CallProcOp")) {
 
+            if (e.getClass().getSimpleName().equalsIgnoreCase("CallProcOp")) {
+                //organizzaFile("callrocl");
             }
             Object o = e.accept(this);
             if (o.getClass().getSimpleName().equals("ArrayList")) {
@@ -738,6 +740,7 @@ public class CToyVisitor implements Visitor{
                     dontWrite = false;
                     switch (tipoLista.get(i)) {
                         case "bool":
+                            organizzaFile("%s");
                         case "int":
                             organizzaFile("%d");
                             break;
@@ -756,6 +759,7 @@ public class CToyVisitor implements Visitor{
                 dontWrite = false;
                 switch (tipo) {
                     case "bool":
+                        organizzaFile("%s");
                     case "int":
                         organizzaFile("%d");
                         break;
@@ -766,7 +770,7 @@ public class CToyVisitor implements Visitor{
                         organizzaFile("%s");
                         break;
                 }
-                organizzaFile(" ");
+                organizzaFile("");
                 dontWrite = true;
             }
         }
