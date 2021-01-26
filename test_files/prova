@@ -2,7 +2,21 @@
  int i := 5;
  int j:= 3;
 int a, b,c :=0;
+
+proc f()int,int:
+
+    b:=n;
+    c:=a;
+
+    -> b,c
+corp;
+
  proc main() void:
+ int q,e;
         n:=i+j;
+        a:=n*j;
+
+        q,e:= f();
+
     ->
  corp;

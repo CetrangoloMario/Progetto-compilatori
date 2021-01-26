@@ -9,9 +9,7 @@ import tableOpType.OpType;
 
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Optional;
+import java.util.*;
 
 public class CToyVisitor implements Visitor{
 
@@ -321,6 +319,7 @@ public class CToyVisitor implements Visitor{
         }*/
         ArrayList<String> returnTipoLista= new ArrayList<>(Arrays.asList(returnTemp));
 
+        //rimuove void a fine lista
         if (returnTipoLista.get(returnTipoLista.size()-1).equalsIgnoreCase("void"))
             returnTipoLista.remove(returnTipoLista.size()-1);
 
@@ -329,16 +328,16 @@ public class CToyVisitor implements Visitor{
 
         for ( int i=0; i<returnTipoLista.size(); i++){
 
-            String parametri= returnTipoLista.get(i)+" "+ returnTipoLista.get(i)+"_ret"+i+";\n";
+            String parametri= returnTipoLista.get(i)+" "+ returnTipoLista.get(i)+"_return"+i+";\n";
 
             int j=i;
-            while (typeEnvironment.lookup(returnTipoLista.get(i)+ "_ret"+ j)!=null){
+            while (typeEnvironment.lookup(returnTipoLista.get(i)+ "_return"+ j)!=null){
                 j++;
             }
 
-            typeEnvironment.addId(returnTipoLista.get(i) + "_ret"+j, new Item(returnTipoLista.get(i)+"_ret"+ j, returnTipoLista.get(i), "var"));
-
-            organizzaFile(returnTipoLista.get(i)+ " "+ returnTipoLista.get(i)+"_ret"+ j+";\n");
+            typeEnvironment.addId(returnTipoLista.get(i) + "_return"+j, new Item(returnTipoLista.get(i)+"_return"+ j, returnTipoLista.get(i), "var"));
+            tempReturnParam.add("\t"+returnTipoLista.get(i)+ " *"+ returnTipoLista.get(i)+"_return"+ j+";\n");
+            //organizzaFile(returnTipoLista.get(i)+ " "+ returnTipoLista.get(i)+"_return"+ j+";\n");
         }
 
         n.getId().accept(this);
@@ -363,16 +362,16 @@ public class CToyVisitor implements Visitor{
                 if (n.getParamOP().getExpressionList() != null){
                     organizzaFile(", ");
                 }
-                for (int i=0; i<returnTipoLista.size(); i++){
-                    organizzaFile(" &"+returnTipoLista.get(i)+"_ret"+i);
+            }
+            for (int i=0; i<returnTipoLista.size(); i++){
+                organizzaFile(" &"+returnTipoLista.get(i)+"_return"+i);
 
-                    if (i!=returnTipoLista.size()-1){
-                        organizzaFile(", ");
-                    }
+                if (i!=returnTipoLista.size()-1){
+                    organizzaFile(", ");
                 }
             }
         }
-        organizzaFile(")");
+        organizzaFile(");");
 
         if (returnTipoLista.size() == 1)
             return returnTipoLista.get(0);
@@ -505,26 +504,28 @@ public class CToyVisitor implements Visitor{
             }
         }
 
-        for (int i=0; i<n.getResultTypeList().size(); i++){
+        if (n.getResultTypeList().get(0).getVoidOp() == null) {
+            for (int i = 0; i < n.getResultTypeList().size(); i++) {
 
-            if (n.getParDeclList() != null && i==0){
-                if (n.getParDeclList().size()>0){
-                    organizzaFile(", ");
+                if (n.getParDeclList() != null && i == 0) {
+                    if (n.getParDeclList().size() > 0) {
+                        organizzaFile(", ");
+                    }
                 }
-            }
 
-            //System.out.println(n.getResultTypeList().get(i).accept(this));
-            n.getResultTypeList().get(i).accept(this);
+                //System.out.println(n.getResultTypeList().get(i).accept(this));
+                n.getResultTypeList().get(i).accept(this);
 
 
-            //uso dei puntatori per passare il parametro per salvare risultato
-            if (n.getResultTypeList().get(i).getVoidOp() == null){
-                if (i!= n.getResultTypeList().size()-1){
-                    organizzaFile(" *"+ n.getResultTypeList().get(i).getType().getType() + "_par"+ i+ ", ");
+                //uso dei puntatori per passare il parametro per salvare risultato
+                if (n.getResultTypeList().get(i).getVoidOp() == null) {
+                    if (i != n.getResultTypeList().size() - 1) {
+                        organizzaFile(" *" + n.getResultTypeList().get(i).getType().getType() + "_parametri" + i + ", ");
 
-                } else {
-                    organizzaFile(" *"+n.getResultTypeList().get(i).getType().getType()+ "_par"+ i);
+                    } else {
+                        organizzaFile(" *" + n.getResultTypeList().get(i).getType().getType() + "_pararametri" + i);
 
+                    }
                 }
             }
         }
@@ -545,7 +546,7 @@ public class CToyVisitor implements Visitor{
         header_file = "#include <stdio.h>\n";
         header_file += "#include <stdbool.h>\n";
         header_file += "#include <string.h>\n\n";
-        header_file += "#DEFINE NULL 0\n\n";
+        //header_file += "#DEFINE NULL 0\n\n";
 
         for (VarDeclOP vdl: n.getVarDecList()){
             vdl.accept(this);
@@ -554,6 +555,11 @@ public class CToyVisitor implements Visitor{
         for (ProcOP proc: n.getProcList()){
             proc.accept(this);
         }
+
+        //elimino elementi ripetuti nel caso funzioni ricorsive
+        Set<String> set = new HashSet<>(tempReturnParam);
+        tempReturnParam.clear();
+        tempReturnParam.addAll(set);
 
         //parametri per valoi di ritorno da inizializzare
         for (String param: tempReturnParam){
@@ -629,14 +635,16 @@ public class CToyVisitor implements Visitor{
     public Object visit(ReturnExprsOP n) {
 
         if (n.getExprList()!=null){
-
+            //alla fine della funzione salvo nei puntatori i valore di ritorno
             for (int i=0; i<n.getExprList().size(); i++){
                 dontWrite=true;
                 String tipo=(String) n.getExprList().get(i).accept(this);
+                //System.out.println("tipo:"+tipo);
                 dontWrite=false;
-                organizzaFile("*"+tipo+"_par"+i+" = ");
+                organizzaFile("\t*"+tipo+"_parametri"+i+" = ");
                 organizzaFile(tempToWrite);
-                organizzaFile(";");
+                //System.out.println(tempToWrite);
+                organizzaFile(";\n");
                 tempToWrite="";
             }
         } else if (n.getVoidOp()!=null){
@@ -668,7 +676,7 @@ public class CToyVisitor implements Visitor{
         }else if (n.getCallProcOp() != null) {
             organizzaFile("\t");
              n.getCallProcOp().accept(this);
-            organizzaFile(";\n");
+            organizzaFile("\n");
         }
 
         return true;
