@@ -34,6 +34,7 @@ public class CToyVisitor implements Visitor{
         tempToWrite="";
         dontWrite=false;
         tempReturnParam=new ArrayList<>();
+        returnIndex=0;
 
         toWrite="";
         this.nomeFile=nomeFile;
@@ -732,64 +733,62 @@ public class CToyVisitor implements Visitor{
     @Override
     public Object visit(WriteOP n) {
 
-        ArrayList<String> call=new ArrayList<>();
+        tempToWrite="";
+        ArrayList<String> tempcall=new ArrayList<>();
+//devo chiamare la funzione prima della printf e poi sostituire nella printf i valori di ritorno
+        for (ExpressionOP e : n.getExpressionOpList()) {
+            if (e.getClass().getSimpleName().equalsIgnoreCase("CallProcOp")) {
 
-        for (ExpressionOP e : n.getExpressionOpList()){
-            if (e.getClass().getSimpleName().equalsIgnoreCase("CallProcOp")){
+                CallProcOP clp= (CallProcOP) e;
+                //faccio come la callproc prendo i parametri..
+                Item func= typeEnvironment.lookup(clp.getId().getValue());
+                String sign= func.getTipo();
 
-                Object o= e.accept(this);
+                String [] param= sign.split("->");
+                String [] returnTemp= param[1].trim().split(" ");
 
-                    if (o.getClass().getSimpleName().equalsIgnoreCase("ArrayList")){
-                        ArrayList<String> oo= (ArrayList<String>) o;
-                        call=oo;
-                    }
-                    else
-                        call.add((String) o);
-
-                    for (String s: call)
-                        System.out.println("call: "+s);
-                    }
+                ArrayList<String> returnTipoLista= new ArrayList<>(Arrays.asList(returnTemp));
+                while (returnTipoLista.remove("")){
                 }
 
+                int sizeReturn= returnTipoLista.size();
 
+                if (sizeReturn>=1){
+                //if (sizeReturn>1){//se il valore di ritorno sono più di uno chiamo la funzione fuori, se levi uguale la funzione la chiama dentro
+                    int oldReturn= returnIndex;
+                    Object o= e.accept(this);
 
-        tempToWrite = "";
+                    if (o.getClass().getSimpleName().equalsIgnoreCase("ArrayList")){
+                        ArrayList<String> tipoLista= (ArrayList<String>) o;
+                        for (int i=0; i<tipoLista.size(); i++){
+                            tempcall.add(tipoLista.get(i)+"_return"+(oldReturn+i));
+                        }
+                    }
+                    else //quando è solo un valore di ritorno leva else e mette direttamente la funzione
+                        tempcall.add((String)o+"_return"+oldReturn);
+
+                    organizzaFile(";\n");
+                }
+            }
+        }
+
         organizzaFile("\tprintf(\"");
         dontWrite = true;
         for (ExpressionOP e : n.getExpressionOpList()) {
             organizzaFile(", ");
             String tipo = "";
 
-            if (e.getClass().getSimpleName().equalsIgnoreCase("CallProcOp")) {
-                //organizzaFile("callrocl");
-            }
-            Object o = e.accept(this);
-            if (o.getClass().getSimpleName().equals("ArrayList")) {
-                ArrayList<String> tipoLista = (ArrayList<String>) o;
-                for (int i = 0; i < tipoLista.size(); i++) {
-                    dontWrite = false;
-                    switch (tipoLista.get(i)) {
-                        case "bool":
-                            organizzaFile("%s");
-                        case "int":
-                            organizzaFile("%d");
-                            break;
-                        case "float":
-                            organizzaFile("%f");
-                            break;
-                        case "string":
-                            organizzaFile("%s");
-                            break;
-                    }
-                    organizzaFile(" ");
-                    dontWrite = true;
-                }
-            } else {
-                tipo = (String) o;
+
+            if (!e.getClass().getSimpleName().equals("CallProcOP")) {
+                Object o= e.accept(this);
+
+                tipo=(String) o;
                 dontWrite = false;
+
                 switch (tipo) {
                     case "bool":
-                        organizzaFile("%s");
+                        organizzaFile("&s");
+                        break;
                     case "int":
                         organizzaFile("%d");
                         break;
@@ -800,8 +799,77 @@ public class CToyVisitor implements Visitor{
                         organizzaFile("%s");
                         break;
                 }
-                organizzaFile("");
-                dontWrite = true;
+                    organizzaFile(" ");
+                    dontWrite = true;
+
+            } else {//se callproc
+                CallProcOP clp=(CallProcOP)e;
+
+                Item func=typeEnvironment.lookup(clp.getId().getValue());
+                String sign=func.getTipo();
+                String [] param= sign.split("->");
+                String [] returnTemp= param[1].trim().split(" ");
+
+                ArrayList<String> returnTipoLista= new ArrayList<>(Arrays.asList(returnTemp));
+                while (returnTipoLista.remove("")){
+                }
+
+                int sizeRitorno=returnTipoLista.size();
+                //System.out.println(sizeRitorno);
+                if (sizeRitorno>=1){
+                //if (sizeRitorno>1){//leva uguale per farla chiamare all'interno della printf usando else if successivo
+                    //devo prenderli al contrario ordine FIFO
+                    for (int i=0; i<sizeRitorno; i++){
+                        String paramNome= tempcall.get(i);
+                        String [] listaValori= paramNome.split("_");
+                        tipo=listaValori[0];
+                        dontWrite=false;
+
+                        switch (tipo) {
+                            case "bool":
+                                organizzaFile("%s");
+                                break;
+                            case "int":
+                                organizzaFile("%d");
+                                break;
+                            case "float":
+                                organizzaFile("%f");
+                                break;
+                            case "string":
+                                organizzaFile("%s");
+                                break;
+                        }
+
+                        organizzaFile("");
+                        dontWrite = true;
+                        organizzaFile(paramNome);
+                        if (i<sizeRitorno-1)
+                            organizzaFile(", ");
+                    }
+                } else if (sizeRitorno==0){ //se solo un valore di return inserisco la chiamata a funzione, se metti sizeRitorno ==1 per far chiamare la procedura dentro la printf
+                  //else if (sizeRitorno==1){
+                    tipo= (String) e.accept(this);
+                   // System.out.println(tipo);
+                    dontWrite=false;
+
+                    switch (tipo) {
+                        case "bool":
+                            organizzaFile("%s");
+                            break;
+                        case "int":
+                            organizzaFile("%d");
+                            break;
+                        case "float":
+                            organizzaFile("%f");
+                            break;
+                        case "string":
+                            organizzaFile("%s");
+                            break;
+                    }
+
+                    organizzaFile(" ");
+                    dontWrite=true;
+                }
             }
         }
         dontWrite = false;
@@ -820,4 +888,6 @@ public class CToyVisitor implements Visitor{
         typeEnvironment.setIndex(0);
         root.accept(this);
     }
+
+    private int returnIndex;
 }
