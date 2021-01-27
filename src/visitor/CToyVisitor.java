@@ -336,6 +336,7 @@ public class CToyVisitor implements Visitor{
             }
 
             typeEnvironment.addId(returnTipoLista.get(i) + "_return"+j, new Item(returnTipoLista.get(i)+"_return"+ j, returnTipoLista.get(i), "var"));
+            //li scrivo come variabili globali;
             tempReturnParam.add("\t"+returnTipoLista.get(i)+ " *"+ returnTipoLista.get(i)+"_return"+ j+";\n");
             //organizzaFile(returnTipoLista.get(i)+ " "+ returnTipoLista.get(i)+"_return"+ j+";\n");
         }
@@ -371,7 +372,7 @@ public class CToyVisitor implements Visitor{
                 }
             }
         }
-        organizzaFile(");");
+        organizzaFile(")");
 
         if (returnTipoLista.size() == 1)
             return returnTipoLista.get(0);
@@ -676,7 +677,7 @@ public class CToyVisitor implements Visitor{
         }else if (n.getCallProcOp() != null) {
             organizzaFile("\t");
              n.getCallProcOp().accept(this);
-            organizzaFile("\n");
+            organizzaFile(";\n");
         }
 
         return true;
@@ -730,6 +731,27 @@ public class CToyVisitor implements Visitor{
 
     @Override
     public Object visit(WriteOP n) {
+
+        ArrayList<String> call=new ArrayList<>();
+
+        for (ExpressionOP e : n.getExpressionOpList()){
+            if (e.getClass().getSimpleName().equalsIgnoreCase("CallProcOp")){
+
+                Object o= e.accept(this);
+
+                    if (o.getClass().getSimpleName().equalsIgnoreCase("ArrayList")){
+                        ArrayList<String> oo= (ArrayList<String>) o;
+                        call=oo;
+                    }
+                    else
+                        call.add((String) o);
+
+                    for (String s: call)
+                        System.out.println("call: "+s);
+                    }
+                }
+
+
 
         tempToWrite = "";
         organizzaFile("\tprintf(\"");

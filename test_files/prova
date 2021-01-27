@@ -17,6 +17,6 @@ corp;
         a:=n*j;
 
         q,e:= f();
-
+        write("Factorial of ", n, " is ", f(), "\n");
     ->
  corp;
