@@ -5,6 +5,7 @@ import com.sun.org.apache.bcel.internal.Const;
 import nodes.expression.*;
 import nodes.nonterminals.*;
 import nodes.terminals.Constant;
+import sun.awt.image.GifImageDecoder;
 import sun.font.DelegatingShape;
 import symbolTable.Item;
 import symbolTable.TypeEnvironment;
@@ -307,8 +308,14 @@ public class SemanticVisitor implements Visitor{
            // System.out.println("\n  Controllo AssignOP "+ expTipoList.get(i)+ " \n" +
               //      " "+idTipoList.get(i)+"\nfine\n ");
             if (!expTipoList.get(i).equalsIgnoreCase(idTipoList.get(i))){
-                System.err.println("AssignOp 2: errore assegnamento controllo dei tipi idList e expList");
-                System.exit(1);
+
+                if (idTipoList.get(i).equalsIgnoreCase("string") && !expTipoList.get(i).equalsIgnoreCase("NULL")){
+                    System.err.println("AssignOp 2: Stringhe si può assegnare solo null o string");
+                    System.exit(1);
+                }else if (!idTipoList.get(i).equalsIgnoreCase("string") && expTipoList.get(i).equalsIgnoreCase("NULL")){
+                    System.err.println("AssignOP 3: i tipi non corrispondono");
+                    System.exit(1);
+                }
             }
         }
 
@@ -370,7 +377,8 @@ public class SemanticVisitor implements Visitor{
                 Object x= exp.accept(this);
 
                 if (x.getClass().getSimpleName().equals("ArrayList")) {
-
+                    System.err.println("CallProc: non possono essere passate funzioni con più valori di ritorno");
+                    //System.exit(1);
                     ArrayList<String> tipoLista=(ArrayList<String>) x;
 
                     for (String tipo: tipoLista){
@@ -514,9 +522,9 @@ public class SemanticVisitor implements Visitor{
 
         ArrayList<String> resultExprLista= (ArrayList<String>) n.getProcBody().accept(this);
 
-        System.out.println("Funzione: "+ n.getIdOp().getValue());
-        System.out.println( n.getResultTypeList());
-        System.out.println(resultExprLista);
+        //System.out.println("Funzione: "+ n.getIdOp().getValue());
+        //System.out.println( n.getResultTypeList());
+        //System.out.println(resultExprLista);
 
         //controllo che il numero di valori di ritorno si trova con quelli restituiti dalla proc
         if (n.getResultTypeList().size()!= resultExprLista.size()){
