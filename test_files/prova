@@ -13,6 +13,11 @@ corp;
 
  proc main() void:
  int q,e;
+ string t;
+ t:="dsag";
+ if t="dsag" then
+    write("Factorial of ", n, " is ", f(), "\n");
+    fi;
         n:=i+j;
         a:=n*j;
 

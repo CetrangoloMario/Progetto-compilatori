@@ -377,8 +377,8 @@ public class SemanticVisitor implements Visitor{
                 Object x= exp.accept(this);
 
                 if (x.getClass().getSimpleName().equals("ArrayList")) {
-                    System.err.println("CallProc: non possono essere passate funzioni con più valori di ritorno");
-                    //System.exit(1);
+                    System.err.println("CallProc: non possono essere passate funzioni con più valori di ritorno: "+sign);
+                    System.exit(1);
                     ArrayList<String> tipoLista=(ArrayList<String>) x;
 
                     for (String tipo: tipoLista){
@@ -386,6 +386,7 @@ public class SemanticVisitor implements Visitor{
                     }
                 }else {
                     expList.add((String) x);
+                    //System.out.println(x);
                 }
             }
         } else {
