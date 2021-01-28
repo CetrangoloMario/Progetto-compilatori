@@ -2,54 +2,49 @@
 #include <stdbool.h>
 #include <string.h>
 
-	char nome = "Michele";
 
- voidwriteNewLines (int n){
+ voidprintPeg (int peg){
 	
-				printf("%s " , "\n");
-			n = n - 1;
-	while(  > 0 ){
-				printf("%s " , "\n");
-			n = n - 1;
-	}
 	
+	if (peg== 1) { 
+					printf("%s " , "left");
+
 	}
 
- voidmultAddDiff (int *int_parametri0, int *int_parametri1, int *int_pararametri2){
-	int primo, secondo, mul, add, diff;
+	else { if(peg== 2) {
+					printf("%s " , "center");
+	 }
+	 else {
+					printf("%s " , "right");
 
-		printf("%s " , "Inserire il primo argomento:\n");
-		scanf("%d", &primo);
-		printf("%s " , "Inserire il secondo argomento:\n");
-		scanf("%d", &secondo);
-		mul = primo * secondo;
-	add = primo + secondo;
-	diff = primo - secondo;
-	*int_parametri0 = mul;
-	*int_parametri1 = add;
-	*int_parametri2 = diff;
+	}
+
+	}
+
+	}
+
+ voidhanoi (int n, int fromPeg, int usingPeg, int toPeg){
+	
+	
+	if ( != 0) { 
+				hanoi (n - 1, fromPeg, toPeg, usingPeg);
+			printf("%s " , "Move disk from ");
+		printPeg (fromPeg);
+			printf("%s " , " peg to ");
+		printPeg (toPeg);
+			printf("%s " , " peg.\n");
+		hanoi (n - 1, usingPeg, fromPeg, toPeg);
+
+	}
 
 	}
 
  int main (){
-	int a, b, c = 0;
+	int n = 0;
 
-	b = 
-	int int_return0;
-
-	int int_return1;
-
-	int int_return2;
-multAddDiff ( &int_return0,  &int_return1,  &int_return2)c = 
-	int int_return3;
-
-	int int_return4;
-
-	int int_return5;
-multAddDiff ( &int_return3,  &int_return4,  &int_return5);
-		printf("%s %s " , "Ciao ", nome);
-	writeNewLines (2);
-		printf("%s %d %s %d %s %d %s " , "I tuoi valori sono:\n", a, " per la moltiplicazione\n", b, " per la somma, e \n", c, " per la differenza");
+		printf("%s " , "How many pegs? ");
+		scanf("%d", &n);
+	hanoi (n, 1, 2, 3);
 
 	 return 0;
 	}
