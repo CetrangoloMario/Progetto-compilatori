@@ -54,6 +54,10 @@ public class AssignOP {
         return v.visit(this);
     }
 
+    public Object accept(Visitor v, Boolean bool){
+        return v.visit(this, bool);
+    }
+
     Constant id;
     ExpressionOP expression;
     ArrayList<Constant> idList;

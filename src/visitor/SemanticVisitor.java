@@ -251,6 +251,11 @@ public class SemanticVisitor implements Visitor{
     }
 
     @Override
+    public Object visit(AssignOP n, Boolean bool){
+        return null;
+    }
+
+    @Override
     public Object visit(AssignOP n) {
         ArrayList<String> idTipoList= new ArrayList<>();
         ArrayList<String> expTipoList= new ArrayList<>();
@@ -840,7 +845,7 @@ public class SemanticVisitor implements Visitor{
         else {
             t= (String) o;
         }
-        return t;
+        return t;//return tipo
     }
 
 

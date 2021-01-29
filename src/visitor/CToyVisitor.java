@@ -7,6 +7,7 @@ import symbolTable.Item;
 import symbolTable.TypeEnvironment;
 import tableOpType.OpType;
 
+import javax.swing.*;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.*;
@@ -141,7 +142,7 @@ public class CToyVisitor implements Visitor{
         if (t1.equalsIgnoreCase("string")){
             organizzaFile("strcmp("+tempToWrite+",");
         }else {
-            organizzaFile(tempToWrite+"== ");
+            organizzaFile(tempToWrite+" == ");
         }
         tempToWrite="";
 
@@ -161,14 +162,14 @@ public class CToyVisitor implements Visitor{
         if (t1.equalsIgnoreCase("string"))
             organizzaFile("strcmp("+ tempToWrite+", ");
         else
-            organizzaFile(" != ");
+            organizzaFile(tempToWrite+" != ");
 
         tempToWrite="";
         String t2= (String) n.getRight().accept(this);
         if (t1.equalsIgnoreCase("string"))
             organizzaFile(") != 0");
 
-        return optype.checkOpType2("timesOp", t1, t2);
+        return optype.checkOpType2("neOp", t1, t2);
     }
 
     @Override
@@ -198,7 +199,7 @@ public class CToyVisitor implements Visitor{
         if (t1.equalsIgnoreCase("string"))
             organizzaFile("strcmp("+tempToWrite+",");
         else
-            organizzaFile(" <= ");
+            organizzaFile(tempToWrite+" <= ");
 
         String t2= (String) n.getRight().accept(this);
         if (t1.equalsIgnoreCase("string"))
@@ -216,7 +217,7 @@ public class CToyVisitor implements Visitor{
         if (t1.equalsIgnoreCase("string"))
             organizzaFile("strcmp("+tempToWrite+",");
         else
-            organizzaFile(" < ");
+            organizzaFile(tempToWrite+" < ");
 
         String t2= (String) n.getRight().accept(this);
         if (t1.equalsIgnoreCase("string"))
@@ -236,7 +237,7 @@ public class CToyVisitor implements Visitor{
         if (t1.equalsIgnoreCase("string"))
             organizzaFile("strcmp("+tempToWrite+",");
         else
-            organizzaFile(" > ");
+            organizzaFile(tempToWrite+" > ");
 
         String t2= (String) n.getRight().accept(this);
         if (t1.equalsIgnoreCase("string"))
@@ -255,7 +256,7 @@ public class CToyVisitor implements Visitor{
         if (t1.equalsIgnoreCase("string"))
             organizzaFile("strcmp("+tempToWrite+",");
         else
-            organizzaFile(" >= ");
+            organizzaFile(tempToWrite+" >= ");
 
         String t2= (String) n.getRight().accept(this);
         if (t1.equalsIgnoreCase("string"))
@@ -303,10 +304,217 @@ public class CToyVisitor implements Visitor{
         return n.getName();
     }
 
+
+    @Override
+    public Object visit(AssignOP n, Boolean bool){
+
+        ArrayList<String> tempList= new ArrayList<>();
+
+        if (n.getExpressionList()!=null){
+
+            for (ExpressionOP exp: n.getExpressionList()){
+
+                if (exp.getClass().getSimpleName().equalsIgnoreCase("CallProcOP")){
+
+                    CallProcOP clp=(CallProcOP) exp;
+                    Item func = typeEnvironment.lookup(clp.getId().getValue());
+                    String sign = func.getTipo();
+
+                    String[] param = sign.split("->");
+                    String[] returnTemp = param[1].trim().split(" ");
+
+                    ArrayList<String> returnTipoLista = new ArrayList<>(Arrays.asList(returnTemp));
+                    while (returnTipoLista.remove("")) {
+                    }
+                    int sizeReturnLista = returnTipoLista.size();
+
+                    if (sizeReturnLista > 1) {
+                        int oldReturnIndice = returnIndex;
+                        Object o=exp.accept(this);
+
+                        if (o.getClass().getSimpleName().equalsIgnoreCase("ArrayList")){
+
+                            ArrayList<String> tipoLista=(ArrayList<String>) o;
+                            for (int i=0; i<tipoLista.size(); i++){
+                                tempList.add(tipoLista.get(i)+ "_return"+ (oldReturnIndice+i));
+                            }
+                        }
+                        organizzaFile(";\n\t");
+                    }
+                }
+            }
+        }
+
+        if (n.getIdList()!=null && n.getExpressionList()!=null) {
+            int j = 0;
+            int returnsize = 0;
+
+            for (int i = 0; i < n.getIdList().size(); i++) {
+
+                n.getIdList().get(i).accept(this);
+                organizzaFile("[500] ");
+                organizzaFile(" = ");
+
+                if (n.getExpressionList().get(j).getClass().getSimpleName().equalsIgnoreCase("CallProcOp")) {
+
+                    CallProcOP clp = (CallProcOP) n.getExpressionList().get(j);
+                    Item func = typeEnvironment.lookup(clp.getId().getValue());
+                    String sign = func.getTipo();
+
+                    String[] param = sign.split("->");
+                    String[] returnTemp = param[1].trim().split(" ");
+
+                    ArrayList<String> returnTipoLista = new ArrayList<>(Arrays.asList(returnTemp));
+
+                    while (returnTipoLista.remove("")) {
+                    }
+                    int sizeReturnLista = returnTipoLista.size();
+
+                    if (returnsize < sizeReturnLista) {
+                        returnsize++;
+                    } else {
+                        returnsize = 0;
+                        j++;
+                    }
+
+                    if (sizeReturnLista>1){
+                        String paramNome= tempList.get(i);
+                        organizzaFile(paramNome);
+                    } else
+                        n.getExpressionList().get(i).accept(this);
+                } else
+                    n.getExpressionList().get(i).accept(this);
+
+                if (n.getIdList().size()-1 > i)
+                    organizzaFile(";\n\t");
+            }
+        } else if (n.getId() != null && n.getExpression() != null){
+
+            n.getId().accept(this);
+            organizzaFile("[500] ");
+            organizzaFile(" = ");
+            n.getExpression().accept(this);
+        }
+
+        return true;
+    }
+
     @Override
     public Object visit(AssignOP n) {
 
-        if (n.getIdList()!= null && n.getExpressionList() != null){
+        ArrayList<String> tempList= new ArrayList<>();
+        Boolean strcpy=false;
+
+        if (n.getExpressionList() != null){
+
+            for (ExpressionOP exp: n.getExpressionList()){
+
+                if (exp.getClass().getSimpleName().equalsIgnoreCase("CallProcOP")){
+
+                    CallProcOP clp=(CallProcOP) exp;
+                    Item func = typeEnvironment.lookup(clp.getId().getValue());
+                    String sign = func.getTipo();
+
+                    String[] param = sign.split("->");
+                    String[] returnTemp = param[1].trim().split(" ");
+
+                    ArrayList<String> returnTipoLista = new ArrayList<>(Arrays.asList(returnTemp));
+                    while (returnTipoLista.remove("")) {
+                    }
+                    int sizeReturnLista = returnTipoLista.size();
+
+                    if (sizeReturnLista > 1) {
+                        int oldReturnIndice = returnIndex;
+                        Object o=exp.accept(this);
+
+                        if (o.getClass().getSimpleName().equalsIgnoreCase("ArrayList")){
+
+                            ArrayList<String> tipoLista=(ArrayList<String>) o;
+                            for (int i=0; i<tipoLista.size(); i++){
+                                tempList.add(tipoLista.get(i)+ "_return"+ (oldReturnIndice+i));
+                            }
+                        }
+                        organizzaFile(";\n\t");
+                    }
+                }
+            }
+        }
+
+        if (n.getIdList()!=null && n.getExpressionList()!=null) {
+            int j = 0;
+            int returnsize = 0;
+            strcpy = false;
+
+            for (int i = 0; i < n.getIdList().size(); i++) {
+
+                Item item = typeEnvironment.lookup(n.getIdList().get(i).getValue());
+                if (item.getTipo().equalsIgnoreCase("string")) {
+                    strcpy = true;
+                    organizzaFile("strcpy(");
+                }
+
+                n.getIdList().get(i).accept(this);
+                if (!strcpy)
+                    organizzaFile(" = ");
+                else
+                    organizzaFile(",");
+
+                if (n.getExpressionList().get(j).getClass().getSimpleName().equalsIgnoreCase("CallProcOp")) {
+
+                    CallProcOP clp = (CallProcOP) n.getExpressionList().get(j);
+                    Item func = typeEnvironment.lookup(clp.getId().getValue());
+                    String sign = func.getTipo();
+
+                    String[] param = sign.split("->");
+                    String[] returnTemp = param[1].trim().split(" ");
+
+                    ArrayList<String> returnTipoLista = new ArrayList<>(Arrays.asList(returnTemp));
+
+                    while (returnTipoLista.remove("")) {
+                    }
+                    int sizeReturnLista = returnTipoLista.size();
+
+                    if (returnsize < sizeReturnLista) {
+                        returnsize++;
+                    } else {
+                        returnsize = 0;
+                        j++;
+                    }
+
+                    if (sizeReturnLista>1){
+                        String paramNome= tempList.get(i);
+                        organizzaFile(paramNome);
+                    } else
+                        n.getExpressionList().get(i).accept(this);
+                } else
+                    n.getExpressionList().get(i).accept(this);
+
+                if (strcpy)
+                    organizzaFile(")\n\t");
+                if (n.getIdList().size()-1 > i)
+                    organizzaFile(";\n\t");
+                strcpy=false;
+            }
+        } else if (n.getId() != null && n.getExpression() != null){
+
+            Item item = typeEnvironment.lookup(n.getId().getValue());
+            if (item.getTipo().equalsIgnoreCase("string")){
+                strcpy=true;
+                organizzaFile("\tstrcpy(");
+            }
+
+            n.getId().accept(this);
+            if (!strcpy)
+                organizzaFile(" = ");
+            else
+                organizzaFile(",");
+
+            n.getExpression().accept(this);
+
+            if (strcpy)
+                organizzaFile(")");
+        }
+        /*if (n.getIdList()!= null && n.getExpressionList() != null){
 
             if (n.getIdList().size()==n.getExpressionList().size()){
                 for (int i= 0; i<n.getIdList().size(); i++){
@@ -349,7 +557,7 @@ public class CToyVisitor implements Visitor{
             organizzaFile(" = ");
             n.getExpression().accept(this);
 
-        }
+        }*/
 
         return true;
     }
@@ -461,7 +669,7 @@ public class CToyVisitor implements Visitor{
 
         organizzaFile("\n\telse { if(");
         n.getExpr().accept(this);
-        organizzaFile(") {\n\t\t");
+        organizzaFile(") {\n\t");
 
         n.getBody().accept(this);
         organizzaFile("\t }\n");
@@ -472,7 +680,7 @@ public class CToyVisitor implements Visitor{
     @Override
     public Object visit(ElseOP n) {
 
-        organizzaFile("\t else {\n\t\t");
+        organizzaFile("\t else {\n\t");
         n.getBody().accept(this);
         organizzaFile("\n\t}\n");
 
@@ -484,13 +692,21 @@ public class CToyVisitor implements Visitor{
 
         if (n.getId()!=null ){
             n.getId().accept(this);
+            Item i=typeEnvironment.lookup(n.getId().getValue());
+            if (i.getTipo().equalsIgnoreCase("string")) organizzaFile("[500]");
         }
 
         if (n.getAssignament()!= null){
-            n.getAssignament().accept(this);
+            Item i= typeEnvironment.lookup(n.getAssignament().getId().getValue());
+            if (i.getTipo().equalsIgnoreCase("string")) {
+                n.getAssignament().accept(this, true);
+            }
+            else {
+                n.getAssignament().accept(this);
+            }
         }
 
-        return true;
+        return n;
     }
 
     @Override
@@ -498,7 +714,7 @@ public class CToyVisitor implements Visitor{
 
         organizzaFile("\n\tif (");
         n.getExpr().accept(this);
-        organizzaFile(") { \n\t\t");
+        organizzaFile(") { \n\t");
         n.getBody().accept(this);
         organizzaFile("\n\t}\n");
 
@@ -528,7 +744,7 @@ public class CToyVisitor implements Visitor{
 
     @Override
     public Object visit(ParDeclOP n) {
-//parametri all'interno della callproc
+        //parametri all'interno della callproc
         for (int i=0; i<n.getIdList().size(); i++){
             n.getType().accept(this);
             organizzaFile(" ");
@@ -823,6 +1039,23 @@ public class CToyVisitor implements Visitor{
     @Override
     public Object visit(WhileOP n) {
 
+        if (n.getBodyOp2()!=null){
+
+            n.getBodyOp1().accept(this);
+            organizzaFile("\twhile( ");
+            n.getExpressionOp().accept(this);
+            organizzaFile(" ){\n\t");
+            n.getBodyOp2().accept(this);
+            n.getBodyOp1().accept(this);
+        }
+        else {
+            organizzaFile("\twhile( ");
+            n.getExpressionOp().accept(this);
+            organizzaFile(" ){\n\t");
+            n.getBodyOp1().accept(this);
+        }
+
+            /*
         if (n.getBodyOp1()!=null){
             n.getBodyOp1().accept(this);
         }
@@ -838,9 +1071,12 @@ public class CToyVisitor implements Visitor{
         if (n.getBodyOp1()!=null){
             n.getBodyOp1().accept(this);
         }
+        */
 
         organizzaFile("\t}\n\t");
         organizzaFile(tempToWrite);
+
+
         return true;
     }
 

@@ -34,7 +34,7 @@ public interface Visitor {
 	public Object visit(Constant n);
 	//public Object visit(VOID n);
 
-
+	public Object visit(AssignOP n, Boolean bool);
 	public Object visit(AssignOP n);
 	public Object visit(BodyOP n);
 	public Object visit(CallProcOP n);

@@ -2,15 +2,13 @@
 #include <stdbool.h>
 #include <string.h>
 
-	char nome = "Michele";
+	char nome[500]  = "Michele";
 
  voidwriteNewLines (int n){
 	
+		while( n > 0 ){
 				printf("%s " , "\n");
-			n = n - 1;
-	while(  > 0 ){
-				printf("%s " , "\n");
-			n = n - 1;
+		n = n - 1;
 	}
 	
 	}
@@ -22,7 +20,7 @@
 		scanf("%d", &primo);
 		printf("%s " , "Inserire il secondo argomento:\n");
 		scanf("%d", &secondo);
-		mul = primo * secondo;
+	mul = primo * secondo;
 	add = primo + secondo;
 	diff = primo - secondo;
 	*int_parametri0 = mul;
@@ -34,19 +32,16 @@
  int main (){
 	int a, b, c = 0;
 
-	b = 
+	
 	int int_return0;
 
 	int int_return1;
 
 	int int_return2;
-multAddDiff ( &int_return0,  &int_return1,  &int_return2)c = 
-	int int_return3;
-
-	int int_return4;
-
-	int int_return5;
-multAddDiff ( &int_return3,  &int_return4,  &int_return5);
+multAddDiff ( &int_return0,  &int_return1,  &int_return2);
+	a = int_return0;
+	b = int_return1;
+	c = int_return2;
 		printf("%s %s " , "Ciao ", nome);
 	writeNewLines (2);
 		printf("%s %d %s %d %s %d %s " , "I tuoi valori sono:\n", a, " per la moltiplicazione\n", b, " per la somma, e \n", c, " per la differenza");
