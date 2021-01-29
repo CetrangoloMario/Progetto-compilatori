@@ -53,7 +53,7 @@ public class CToyVisitor implements Visitor{
 
     //serve per concatenare il testo
     private void organizzaFile (String str){
-        if (dontWrite){
+        if (dontWrite){//usato write per organizzare temporaneamente
             tempToWrite+= str;
         } else {
             toWrite+=str;
@@ -70,8 +70,6 @@ public class CToyVisitor implements Visitor{
             x.printStackTrace();
         }
     }
-
-
 
 
     @Override
@@ -133,7 +131,7 @@ public class CToyVisitor implements Visitor{
 
     @Override
     public Object visit(EqOP n) {
-
+        //se sono stringhe in C esiste strcmp per il confronto
         dontWrite=true;
         String t1= (String) n.getLeft().accept(this);
         dontWrite=false;
@@ -147,7 +145,9 @@ public class CToyVisitor implements Visitor{
         tempToWrite="";
 
         String t2= (String) n.getRight().accept(this);
-        if (t1.equals("string")) organizzaFile(") == 0");
+        if (t1.equals("string"))
+            organizzaFile(") == 0");
+
         return optype.checkOpType2("eqOp", t1, t2);
     }
 
@@ -204,6 +204,7 @@ public class CToyVisitor implements Visitor{
         String t2= (String) n.getRight().accept(this);
         if (t1.equalsIgnoreCase("string"))
             organizzaFile(") <=0");
+
         return optype.checkOpType2("leOp", t1, t2);
     }
 
@@ -280,34 +281,39 @@ public class CToyVisitor implements Visitor{
 
         if (n.getValue()!= null) {
 
-            if (n.getName().equals("string")) {
+            if (n.getName().equals("string")) {//String constant
                 organizzaFile("\"" + n.getValue() + "\"");
 
-            } else if (n.getName().equals("ID")){
+            } else if (n.getName().equals("ID")){//ID
 
                 Item i = typeEnvironment.lookup(n.getValue());
                 organizzaFile(""+ n.getValue()+ "");
-                return i.getTipo();
+                return i.getTipo();//restituisco tipo che serve per i controlli per esempio dell < operazioni aritmetriche
 
-            } else {//se non è una stringa e id
+            } else {//se non è una stringa o id cioè bool intconstant e floatconstant
                 organizzaFile(n.getValue());
             }
-        } else {//Constant NULL
+        } else {// NULL
             if (!n.getName().equalsIgnoreCase("void")){
                 //System.out.println("se non è void"+n.getName());
-                if (!n.getName().equalsIgnoreCase("null"))
+                if (!n.getName().equalsIgnoreCase("NULL"))
                     organizzaFile("\"\\0\"");
-                else
+                else//se NULL
                     organizzaFile(n.getName());
             }
         }
         return n.getName();
     }
 
-
+    /**
+     * Assign se abbiamo assegnazione di stringhe
+     * @param n
+     * @param bool
+     * @return
+     */
     @Override
     public Object visit(AssignOP n, Boolean bool){
-
+        //sime assign solo il fatto che abbiamo stringhe assegnazione
         ArrayList<String> tempList= new ArrayList<>();
 
         if (n.getExpressionList()!=null){
@@ -352,7 +358,7 @@ public class CToyVisitor implements Visitor{
             for (int i = 0; i < n.getIdList().size(); i++) {
 
                 n.getIdList().get(i).accept(this);
-                organizzaFile("[500] ");
+                organizzaFile("[500] ");//dimensione
                 organizzaFile(" = ");
 
                 if (n.getExpressionList().get(j).getClass().getSimpleName().equalsIgnoreCase("CallProcOp")) {
@@ -401,14 +407,14 @@ public class CToyVisitor implements Visitor{
 
     @Override
     public Object visit(AssignOP n) {
-
+//Assign due costruttori id expr o array id array di expr
         ArrayList<String> tempList= new ArrayList<>();
         Boolean strcpy=false;
 
         if (n.getExpressionList() != null){
 
             for (ExpressionOP exp: n.getExpressionList()){
-
+                //controllo se callproc, se lo è mi salvo la signature
                 if (exp.getClass().getSimpleName().equalsIgnoreCase("CallProcOP")){
 
                     CallProcOP clp=(CallProcOP) exp;
@@ -423,9 +429,10 @@ public class CToyVisitor implements Visitor{
                     }
                     int sizeReturnLista = returnTipoLista.size();
 
+                    //se ho più di un elemento, quando 1 solo assegno direttamente
                     if (sizeReturnLista > 1) {
                         int oldReturnIndice = returnIndex;
-                        Object o=exp.accept(this);
+                        Object o=exp.accept(this);//mi restituisce lista di tipi di ritorno
 
                         if (o.getClass().getSimpleName().equalsIgnoreCase("ArrayList")){
 
@@ -441,24 +448,26 @@ public class CToyVisitor implements Visitor{
         }
 
         if (n.getIdList()!=null && n.getExpressionList()!=null) {
-            int j = 0;
-            int returnsize = 0;
+            int j = 0;//usato per scorre ExpressionList usando un solo for
+            int returnsize = 0;//contatore usato per quando si deve incrementare la j
             strcpy = false;
 
             for (int i = 0; i < n.getIdList().size(); i++) {
 
                 Item item = typeEnvironment.lookup(n.getIdList().get(i).getValue());
-                if (item.getTipo().equalsIgnoreCase("string")) {
+                if (item.getTipo().equalsIgnoreCase("string")) {//se stringa devo usare strcpy
                     strcpy = true;
                     organizzaFile("strcpy(");
                 }
 
                 n.getIdList().get(i).accept(this);
-                if (!strcpy)
+
+                if (!strcpy)//usando flag so se stringa
                     organizzaFile(" = ");
                 else
                     organizzaFile(",");
 
+                //quello che assegno o secondo strcpy, se una callproc
                 if (n.getExpressionList().get(j).getClass().getSimpleName().equalsIgnoreCase("CallProcOp")) {
 
                     CallProcOP clp = (CallProcOP) n.getExpressionList().get(j);
@@ -481,11 +490,13 @@ public class CToyVisitor implements Visitor{
                         j++;
                     }
 
-                    if (sizeReturnLista>1){
+                    if (sizeReturnLista>1){//se callproc restituisce più di un valore, prendo il tipo dall'inizio
                         String paramNome= tempList.get(i);
                         organizzaFile(paramNome);
-                    } else
+                    } else //solo un valore di ritorno scrivo direttamente la funzione
                         n.getExpressionList().get(i).accept(this);
+
+                    //se non è callproc, scrivo secondo elemento facendo attenzione se string o no grazie al flag
                 } else
                     n.getExpressionList().get(i).accept(this);
 
@@ -494,7 +505,9 @@ public class CToyVisitor implements Visitor{
                 if (n.getIdList().size()-1 > i)
                     organizzaFile(";\n\t");
                 strcpy=false;
+
             }
+            //secondo costruttore
         } else if (n.getId() != null && n.getExpression() != null){
 
             Item item = typeEnvironment.lookup(n.getId().getValue());
@@ -504,6 +517,7 @@ public class CToyVisitor implements Visitor{
             }
 
             n.getId().accept(this);
+
             if (!strcpy)
                 organizzaFile(" = ");
             else
@@ -611,19 +625,22 @@ public class CToyVisitor implements Visitor{
                 //li scrivo come variabili globali;
                 //tempReturnParam.add(  returnTipoLista.get(i) + " *" + returnTipoLista.get(i) + "_return" + returnIndex + ";\n");
 
-                returnIndex++;
+                returnIndex++;//indice globale
             }
 
         }
 
+        organizzaFile("\t");
         n.getId().accept(this);
         organizzaFile(" (");
 
+        //scrivere parametri
         if (n.getParamOP() != null) {
             if (n.getParamOP().getExpressionList() != null) {
 
                 for (int i = 0; i < n.getParamOP().getExpressionList().size(); i++) {
 
+                    //parametro è una funzione
                     if (n.getParamOP().getExpressionList().get(i).getClass().getSimpleName().equalsIgnoreCase("CallProcOP")) {
 
                         n.getParamOP().getExpressionList().get(i).accept(this);
@@ -637,6 +654,7 @@ public class CToyVisitor implements Visitor{
             }
         }
 
+        //Scrivere valori di ritorno della funzione usando puntatori. se valori di ritorno sono >1
         if (returnTipoLista.size()>1){
             if (n.getParamOP()!=null){
                 if (n.getParamOP().getExpressionList() != null){
@@ -693,13 +711,15 @@ public class CToyVisitor implements Visitor{
         if (n.getId()!=null ){
             n.getId().accept(this);
             Item i=typeEnvironment.lookup(n.getId().getValue());
-            if (i.getTipo().equalsIgnoreCase("string")) organizzaFile("[500]");
+            if (i.getTipo().equalsIgnoreCase("string")) //se stringa
+                organizzaFile("[500]");
         }
 
-        if (n.getAssignament()!= null){
+        if (n.getAssignament()!= null){ //se assegnamento Constant è string
             Item i= typeEnvironment.lookup(n.getAssignament().getId().getValue());
             if (i.getTipo().equalsIgnoreCase("string")) {
-                n.getAssignament().accept(this, true);
+                //System.out.println("IDINITOP Assign string");
+                n.getAssignament().accept(this, true);//chiama il visit per le string
             }
             else {
                 n.getAssignament().accept(this);
@@ -794,7 +814,7 @@ public class CToyVisitor implements Visitor{
             if (n.getResultTypeList().size()==1 && n.getResultTypeList().get(0).getType()!=null){
                 organizzaFile("\n"+ n.getResultTypeList().get(0).getType().getType()+" ");
             } else if (n.getResultTypeList().size()>=1){
-                organizzaFile("\n void");
+                organizzaFile("\n void ");
             }
         }
         //organizzaFile("\n void ");//tutte le fuzioni sono void
