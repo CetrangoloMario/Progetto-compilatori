@@ -1,18 +1,10 @@
-/* Es 5
-*Per testare Toy2C, oltre ad utilizzare il programma sviluppato nell'esercizio 4, si sviluppi e compili
-*anche il programma Toy che svolga (a richiesta tramite menu)
-*1. la somma di due numeri
-*2. la moltiplicazione di due numeri utilizzando la somma
-*3. la divisione intera fra due numeri positivi
-*4. l’elevamento a potenza
-*5. la successione di Fibonacci
-*/
+
 
 proc calcolaProdotto(float n1,n2) float:
     int i:=0;
     float temp:=0.0;
-    while i<num2 do
-        temp:= temp+num1;
+    while i<n2 do
+        temp:= temp+n1;
         i:=i+1;
     od;
     -> temp
@@ -21,35 +13,34 @@ corp;
 proc calcolaEsponente(float n1, n2) float:
     int i:=0;
     float temp:=0.0;
-
-    while i< num2 do
-        temp:=temp + calcolaProdotto(n1,1);
+    float num2:=1;
+    while i< n2 do
+        temp:=temp + calcolaProdotto(n1,num2);
     od;
     -> temp
 corp;
 
 proc succFibonacci(float n1) float:
-    int fib, fib1, fib2, i;
+    float fib:=0.0, fib1, fib2, i;
 
-    if n1=0 then
+    if n1=0 || n1=1 then
         fib:=1;
-    elif n1:==1 then
-        fib2:=1;
     else
         fib1:=1;
         fib2:=2;
-        i=1;
+        i:=1;
         while i<n1 do
             fib:=fib1+fib2;
             i:=i+1;
             fib2:=fib1;
-            fib1:= fib;
+            fib1:=fib;
         od;
     fi;
     -> fib
 corp;
 
-proc calcola(int operazione; float num1, num2) float:
+
+proc calcola(int n; float num1, num2) float:
     float result:=0.0;
 
     if n=1 then
@@ -59,10 +50,10 @@ proc calcola(int operazione; float num1, num2) float:
         result:= calcolaProdotto(num1,num2);
 
     elif n=3 then
-        if num1 < 0 then
+        if num1 < 1 then
             write("Numero inserito non positivo non si può fare la divisione");
             result:= 0.0;
-        elif num2 < 0 then
+        elif num2 < 1 then
             write("Numero inserito non positivo non si può fare la divisione");
             result:= 0.0;
         else
@@ -88,9 +79,10 @@ corp;
 proc main () void:
 
 
-    int operazione;
-        float z,w,result;
-        bool flag :=true;
+    int operazione, n:=1;
+    float num1,num2,result;
+    bool flag :=true;
+
 
         while flag do
             if n <> 0 then
@@ -98,14 +90,19 @@ proc main () void:
                 write("\n 1 = somma, 2 = moltiplicazione, 3 = divisione, 4 = elevamento a potenza, 5 = successione di Fibonacci\n\n");
                 readln(operazione);
 
-                if operazione >=1 && operazione <=5 then
+                if operazione >=1 && operazione <5 then
 
                     write("\n Inserisci il primo numero: \n");
-                    readln(z);
+                    readln(num1);
                     write("\n Inserisci il secondo numero: \n");
-                    readln(w);
+                    readln(num2);
 
-                    write("Risultato è: ",calcola(operazione,z,w));
+                    write("Risultato è: ",calcola(operazione,num1,num2));
+
+                elif operazione =5 then
+                    write("\n Inserisci il primo numero: \n");
+                    readln(num1);
+                    write("Risultato è: ",calcola(operazione,num1,num1));
 
                 else
                     write("\tNumero inserito non valido\n");
