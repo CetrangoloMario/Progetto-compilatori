@@ -131,6 +131,7 @@ public class CToyVisitor implements Visitor{
 
     @Override
     public Object visit(EqOP n) {
+        tempToWrite="";
         //se sono stringhe in C esiste strcmp per il confronto
         dontWrite=true;
         String t1= (String) n.getLeft().accept(this);
@@ -153,7 +154,7 @@ public class CToyVisitor implements Visitor{
 
     @Override
     public Object visit(NeOP n) {
-
+        tempToWrite="";
         dontWrite=true;
         String t1= (String) n.getLeft().accept(this);
         dontWrite=false;
@@ -192,6 +193,7 @@ public class CToyVisitor implements Visitor{
 
     @Override
     public Object visit(LeOP n) {
+        tempToWrite="";
         dontWrite=true;
         String t1= (String) n.getLeft().accept(this);
         dontWrite=false;
@@ -210,7 +212,7 @@ public class CToyVisitor implements Visitor{
 
     @Override
     public Object visit(LtOP n) {
-
+        tempToWrite="";
         dontWrite=true;
         String t1= (String) n.getLeft().accept(this);
         dontWrite=false;
@@ -230,7 +232,7 @@ public class CToyVisitor implements Visitor{
 
     @Override
     public Object visit(GtOP n) {
-
+        tempToWrite="";
         dontWrite=true;
         String t1= (String) n.getLeft().accept(this);
         dontWrite=false;
@@ -249,7 +251,7 @@ public class CToyVisitor implements Visitor{
 
     @Override
     public Object visit(GeOP n) {
-
+        tempToWrite="";
         dontWrite=true;
         String t1= (String) n.getLeft().accept(this);
         dontWrite=false;
@@ -981,6 +983,7 @@ public class CToyVisitor implements Visitor{
                 n.getExprList().get(0).accept(this);
                 organizzaFile(";\n");
             } else {
+                tempToWrite="";
                 for (int i = 0; i < n.getExprList().size(); i++) {
                     dontWrite = true;
                     String tipo = (String) n.getExprList().get(i).accept(this);
@@ -1099,7 +1102,7 @@ public class CToyVisitor implements Visitor{
         */
 
         organizzaFile("\t}\n\t");
-        organizzaFile(tempToWrite);
+        //organizzaFile(tempToWrite);
 
 
         return true;
@@ -1129,7 +1132,7 @@ public class CToyVisitor implements Visitor{
                 int sizeReturn= returnTipoLista.size();
 
                 //if (sizeReturn>=1){
-                if (sizeReturn>1){//se il valore di ritorno sono più di uno chiamo la funzione fuori, se levi uguale la funzione la chiama dentro
+                if (sizeReturn>1){//se il valore di ritorno sono più dorga uno chiamo la funzione fuori, se levi uguale la funzione la chiama dentro
                     int oldReturn= returnIndex;
                     Object o= e.accept(this);
 

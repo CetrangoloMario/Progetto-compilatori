@@ -14,8 +14,10 @@ proc calcolaEsponente(float n1, n2) float:
     int i:=0;
     float temp:=0.0;
     float num2:=1;
+
     while i< n2 do
         temp:=temp + calcolaProdotto(n1,num2);
+        i:=i+1;
     od;
     -> temp
 corp;

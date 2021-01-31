@@ -41,7 +41,7 @@ public class Main {
             CToyVisitor visitorC= new CToyVisitor("CToyVisitor");
 
             XMLVisitor visitorXML = new XMLVisitor();
-            visitorXML.executeVisit(program,"C:/Users/cetra/Desktop/Cetrangolo_es5_scg/src/AST.xml");
+            visitorXML.executeVisit(program,"C:/Users/cetra/Desktop/Cetrangolo_es5_scg/AST.xml");
             //metodo da realizzare ancora
              TypeEnvironment typeEnv= visitorSemantico.executeVisit(program);
              visitorC.executeVisit(program,typeEnv);

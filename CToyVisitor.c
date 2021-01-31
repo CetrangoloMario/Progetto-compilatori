@@ -2,51 +2,164 @@
 #include <stdbool.h>
 #include <string.h>
 
-int n = 0;
-int i = 5;
-int j = 3;
-int a, b, c = 0;
 
- void f (int *int_parametri0, int *int_parametri1){
+float calcolaProdotto (float n1, float n2){
+	int i = 0;
+float temp = 0.0;
+
+		while( i < n2 ){
+			temp = temp + n1;
+		i = i + 1;
+	}
 	
-	b = n;
-	c = a;
-	*int_parametri0 = b;
-	*int_parametri1 = c;
+	 return temp;
+
+}
+
+
+float calcolaEsponente (float n1, float n2){
+	int i = 0;
+float temp = 0.0;
+float num2 = 1;
+
+		while( i < n2 ){
+			temp = temp + 	calcolaProdotto (n1, num2);
+		i = i + 1;
+	}
+	
+	 return temp;
+
+}
+
+
+float succFibonacci (float n1){
+	float fib = 0.0, fib1, fib2, i;
+
+	
+	if (n1 == 0 || n1 == 1) { 
+			fib = 1;
+
+	}
+	 else {
+			fib1 = 1;
+		fib2 = 2;
+		i = 1;
+			while( i < n1 ){
+			fib = fib1 + fib2;
+		i = i + 1;
+		fib2 = fib1;
+		fib1 = fib;
+	}
+	
+	}
+
+	 return fib;
+
+}
+
+
+float calcola (int n, float num1, float num2){
+	float result = 0.0;
+
+	
+	if (n == 1) { 
+			result = num1 + num2;
+
+	}
+
+	else { if(n == 5) {
+			result = 	succFibonacci (num1);
+	 }
+
+	else { if(n == 4) {
+			
+	if (num2 < 0) { 
+				printf("%s " , "Numero inserito non positivo non si può fare la elevazione");
+		result = 0.0;
+
+	}
+	 else {
+			result = 	calcolaEsponente (num1, num2);
+
+	}
+	 }
+
+	else { if(n == 3) {
+			
+	if (num1 < 1) { 
+				printf("%s " , "Numero inserito non positivo non si può fare la divisione");
+		result = 0.0;
+
+	}
+
+	else { if(num2 < 1) {
+				printf("%s " , "Numero inserito non positivo non si può fare la divisione");
+		result = 0.0;
+	 }
+	 else {
+			result = num1 / num2;
+
+	}
+
+	}
+	 }
+
+	else { if(n == 2) {
+			result = 	calcolaProdotto (num1, num2);
+	 }
+
+				}
+
+			}
+
+		}
+
+	}
+
+	 return result;
 
 }
 
 
  int main (){
-	int q, e;
-	char t[500]  = "dsag";
+	int operazione, n = 1;
+float num1, num2, result;
+bool flag = true;
 
-	
-	if (strcmp(t,"dsag") == 0) { 
+		while( flag ){
 			
-	int int_return0;
-
-	int int_return1;
-	f ( &int_return0,  &int_return1);
-	printf("%s %d %s %d%d%s " , "Factorial of ", n, " is ", int_return0, int_return1, "\n");
+	if (n != 0) { 
+				printf("%s " , "Scegli operazione aritmetrica: \n");
+			printf("%s " , "\n 1 = somma, 2 = moltiplicazione, 3 = divisione, 4 = elevamento a potenza, 5 = successione di Fibonacci\n\n");
+			scanf("%d", &operazione);
+		
+	if (operazione >= 1 && operazione < 5) { 
+				printf("%s " , "\n Inserisci il primo numero: \n");
+			scanf("%f", &num1);
+			printf("%s " , "\n Inserisci il secondo numero: \n");
+			scanf("%f", &num2);
+			printf("%s %f " , "Risultato è: ", 	calcola (operazione, num1, num2));
 
 	}
-	n = i + j;
-	a = n * j;
+
+	else { if(operazione == 5) {
+				printf("%s " , "\n Inserisci il primo numero: \n");
+			scanf("%f", &num1);
+			printf("%s %f " , "Risultato è: ", 	calcola (operazione, num1, num1));
+	 }
+	 else {
+				printf("%s " , "\tNumero inserito non valido\n");
+		n = 0;
+		flag = false;
+
+	}
+
+	}
+			printf("%s " , "\t\t FINE \n\n");
+
+	}
+	}
 	
-	int int_return2;
-
-	int int_return3;
-	f ( &int_return2,  &int_return3);
-	q = int_return2;
-	e = int_return3;
-	
-	int int_return4;
-
-	int int_return5;
-	f ( &int_return4,  &int_return5);
-	printf("%s %d %s %d%d%s " , "Factorial of ", n, " is ", int_return4, int_return5, "\n");
-
 	 return 0;
 }
 
