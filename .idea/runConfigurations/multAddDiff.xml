@@ -1,8 +1,8 @@
 <component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="prova" type="Application" factoryName="Application">
+  <configuration default="false" name="multAddDiff" type="Application" factoryName="Application">
     <option name="MAIN_CLASS_NAME" value="Main" />
     <module name="Cetrangolo_es5_scg" />
-    <option name="PROGRAM_PARAMETERS" value="./test_files/prova" />
+    <option name="PROGRAM_PARAMETERS" value="./test_files/multAddDiff.toy" />
     <method v="2">
       <option name="Make" enabled="true" />
     </method>
