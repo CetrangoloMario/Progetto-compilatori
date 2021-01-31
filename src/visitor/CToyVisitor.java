@@ -795,7 +795,7 @@ public class CToyVisitor implements Visitor{
             }
         }
 
-        if (!isMain)
+        if (!isMain) //se siamo nel main non devo salvare risultati nelle variabili di ritorno
             n.getReturnExprs().accept(this);
         isMain=false;
         return true;
@@ -811,6 +811,7 @@ public class CToyVisitor implements Visitor{
             isMain = true;
         } else {
             isMain=false;
+            //solo un valore di ritorno lo inserisco altrimenti void
             if (n.getResultTypeList().size()==1 && n.getResultTypeList().get(0).getType()!=null){
                 organizzaFile("\n"+ n.getResultTypeList().get(0).getType().getType()+" ");
             } else if (n.getResultTypeList().size()>=1){
@@ -822,6 +823,7 @@ public class CToyVisitor implements Visitor{
         n.getIdOp().accept(this);
         organizzaFile(" (");
 
+        //scrivo i parametri
         if (n.getParDeclList() != null){
 
             for (int i=0; i<n.getParDeclList().size(); i++){
@@ -832,7 +834,9 @@ public class CToyVisitor implements Visitor{
             }
         }
 
+        //se non siamo nel main
         if (!n.getIdOp().getValue().equalsIgnoreCase("main")) {
+            //più valori di ritorno
             if (n.getResultTypeList().size()>1){
 
                 for (int i = 0; i < n.getResultTypeList().size(); i++) {
@@ -843,7 +847,7 @@ public class CToyVisitor implements Visitor{
                         }
                     }
                     //System.out.println(n.getResultTypeList().get(i).accept(this));
-                    n.getResultTypeList().get(i).accept(this);
+                    n.getResultTypeList().get(i).accept(this);//tipo
 
                     //uso dei puntatori per passare il parametro per salvare risultato
                     if (n.getResultTypeList().get(i).getVoidOp() == null) {
@@ -851,7 +855,7 @@ public class CToyVisitor implements Visitor{
                             organizzaFile(" *" + n.getResultTypeList().get(i).getType().getType() + "_parametri" + i + ", ");
 
                         } else {
-                            organizzaFile(" *" + n.getResultTypeList().get(i).getType().getType() + "_pararametri" + i);
+                            organizzaFile(" *" + n.getResultTypeList().get(i).getType().getType() + "_parametri" + i);
 
                         }
                     }
@@ -863,10 +867,11 @@ public class CToyVisitor implements Visitor{
         organizzaFile(")");
         organizzaFile("{\n\t");
         n.getProcBody().accept(this);
+
         if (n.getIdOp().getValue().equals("main")) {
             organizzaFile("\n\t return 0;");
         }
-        organizzaFile("\n\t}\n");
+        organizzaFile("\n}\n\n");
 
         typeEnvironment.exitScope();
         return true;
