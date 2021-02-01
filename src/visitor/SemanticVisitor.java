@@ -63,6 +63,7 @@ public class SemanticVisitor implements Visitor{
 
     @Override
     public Object visit(AndOP n) {
+
         String t1= checkExpression("andOp", n.getLeft().accept(this));
         String t2= checkExpression("andOp", n.getRight().accept(this));
 
@@ -75,6 +76,7 @@ public class SemanticVisitor implements Visitor{
 
     @Override
     public Object visit(DivOP n) {
+
         String t1= checkExpression("divOp", n.getLeft().accept(this));
         String t2= checkExpression("divOp", n.getRight().accept(this));
 
@@ -87,6 +89,7 @@ public class SemanticVisitor implements Visitor{
 
     @Override
     public Object visit(TimesOP n) {
+
         String t1= checkExpression("timesOp", n.getLeft().accept(this));
         String t2= checkExpression("timesOp", n.getRight().accept(this));
 
@@ -99,6 +102,7 @@ public class SemanticVisitor implements Visitor{
 
     @Override
     public Object visit(EqOP n) {
+
         String t1= checkExpression("eqOp", n.getLeft().accept(this));
         String t2= checkExpression("eqOp", n.getRight().accept(this));
 
@@ -114,6 +118,7 @@ public class SemanticVisitor implements Visitor{
 
     @Override
     public Object visit(NeOP n) {
+
         String t1= checkExpression("neOp", n.getLeft().accept(this));
         String t2= checkExpression("neOp", n.getRight().accept(this));
 
@@ -150,6 +155,7 @@ public class SemanticVisitor implements Visitor{
 
     @Override
     public Object visit(LeOP n) {
+
         String t1= checkExpression("leOp", n.getLeft().accept(this));
         String t2= checkExpression("leOp", n.getRight().accept(this));
 
@@ -162,6 +168,7 @@ public class SemanticVisitor implements Visitor{
 
     @Override
     public Object visit(LtOP n) {
+
         String t1= checkExpression("ltOp", n.getLeft().accept(this));
         String t2= checkExpression("ltOp", n.getRight().accept(this));
 
@@ -174,6 +181,7 @@ public class SemanticVisitor implements Visitor{
 
     @Override
     public Object visit(GtOP n) {
+
         String t1= checkExpression("gtOp", n.getLeft().accept(this));
         String t2= checkExpression("gtOp", n.getRight().accept(this));
 
@@ -304,6 +312,11 @@ public class SemanticVisitor implements Visitor{
 
         if ( expTipoList.size()!= idTipoList.size()){
             System.err.println("AssignOP 1: Errore Assegnamento");
+            for (Constant c: n.getIdList()){
+                System.out.println("\n"+c.getValue());
+            }
+            if (n.getId()!= null)
+                System.out.println("\n"+n.getId().getValue());
             System.exit(1);
         }
 
@@ -315,7 +328,7 @@ public class SemanticVisitor implements Visitor{
             if (!expTipoList.get(i).equalsIgnoreCase(idTipoList.get(i))){
 
                 if (idTipoList.get(i).equalsIgnoreCase("string") && !expTipoList.get(i).equalsIgnoreCase("NULL")){
-                    System.err.println("AssignOp 2: Stringhe si può assegnare solo null o string");
+                    System.err.println("AssignOp 2: Stringhe si può assegnare solo null o string\n");
                     System.exit(1);
                 }else if (!idTipoList.get(i).equalsIgnoreCase("string") && expTipoList.get(i).equalsIgnoreCase("NULL")){
                     System.err.println("AssignOP 3: i tipi non corrispondono");
@@ -383,7 +396,7 @@ public class SemanticVisitor implements Visitor{
                 Object x= exp.accept(this);
 
                 if (x.getClass().getSimpleName().equals("ArrayList")) {
-                    System.err.println("CallProc: non possono essere passate funzioni con più valori di ritorno: "+sign);
+                    System.err.println("CallProc: non possono essere passate funzioni con più valori di ritorno: "+n.getId().getValue()+" "+sign);
                     System.exit(1);
                     ArrayList<String> tipoLista=(ArrayList<String>) x;
 
@@ -396,12 +409,12 @@ public class SemanticVisitor implements Visitor{
                 }
             }
         } else {
-            System.err.println("CallProc: Errore 1 la funzione si aspett "+ size +" parametri, passati 0");
+            System.err.println("CallProc:"+n.getId().getValue()+" Errore 1 la funzione si aspett "+ size +" parametri, passati 0");
             System.exit(1);
         }
 
         if (size!= expList.size()){
-            System.err.println("CallProc: Errore 2 il numero parametri non combacia");
+            System.err.println("CallProc:"+n.getId().getValue()+" Errore 2 il numero parametri non combacia");
             System.exit(1);
         }
 
@@ -409,7 +422,7 @@ public class SemanticVisitor implements Visitor{
         for (int i=0; i<expList.size(); i++){
 
             if (! expList.get(i).equals(paramTipoList.get(i))){
-                System.err.println("Callproc: Errore 3 passaggio parametri non combacia tipo");
+                System.err.println("Callproc:"+n.getId().getValue()+" Errore 3 passaggio parametri non combacia tipo");
                 System.exit(1);
             }
         }
@@ -423,7 +436,7 @@ public class SemanticVisitor implements Visitor{
         String exptipo= (String) n.getExpr().accept(this);
 
         if (!exptipo.equalsIgnoreCase("bool")){
-            System.err.println("Elif: missmatch dell'espressione non è boolean");
+            System.err.println("Elif:"+n.getExpr() +" missmatch dell'espressione non è boolean");
             System.exit(1);
         }
 
@@ -459,7 +472,7 @@ public class SemanticVisitor implements Visitor{
         String expTipo= (String) n.getExpr().accept(this);
 
         if(!expTipo.equalsIgnoreCase("bool")){
-            System.err.println("If: missmatch espressione non è booleano");
+            System.err.println("If:"+n.getExpr()+" missmatch espressione non è booleano");
             System.exit(1);
         }
 
@@ -480,9 +493,10 @@ public class SemanticVisitor implements Visitor{
     public Object visit(ParDeclOP n) {
 
         String tipo= (String) n.getType().accept(this);
-
+        //System.out.println(tipo);
         for (Constant id: n.getIdList()){
             typeEnvironment.addId(id.getValue(), new Item(id.getValue(), tipo, "var"));
+            //System.out.println(id.getValue());
             id.accept(this);
         }
         return true;
@@ -521,9 +535,9 @@ public class SemanticVisitor implements Visitor{
             rt.accept(this);
         }
 
-        //controllo se ritorna void deve avere solo 1 tipo di ritorno
+        //controllo se void sta nei tipi di ritorno, deve avere solo 1 tipo di ritorno
         if (n.getResultTypeList().contains("void") && n.getResultTypeList().size() != 1){
-            System.err.println("ProcOP: La funzione non può avere altri tipi se contiene void come valore di ritorno ");
+            System.err.println("ProcOP:"+n.getIdOp().getValue()+" La funzione non può avere altri tipi se contiene void come valore di ritorno ");
             System.exit(1);
         }
 
@@ -535,7 +549,7 @@ public class SemanticVisitor implements Visitor{
 
         //controllo che il numero di valori di ritorno si trova con quelli restituiti dalla proc
         if (n.getResultTypeList().size()!= resultExprLista.size()){
-            System.err.println("Proc err 1: errore tipi di ritorno della funzione, diversi numero");
+            System.err.println("Proc err 1:+"+n.getIdOp().getValue()+" errore tipi di ritorno della funzione, diverso numero");
             System.exit(1);
         }
 
@@ -544,13 +558,13 @@ public class SemanticVisitor implements Visitor{
             if (n.getResultTypeList().get(i).getType() != null){
                 //Controllo i tipi se combaciano
                 if (! n.getResultTypeList().get(i).getType().getType().equalsIgnoreCase(resultExprLista.get(i))){
-                    System.err.println("Proc err 2: errore tipi di ritorno della funzione non combaciano");
+                    System.err.println("Proc err 2:"+n.getIdOp().getValue()+" errore tipi di ritorno della funzione non combaciano");
                     System.exit(1);
                 }
             } else {//se void
                 //devo controllare quando void
                 if (!n.getResultTypeList().get(i).getVoidOp().getName().equalsIgnoreCase(resultExprLista.get(i))){
-                    System.out.println("\n"+n.getResultTypeList().get(i).getVoidOp().getName()+"\n"+resultExprLista.get(i)+"\n\n");
+                    System.out.println("\n"+n.getIdOp().getValue()+": "+n.getResultTypeList().get(i).getVoidOp().getName()+"\n"+resultExprLista.get(i)+"\n\n");
                     System.err.println("Proc err 3: errore due tipi di ritorno della funzione");
                     System.exit(1);
                 }
@@ -573,6 +587,7 @@ public class SemanticVisitor implements Visitor{
             String paramString="";
             String resultString="";
 
+            //salvo parametri
             if (p.getParDeclList()!= null){
                 for (ParDeclOP par: p.getParDeclList()){
                     ArrayList<Constant> idLista= par.getIdList();
@@ -583,6 +598,7 @@ public class SemanticVisitor implements Visitor{
                 }
             }
 
+            //salvo valori di ritorno
             if (p.getResultTypeList() != null){
                 for (ResultTypeOP param: p.getResultTypeList()) {
                     if (param.getType() == null) {
@@ -593,6 +609,7 @@ public class SemanticVisitor implements Visitor{
                 }
             }
 
+            //aggiungo alla tabella, le proc le aggiungo sotto la tabella principale
             typeEnvironment.addId(p.getIdOp().getValue(), new Item( p.getIdOp().getValue(), paramString+ "->" + resultString, "proc"));
             p.accept(this);
         }
@@ -622,11 +639,11 @@ public class SemanticVisitor implements Visitor{
                 if (!i.getCostrutto().equals("proc"))
                     c.accept(this);
                 else {
-                    System.err.println("Non è possibile inserire una funzione in un'operazione di READ");
+                    System.err.println("\n"+c.getValue()+" Non è possibile inserire una funzione in un'operazione di READ");
                     System.exit(1);
                 }
             }else {
-                System.err.println("è consentito l'inserimento soltanto di ID in un'operazione di READ");
+                System.err.println("\n"+c.getValue()+" è consentito l'inserimento soltanto di ID in un'operazione di READ");
                 System.exit(1);
             }
         }
@@ -749,7 +766,7 @@ public class SemanticVisitor implements Visitor{
         //System.out.println(expTipo);
         //System.out.println(n.getExpressionOp().toString());
         if (! expTipo.equals("bool")){
-            System.err.println("while: Errore di tipo dell'espressione");
+            System.err.println("while:"+n.getExpressionOp()+" Errore di tipo dell'espressione");
             System.exit(1);
         }
 

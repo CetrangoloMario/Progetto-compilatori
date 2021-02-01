@@ -3,12 +3,12 @@
  int j:= 3;
 int a, b,c :=0;
 
-proc f()int,int:
+proc f()string:
 
     b:=n;
     c:=a;
 
-    -> b,c
+    -> "ciao"
 corp;
 
  proc main() void:
@@ -20,7 +20,7 @@ corp;
         n:=i+j;
         a:=n*j;
 
-        q,e:= f();
+        t:= f();
         write("Factorial of ", n, " is ", f(), "\n");
     ->
  corp;

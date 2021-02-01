@@ -3,6 +3,7 @@ package visitor;
 import nodes.expression.*;
 import nodes.nonterminals.*;
 import nodes.terminals.Constant;
+import org.omg.PortableInterceptor.DISCARDING;
 import symbolTable.Item;
 import symbolTable.TypeEnvironment;
 import tableOpType.OpType;
@@ -360,7 +361,7 @@ public class CToyVisitor implements Visitor{
             for (int i = 0; i < n.getIdList().size(); i++) {
 
                 n.getIdList().get(i).accept(this);
-                organizzaFile("[500] ");//dimensione
+                organizzaFile("["+DIMSTRING+"] ");//dimensione
                 organizzaFile(" = ");
 
                 if (n.getExpressionList().get(j).getClass().getSimpleName().equalsIgnoreCase("CallProcOp")) {
@@ -399,7 +400,7 @@ public class CToyVisitor implements Visitor{
         } else if (n.getId() != null && n.getExpression() != null){
 
             n.getId().accept(this);
-            organizzaFile("[500] ");
+            organizzaFile("["+DIMSTRING+"] ");
             organizzaFile(" = ");
             n.getExpression().accept(this);
         }
@@ -436,6 +437,7 @@ public class CToyVisitor implements Visitor{
                         int oldReturnIndice = returnIndex;
                         Object o=exp.accept(this);//mi restituisce lista di tipi di ritorno
 
+                        //aggiungo parametri per i valori di ritorno
                         if (o.getClass().getSimpleName().equalsIgnoreCase("ArrayList")){
 
                             ArrayList<String> tipoLista=(ArrayList<String>) o;
@@ -503,7 +505,7 @@ public class CToyVisitor implements Visitor{
                     n.getExpressionList().get(i).accept(this);
 
                 if (strcpy)
-                    organizzaFile(")\n\t");
+                    organizzaFile(")");
                 if (n.getIdList().size()-1 > i)
                     organizzaFile(";\n\t");
                 strcpy=false;
@@ -616,8 +618,8 @@ public class CToyVisitor implements Visitor{
 
             for (int i = 0; i < returnTipoLista.size(); i++) {
                 if (returnTipoLista.get(i).equalsIgnoreCase("string")) {
-                    //tempReturnParam.add("\tchar " + returnTipoLista.get(i) + "_return" + returnIndex + "[500];\n");
-                    organizzaFile("\n\tchar " + returnTipoLista.get(i) + "_return" + returnIndex + "[500];\n");
+                    //tempReturnParam.add("\tchar " + returnTipoLista.get(i) + "_return" + returnIndex + "["+DIMSTRING+"];\n");
+                    organizzaFile("\n\tchar " + returnTipoLista.get(i) + "_return" + returnIndex + "["+DIMSTRING+"];\n");
                 } else {
                     organizzaFile("\n\t"+returnTipoLista.get(i) + " " + returnTipoLista.get(i) + "_return" + returnIndex + ";\n");
                     //tempReturnParam.add(  "\t"+returnTipoLista.get(i) + " *" + returnTipoLista.get(i) + "_return" + returnIndex + ";\n");
@@ -714,7 +716,7 @@ public class CToyVisitor implements Visitor{
             n.getId().accept(this);
             Item i=typeEnvironment.lookup(n.getId().getValue());
             if (i.getTipo().equalsIgnoreCase("string")) //se stringa
-                organizzaFile("[500]");
+                organizzaFile("["+DIMSTRING+"]");
         }
 
         if (n.getAssignament()!= null){ //se assegnamento Constant è string
@@ -1270,4 +1272,5 @@ public class CToyVisitor implements Visitor{
     private int returnIndex;
     //per non scrivere i return nel procbodyop quando main
     private boolean isMain;
+    private static int DIMSTRING=500;
 }
