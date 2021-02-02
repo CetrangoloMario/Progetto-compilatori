@@ -849,7 +849,7 @@ class Yylex implements java_cup.runtime.Scanner {
       else {
         switch (zzAction < 0 ? zzAction : ZZ_ACTION[zzAction]) {
           case 1:
-            { return new Symbol(sym.error,yytext());
+            { System.err.println("\nErrore: "+yytext()+" riga: "+yyline+" colonna: "+yycolumn);  return new Symbol(sym.error,yytext());
             }
             // fall through
           case 54: break;

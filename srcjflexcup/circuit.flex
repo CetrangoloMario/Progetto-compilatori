@@ -223,7 +223,7 @@ spazi_bianchi = [\r|\n|\r\n]+ | [ \t\f]
         }
 
 
-[^]			{ return new Symbol(sym.error,yytext());}
+[^]			{ System.err.println("\nErrore: "+yytext()+" riga: "+yyline+" colonna: "+yycolumn);  return new Symbol(sym.error,yytext());}
 <<EOF>> {return new Symbol(sym.EOF);}
 
 
