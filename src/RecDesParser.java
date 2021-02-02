@@ -379,7 +379,7 @@ public class RecDesParser {
             }
         } else {
             globalPointer = forwordPointer;
-            derivation.add("!! BACKTRACK \n");
+            derivation.add("Else->eps Backtrack \n");
             return true;
         }
     }
