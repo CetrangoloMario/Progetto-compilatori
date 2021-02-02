@@ -1,0 +1,15 @@
+if (pippo < x) {
+    id <-y;
+}
+else {
+
+        if (y < id) {
+            do {
+                x <-id;
+            } while (id);
+        }
+        else{
+            x <- 3;
+        }
+
+}

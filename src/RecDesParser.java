@@ -15,8 +15,10 @@ public class RecDesParser {
 
     public Boolean run() throws Exception {
 
+        //inizializza lexer
         if (lex.initialize(inputStream)) {
             Token res;
+            //inserisce finche non trova eof
             while (!(res = lex.nextToken()).getName().equals("EOF")) {
                 arraytokens.add(res);
                // System.out.println(res.toString());
@@ -89,6 +91,7 @@ public class RecDesParser {
         return false;
     }
 
+    //IF LRBRACKET Expr RRBRACKET LBRACKET Stmt RBRACKET Else
     static Boolean functionIF() throws Exception {
         String token=nextToken();
         if (token.equals("LRBRACKET")) {
@@ -130,7 +133,7 @@ public class RecDesParser {
         }
     }
 
-
+    //WHILE LRBRACKET Expr RRBRACKET LBRACKET Stmt RBRACKET
     static Boolean functionWHILE() throws Exception{
 
         String token=nextToken();
@@ -172,6 +175,7 @@ public class RecDesParser {
 
     }
 
+    //DO LBRACKET Stmt RBRACKET WHILE LRBRACKET Expr RRBRACKET SEMICOMMA
     static Boolean functionDO() throws Exception{
         String token=nextToken();
         if (token.equals("LBRACKET")) {
@@ -228,7 +232,7 @@ public class RecDesParser {
         }
     }
 
-
+    // ID ASSIGNAMENTOP Expr SEMICOMMA
     static Boolean functionID() throws Exception{
         String token=nextToken();
         if (token.equals("ASSIGNMENTOP")) {
@@ -381,6 +385,11 @@ public class RecDesParser {
     }
 
 
+    /**
+     *
+     * @return token se ci sono elementi altrimenti eof
+     * @throws Exception
+     */
     private static String nextToken() throws Exception{
         String token;
         if (arraytokens.size()>globalPointer){

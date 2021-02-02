@@ -71,7 +71,7 @@ public class Lexer {
      */
     public Token nextToken() throws Exception {
 
-        //Ad ogni chiamata del seguente metodo vengono inizilizzate le seguenti variagili
+        //Ad ogni chiamata del seguente metodo vengono inizilizzate le seguenti variabili
         state = 0;
         StringBuilder lessema = new StringBuilder();
         char c;
@@ -384,7 +384,7 @@ public class Lexer {
 
     /**
      * Restituisce il token <NUMBER,valore> relativo al lessema che gli viene dato in input
-     * @param lessema lessema preso in inpur
+     * @param lessema lessema preso in input
      * @return Restituisce il token <NUMBER,valore> relativo al lessema che gli viene dato in input
      */
     private Token number(String lessema) {
