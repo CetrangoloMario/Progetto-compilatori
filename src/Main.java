@@ -25,7 +25,7 @@ public class Main {
         try {
             ProgramOP program = (ProgramOP) p.debug_parse().value; //p.parse().value;
             XMLVisitor visitor = new XMLVisitor();
-            visitor.executeVisit(program,"C:/Users/cetra/Desktop/Cetrangolo_es5_scg/src/AST.xml");
+            visitor.executeVisit(program,"C:/Users/cetra/Desktop/Cetrangolo_es5_scg/AST.xml");
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -42,7 +42,7 @@ public class Main {
 
             XMLVisitor visitorXML = new XMLVisitor();
             visitorXML.executeVisit(program,"C:/Users/cetra/Desktop/Cetrangolo_es5_scg/AST.xml");
-            //metodo da realizzare ancora
+
              TypeEnvironment typeEnv= visitorSemantico.executeVisit(program);
              visitorC.executeVisit(program,typeEnv);
 
