@@ -18,7 +18,6 @@ public class Main {
 
         parser p = new parser(new Yylex(input));
 
-
         /*
 //main esercitazione 4
         // l'uso di p.debug_parse() al posto di p.parse() produce tutte le azioni del parser durante il riconoscimento
