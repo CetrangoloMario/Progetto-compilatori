@@ -19,7 +19,7 @@ public class MainVisitorXML {
         try {
             ProgramOP program = (ProgramOP) p.debug_parse().value; //p.parse().value;
             XMLVisitor visitor = new XMLVisitor();
-            visitor.executeVisit(program,"C:/Users/cetra/Desktop/Cetrangolo_es5_scg/AST.xml");
+            visitor.executeVisit(program,"AST.xml");
         } catch (Exception e) {
             e.printStackTrace();
         }

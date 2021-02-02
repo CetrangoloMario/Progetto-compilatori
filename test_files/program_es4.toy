@@ -50,6 +50,7 @@ proc main () void:
     bool flag :=false;
 
     while n=1 do
+        flag:=false;
         if n <> 0 then
             write("Scegli operazione aritmetrica: ");
             write("\n 1 = somma, 2 = differenza, 3 = moltiplicazione, 4 = divisione");
@@ -84,10 +85,11 @@ proc main () void:
                 if n=0 then
                     write(" Arrivederci\n\n");
                     flag:=true;
-                elif n <> 1 then
-                    flag:=false;
-                else
+                elif n=1 then
                     flag:=true;
+                else
+                    flag:=false;
+                    n:=0;
                 fi;
             od;
 

@@ -18,7 +18,6 @@ public class Main {
 
         parser p = new parser(new Yylex(input));
 
-
         /*
 //main esercitazione 4
         // l'uso di p.debug_parse() al posto di p.parse() produce tutte le azioni del parser durante il riconoscimento
@@ -41,7 +40,7 @@ public class Main {
             CToyVisitor visitorC= new CToyVisitor("CToyVisitor");
 
             XMLVisitor visitorXML = new XMLVisitor();
-            visitorXML.executeVisit(program,"C:/Users/cetra/Desktop/Cetrangolo_es5_scg/AST.xml");
+            visitorXML.executeVisit(program,"AST.xml");
 
              TypeEnvironment typeEnv= visitorSemantico.executeVisit(program);
              visitorC.executeVisit(program,typeEnv);

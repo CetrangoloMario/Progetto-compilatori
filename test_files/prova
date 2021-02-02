@@ -3,24 +3,24 @@
  int j:= 3;
 int a, b,c :=0;
 
-proc f()string:
+proc f()int,string:
 
     b:=n;
     c:=a;
 
-    -> "ciao"
+    -> b,"ciao"
 corp;
 
  proc main() void:
  int q,e;
  string t:="dsag";
- if t="dsag" then
+ if t>"dsag" then
     write("Factorial of ", n, " is ", f(), "\n");
     fi;
         n:=i+j;
         a:=n*j;
 
-        t:= f();
-        write("Factorial of ", n, " is ", f(), "\n");
+        a,t:= f();
+        write("Factorial of ", n, " is ", t, "\n");
     ->
  corp;
