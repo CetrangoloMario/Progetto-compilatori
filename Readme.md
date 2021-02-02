@@ -6,7 +6,7 @@
  
  },
  
- ###### Nota (\*\*elem** indica che elem non è ancora gestito)
+ 
  <b>T</b> = {
  
     IF, ELSE, WHILE, FOR, INT, FLOAT, BOOL, **RETURN**,
@@ -19,10 +19,6 @@
  
  <b>S</b>= Program
  
- ###### COME GESTIAMO LE FUNZIONI? (TOKEN: MAIN E RETRUN)
- ###### COME GESTIAMO IL FOR? (CONDIZIONE?)
- ###### INSERIAMO ANCHE '+', '-', '*', '/', '%' ...? (CONDIZIONE?)
- ###### ORA VIENE ACCETTATA LA SEGUENTE ESPRESSIONE -> <b>"3<3<7>2<0<=7"</b>. LA MODIFICHIAMO O LASCIAMO COSÌ?
    
    
  
@@ -49,7 +45,7 @@
  ####Grammatica non ricorsiva sinistra e non ambigua
  
  
-   <b>P</b> = {
+   <b>S</b> = {
             
             Program -> Stmt Program'
             Program'-> Stmt Program' | eps
