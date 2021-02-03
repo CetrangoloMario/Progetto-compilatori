@@ -336,6 +336,9 @@ public class SemanticVisitor implements Visitor{
                 }else if (!idTipoList.get(i).equalsIgnoreCase("bool") && expTipoList.get(i).equalsIgnoreCase("bool")){
                     System.err.println("AssignOP 4: non posso assegnare bool al tipo: "+idTipoList.get(i));
                     System.exit(1);
+                } else if (idTipoList.get(i).equalsIgnoreCase("bool") && !expTipoList.get(i).equalsIgnoreCase("bool")){
+                    System.err.println("AssignOP 5: i tipi non corrispondono non posso assegnare "+ expTipoList.get(i)+ " a "+idTipoList.get(i)+"\n ");
+                    System.exit(1);
                 } else if (idTipoList.get(i).equalsIgnoreCase("int") && !expTipoList.get(i).equalsIgnoreCase("int")){
                     System.err.println("AssignOP 5: i tipi non corrispondono non posso assegnare "+ expTipoList.get(i)+ " a "+idTipoList.get(i)+"\n ");
                     System.exit(1);
