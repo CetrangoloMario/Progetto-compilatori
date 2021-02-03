@@ -78,9 +78,6 @@ CallProc ::= ID:e1 LPAR ExprList:list RPAR {:RESULT = new CallProcOP(new Constan
 
 # Scelte
 
-> Operazione di assegnamento può avvenire solo tra tipi uguali. //si potrebbe realizzare anche assegnamento tra tipi
-> Le variabili di tipo string, possono contenere stringhe che sono al massimo di 500 caratteri
-// si può migliorare utilizzando un incrementatore, sapendo in fase di compilazione, problema in caso di inserimento stdin a runtime.
 
 > Una StmtList non può essere vuota
 > Il return deve esserci sempre alla fine della funzione, anche se è void //simbolo ->
@@ -90,16 +87,20 @@ CallProc ::= ID:e1 LPAR ExprList:list RPAR {:RESULT = new CallProcOP(new Constan
 > Per utilizzare una funzione, essa deve essere prima definita
 > Al main si può assegnare qualsiasi tipo di ritorno, ma questo non sarà considerato e verrà sostituito con int e con valore di ritorno pari a 0
 
+
+> Le variabili di tipo string, possono contenere stringhe che sono al massimo di 500 caratteri
+// si può migliorare utilizzando un incrementatore, sapendo in fase di compilazione, problema in caso di inserimento stdin a runtime.
+
 > Nelle espressioni si possono effettuare chiamate a funzione soltanto con un tipo di ritorno
 > La ricorsione è possibile con funzioni che hanno un solo valore di ritorno
 
 > Le operazioni sia unarie che binarie si rifanno alle tabelle OPTYPE1 e OPTYPE2
-> L'assegnamento è possibile solo tra elementi dello stesso tipo
+
 
 > Non può essere presente una funzione che ha lo stesso id di una variabile
 //se si vuole permettere si potrebbe usare come key della riga della tabella oltre nome anche tipo di costrutto
 > Non è possibile dichiarare funzioni con lo stesso nome, anche se hanno paramentri e tipi di ritorno differenti
 //Per permettere Polimorfismo si può procedere cambiando la lookup in caso di proc, mette a confronto la signature del metodo.
-
+> L'assegnamento è possibile solo tra elementi dello stesso tipo, ad eccezzione le stringhe possono ricevere anche null, e float anche int;
 
 

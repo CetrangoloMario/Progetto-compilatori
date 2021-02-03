@@ -239,22 +239,22 @@ public class SemanticVisitor implements Visitor{
             Item i = typeEnvironment.lookup( n.getValue());
 
             if(i==null) {
-                System.err.println(n.getValue() + ": ID non trovato");
+                System.err.println(textElement+ ": ID non trovato");
                 System.exit(1);
             }
 
             if(i.getCostrutto()=="proc"){
-                String sign= i.getTipo();
+                //String sign= i.getTipo();
                 //System.out.println("sign proc:" +sign);
-                String [] val= sign.split("->");
-                String [] vals= val[1].trim().split(" ");
+                //String [] val= sign.split("->");
+                //String [] vals= val[1].trim().split(" ");
 
                 return i.getTipo();//mi serve nella callproc
             }
 
             return i.getTipo();
         }
-
+        //se non è id restituisco il tipo bool in caso TRUE e FALSE, int INTCONSTANT...
         return n.getName();
     }
 
@@ -330,10 +330,17 @@ public class SemanticVisitor implements Visitor{
                 if (idTipoList.get(i).equalsIgnoreCase("string") && !expTipoList.get(i).equalsIgnoreCase("NULL")){
                     System.err.println("AssignOp 2: Stringhe si può assegnare solo null o string\n");
                     System.exit(1);
-                }else if (!idTipoList.get(i).equalsIgnoreCase("string") && expTipoList.get(i).equalsIgnoreCase("NULL")){
-                    System.err.println("AssignOP 3: i tipi non corrispondono");
+                }else if (!idTipoList.get(i).equalsIgnoreCase("string") && (expTipoList.get(i).equalsIgnoreCase("NULL")||expTipoList.get(i).equalsIgnoreCase("string"))){
+                    System.err.println("AssignOP 3: non posso assegnare null o string al tipo: "+idTipoList.get(i));
+                    System.exit(1);
+                }else if (!idTipoList.get(i).equalsIgnoreCase("bool") && expTipoList.get(i).equalsIgnoreCase("bool")){
+                    System.err.println("AssignOP 4: non posso assegnare bool al tipo: "+idTipoList.get(i));
+                    System.exit(1);
+                } else if (idTipoList.get(i).equalsIgnoreCase("int") && !expTipoList.get(i).equalsIgnoreCase("int")){
+                    System.err.println("AssignOP 5: i tipi non corrispondono non posso assegnare "+ expTipoList.get(i)+ " a "+idTipoList.get(i)+"\n ");
                     System.exit(1);
                 }
+
             }
         }
 
