@@ -3,7 +3,7 @@ package symbolTable;
 public class Item {
     String value;
     String tipo;
-    // function or variable
+    // function or variable var or proc
     String costrutto;
 
     public Item(String value, String tipo, String costrutto) {

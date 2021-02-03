@@ -78,20 +78,28 @@ CallProc ::= ID:e1 LPAR ExprList:list RPAR {:RESULT = new CallProcOP(new Constan
 
 # Scelte
 
-1. Si può assegnare null (null = \0) soltanto alle stringhe
-2. Le variabili di tipo string, possono contenere stringhe che sono al massimo di 500 caratteri
-3. Non si possono passare come parametro a una funzione una qualsiasi chiamata a funzione con dei valori di ritorno multipli
-4. Per utilizzare una funzione, essa deve essere prima definita
-5. Al main si può assegnare qualsiasi tipo di ritorno, ma questo non sarà considerato e verrà sostituito con int e con valore di ritorno pari a 0
-6. Nelle espressioni si possono effettuare chiamate a funzione soltanto con un tipo di ritorno
-7. La ricorsione è possibile con funzioni che hanno un solo valore di ritorno
-8. Le operazioni sia unarie che binarie si rifanno alle tabelle OPTYPE1 e OPTYPE2
-9. L'assegnamento è possibile solo tra elementi dello stesso tipo
-10. Una StmtList non può essere vuota
-11. Il return deve esserci sempre alla fine della funzione, anche se è void
-12. Nel While deve essere presente il token RETURN tra Stmt e Expr
-13. Non può essere presente una funzione che ha lo stesso id di una variabile
-14. Non è possibile dichiarare funzioni con lo stesso nome, anche se hanno paramentri e tipi di ritorno differenti
+> Operazione di assegnamento può avvenire solo tra tipi uguali. //si potrebbe realizzare anche assegnamento tra tipi
+> Le variabili di tipo string, possono contenere stringhe che sono al massimo di 500 caratteri
+// si può migliorare utilizzando un incrementatore, sapendo in fase di compilazione, problema in caso di inserimento stdin a runtime.
+
+> Una StmtList non può essere vuota
+> Il return deve esserci sempre alla fine della funzione, anche se è void //simbolo ->
+> Nel While deve essere presente il token RETURN tra Stmt e Expr
+
+> Non si possono passare come parametro a una funzione una qualsiasi chiamata a funzione con dei valori di ritorno multipli
+> Per utilizzare una funzione, essa deve essere prima definita
+> Al main si può assegnare qualsiasi tipo di ritorno, ma questo non sarà considerato e verrà sostituito con int e con valore di ritorno pari a 0
+
+> Nelle espressioni si possono effettuare chiamate a funzione soltanto con un tipo di ritorno
+> La ricorsione è possibile con funzioni che hanno un solo valore di ritorno
+
+> Le operazioni sia unarie che binarie si rifanno alle tabelle OPTYPE1 e OPTYPE2
+> L'assegnamento è possibile solo tra elementi dello stesso tipo
+
+> Non può essere presente una funzione che ha lo stesso id di una variabile
+//se si vuole permettere si potrebbe usare come key della riga della tabella oltre nome anche tipo di costrutto
+> Non è possibile dichiarare funzioni con lo stesso nome, anche se hanno paramentri e tipi di ritorno differenti
+//Per permettere Polimorfismo si può procedere cambiando la lookup in caso di proc, mette a confronto la signature del metodo.
 
 
 
