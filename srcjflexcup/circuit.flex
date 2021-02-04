@@ -27,7 +27,7 @@ import java.util.Map;
 %{
 
     private StringBuffer string= new StringBuffer();
-   // private static HashMap<String,Symbol> stringTable=new HashMap<String,Symbol>();
+
 
     private Symbol symbol(int type){
         return new Symbol(type, yyline,yycolumn);
@@ -37,41 +37,6 @@ import java.util.Map;
         return new Symbol(type, yyline, yycolumn, value);
     }
 
-   /* private Symbol installID(String str){
-        Symbol symbol;
-        if(stringTable.containsKey(str)){
-            return symbol(CircuitSym.ID,stringTable.get(str).toString());
-        }
-        else {
-            symbol=new Symbol(CircuitSym.ID,str);
-            stringTable.put(str,symbol);
-            return symbol(CircuitSym.ID,str);
-        }
-    }
-
-    private Symbol intNum(String str){
-        Symbol symbol;
-        symbol=new Symbol(CircuitSym.INTNUM,str);
-        return symbol;
-    }
-
-    private Symbol decNUM(String str){
-            Symbol symbol;
-            symbol=new Symbol(CircuitSym.DECNUM,str);
-            return symbol;
-        }
-
-        public void printStringTable(){
-                //int x=0;
-                System.out.println("--------String table--------");
-                for (Map.Entry e : stringTable.entrySet())
-                {
-                    // x++;
-                    System.out.println("| ID: "+e.getKey()+" | Token: "+e.getValue()+" |" );
-
-                }
-                System.out.println("------------------------------------" );
-            }*/
 %}
 
 
@@ -83,8 +48,8 @@ letter=([a-z]|[A-Z])
 letter_=[a-z]|[A-Z]|_
 digit=[0-9]
 digits=(digit)|([1-9][0-9]*)
-float = {integer}((\.({digit}+)))
 integer = (0)|([1-9]{digit}*)
+float = {integer}((\.({digit}+)))
 identifier={letter_}({letter_}|{digit})*
 decimal= {integer}((\.({digit}+))?)
 spazi_bianchi = [\r|\n|\r\n]+ | [ \t\f]
@@ -158,30 +123,7 @@ spazi_bianchi = [\r|\n|\r\n]+ | [ \t\f]
 {float} 	{ return new Symbol(sym.FLOAT_CONST,yytext()); }
 
 
-"<="   {return new Symbol(sym.LE);}
-"<>"   {return new Symbol(sym.NE);}
-">="   {return new Symbol(sym.GE);}
-"="   {return new Symbol(sym.EQ);}
 
-"<"   {return new Symbol(sym.LT);}
-">"   {return new Symbol(sym.GT);}
-
-"&&"   {return new Symbol(sym.AND);}
-"||"   {return new Symbol(sym.OR);}
-"!"   {return new Symbol(sym.NOT);}
-"->"   {return new Symbol(sym.RETURN);}
-
-";"     {return new Symbol(sym.SEMI);}
-","     {return new Symbol(sym.COMMA);}
-"("   {return new Symbol(sym.LPAR);}
-")"   {return new Symbol(sym.RPAR);}
-":="   {return new Symbol(sym.ASSIGN);}
-":"   {return new Symbol(sym.COLON);}
-
-"+"   {return new Symbol(sym.PLUS);}
-"-"   {return new Symbol(sym.MINUS);}
-"*"   {return new Symbol(sym.TIMES);}
-"/"   {return new Symbol(sym.DIV);}
 
 /* states */
 	\" { string.setLength(0); yybegin(STRING_CONST); }

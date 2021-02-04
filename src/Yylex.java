@@ -382,7 +382,7 @@ class Yylex implements java_cup.runtime.Scanner {
   /* user code: */
 
     private StringBuffer string= new StringBuffer();
-   // private static HashMap<String,Symbol> stringTable=new HashMap<String,Symbol>();
+
 
     private Symbol symbol(int type){
         return new Symbol(type, yyline,yycolumn);
@@ -392,41 +392,6 @@ class Yylex implements java_cup.runtime.Scanner {
         return new Symbol(type, yyline, yycolumn, value);
     }
 
-   /* private Symbol installID(String str){
-        Symbol symbol;
-        if(stringTable.containsKey(str)){
-            return symbol(CircuitSym.ID,stringTable.get(str).toString());
-        }
-        else {
-            symbol=new Symbol(CircuitSym.ID,str);
-            stringTable.put(str,symbol);
-            return symbol(CircuitSym.ID,str);
-        }
-    }
-
-    private Symbol intNum(String str){
-        Symbol symbol;
-        symbol=new Symbol(CircuitSym.INTNUM,str);
-        return symbol;
-    }
-
-    private Symbol decNUM(String str){
-            Symbol symbol;
-            symbol=new Symbol(CircuitSym.DECNUM,str);
-            return symbol;
-        }
-
-        public void printStringTable(){
-                //int x=0;
-                System.out.println("--------String table--------");
-                for (Map.Entry e : stringTable.entrySet())
-                {
-                    // x++;
-                    System.out.println("| ID: "+e.getKey()+" | Token: "+e.getValue()+" |" );
-
-                }
-                System.out.println("------------------------------------" );
-            }*/
 
 
   /**
