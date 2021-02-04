@@ -408,6 +408,12 @@ public class CToyVisitor implements Visitor{
         return true;
     }
 
+
+    /**
+     * Stato realizzato un secondo assign in caso di stringhe. perchè la strcpy dava problemi string t:= "fdsa"
+     * @param n
+     * @return
+     */
     @Override
     public Object visit(AssignOP n) {
 //Assign due costruttori id expr o array id array di expr

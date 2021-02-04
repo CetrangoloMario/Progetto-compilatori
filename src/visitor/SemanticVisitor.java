@@ -5,6 +5,7 @@ import com.sun.org.apache.bcel.internal.Const;
 import nodes.expression.*;
 import nodes.nonterminals.*;
 import nodes.terminals.Constant;
+import org.w3c.dom.Node;
 import sun.awt.image.GifImageDecoder;
 import sun.font.DelegatingShape;
 import symbolTable.Item;
@@ -766,6 +767,30 @@ public class SemanticVisitor implements Visitor{
     @Override
     public Object visit(WhileOP n) {
 
+        if(n.getBodyOp2()!=null){//allora primo costruttore
+
+             n.getBodyOp1().accept(this);
+            //controllo che espressione dia solo un valore bool
+            String expTipo= checkExpression("while", n.getExpressionOp().accept(this));
+
+            if (! expTipo.equals("bool")){
+                System.err.println("while:"+n.getExpressionOp()+" Errore di tipo dell'espressione");
+                System.exit(1);
+            }
+             n.getBodyOp2().accept(this);
+        }
+        else{//altrimenti seconda produzione del while
+            //controllo che espressione dia solo un valore bool
+            String expTipo= checkExpression("while", n.getExpressionOp().accept(this));
+
+            if (! expTipo.equals("bool")){
+                System.err.println("while:"+n.getExpressionOp()+" Errore di tipo dell'espressione");
+                System.exit(1);
+            }
+             n.getBodyOp1().accept(this);
+        }
+
+        /*
         if (n.getBodyOp1()!=null){
             n.getBodyOp1().accept(this);
             //System.out.println(n.getBodyOp1().getStatList().toString());
@@ -784,6 +809,8 @@ public class SemanticVisitor implements Visitor{
             n.getBodyOp2().accept(this);
             //System.out.println(n.getBodyOp2().getStatList());
         }
+
+         */
         return true;
     }
 
