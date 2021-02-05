@@ -54,7 +54,7 @@ public class Lexer {
     public Boolean initialize(String filePath) {
         input = new File(filePath);
         if (!input.exists()) return false;
-        if (!input.canRead() || !input.isFile()) return false;
+        if (!input.canRead() || !input.isFile()) return false;//verifica se può leggere il file specificato
         try {
             inputStream = new FileInputStream(input);
             globalPointer = inputStream.getChannel().position(); //Inizializza la variabile GlobalPointer assegnando la posizione del puntatore di inputStream
