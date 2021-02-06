@@ -1175,7 +1175,7 @@ public class CToyVisitor implements Visitor{
 
                 switch (tipo) {
                     case "bool":
-                        organizzaFile("&s");
+                        organizzaFile("%s");
                         break;
                     case "int":
                         organizzaFile("%d");

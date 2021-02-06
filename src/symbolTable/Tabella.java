@@ -7,11 +7,7 @@ import java.util.HashMap;
 public class Tabella {
 
     //diversi costruttori
-    public Tabella(Tabella padre) {
-        this.elementi = new HashMap<>();
-        this.padre = padre;
-        this.indicePadre = 0;
-    }
+
 
     public Tabella(Tabella padre, int indicePadre) {
         this.elementi = new HashMap<>();
@@ -21,15 +17,6 @@ public class Tabella {
 
     public Tabella() {
         this.elementi = new HashMap<>();
-    }
-
-    public Tabella(HashMap<String, Item> elementi, Tabella padre) {
-        this.elementi = elementi;
-        this.padre = padre;
-    }
-
-    public Tabella(HashMap<String, Item> elementi) {
-        this.elementi = elementi;
     }
 
     /**
