@@ -405,16 +405,16 @@ public class SemanticVisitor implements Visitor{
             for (ExpressionOP exp: paramOpLista ){
 
                 Object x= exp.accept(this);
-
+                //System.out.println(x);
                 if (x.getClass().getSimpleName().equals("ArrayList")) {
-                    System.err.println("CallProc: non possono essere passate funzioni con più valori di ritorno: "+n.getId().getValue()+" "+sign);
-                    System.exit(1);
-                    ArrayList<String> tipoLista=(ArrayList<String>) x;
-
-                    for (String tipo: tipoLista){
-                        expList.add(tipo);
+                    ArrayList<String>temp=(ArrayList<String>)x;
+                    if (temp.size()>1) {
+                        System.err.println("CallProc1: non possono essere passate funzioni con più valori di ritorno: " + n.getId().getValue() + " " + sign);
+                        System.exit(1);
                     }
-                }else {
+                    expList.add((String) temp.get(0));
+                }
+                else {
                     expList.add((String) x);
                     //System.out.println(x);
                 }

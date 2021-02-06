@@ -657,7 +657,9 @@ public class CToyVisitor implements Visitor{
                         if (i != n.getParamOP().getExpressionList().size() - 1)
                             organizzaFile(", ");
                     }
+                    else
                     n.getParamOP().getExpressionList().get(i).accept(this);
+
                     if (i != n.getParamOP().getExpressionList().size() - 1)
                         organizzaFile(", ");
                 }
