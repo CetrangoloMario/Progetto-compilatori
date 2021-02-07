@@ -9,7 +9,7 @@ public class Tester {
     public static void main(String[] args) throws Exception {
 
         //arraytokens=new ArrayList<Token>();
-        String test_path=args[0];
+        String test_path=args[0];  //"test_files/test4.txt";
         parseAndPrintSrc(test_path);
 
         /*for (Token x: arraytokens)

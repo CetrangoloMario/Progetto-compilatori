@@ -1,0 +1,4 @@
+
+cd out/production/Cetrangolo_es3_hcp
+
+java Tester ../../../test_files/name.txt
