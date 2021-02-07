@@ -300,7 +300,7 @@ public class RecDesParser {
             return true;
         }
         globalPointer=forwordPointer;
-        derivation.add("!! BACKTRACK \n");
+        //derivation.add("!! BACKTRACK \n");
         return false;
     }
 
