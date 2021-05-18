@@ -27,9 +27,12 @@ proc multAddDiff ()int, int, int :
 
 corp;
 
+
+
 proc main() void :
-	int a, b, c:=0;
-	a, b, c := multAddDiff();
+	int a, b,d, c:=0;
+
+	a, b,c:= multAddDiff();
 	write("Ciao ", nome);
 	writeNewLines(2);
 	write("I tuoi valori sono:\n", a, " per la moltiplicazione\n", b," per la somma, e \n", c, " per la differenza");

@@ -22,7 +22,7 @@ proc main() void:
 	    ->
 	    n < 10
     do
-	    write("Factorial of ", n, " is ", factorial(n), "\n");
+	    write("Factorial  of ", n, " is ", factorial(n), "\n");
     od;
     ->
 corp;

@@ -31,7 +31,7 @@ terminal String STRING_CONST;
 terminal INT, BOOL, FLOAT, STRING, SEMI, COMMA,  PROC, LPAR, RPAR,
          COLON, CORP,IF, THEN, ELIF, FI, ELSE, WHILE, DO, OD,
          READ, WRITE, ASSIGN, PLUS, MINUS, TIMES, DIV, EQ, NE, LT,
-         LE, GT, GE, AND, OR, NOT, UMINUS, RETURN, FALSE,TRUE,VOID,NULL ;
+         LE, GT, GE, AND, OR, NOT, UMINUS, RETURN, FALSE,TRUE,VOID,NULL,MYCASE,DO.DEFAULT,OD ;
 
 
 /* NON TERMINALI */
@@ -62,6 +62,9 @@ nonterminal ParDeclOP ParDecl;
 nonterminal ArrayList<Constant> IdList;
 nonterminal ResultTypeOP ResultType;
 nonterminal ArrayList<StatOP> StatList;
+nonterminal MyCaseOP MycaseStat;
+nonterminal ArrayList<CaseList> IdCaseList;
+nonterminal CaseListOP CaseList;
 
 
 //ProcBodyOP BodyOP IdInitOP
@@ -138,8 +141,17 @@ Stat ::= IfStat:i SEMI {:RESULT =new StatOP(i);:}
 	| ReadlnStat:re SEMI {:RESULT =new StatOP(re);:}
 	| WriteStat:wr SEMI {:RESULT =new StatOP(wr);:}
 	| AssignStat:a SEMI {:RESULT =new StatOP(a);:}
-	| CallProc:c SEMI {:RESULT =new StatOP(c);:};
+	| CallProc:c SEMI {:RESULT =new StatOP(c);:}
+	| MycaseStat: m SEMI {: RESULT = new MyCaseOP(m);:};
 	//| /* empty */; //TOLTO DEL PROF
+
+IdCaseList ::= IdCaseList:list SEMI CaseList:cl  {:ArrayList<CaseListOP> list = new ArrayList<CaseListOP>(); list.add(cl); RESULT = list;:}
+
+
+CaseList ::=  ID:id COLON Expr:ex {:new CaseListOP(new Constant("ID",e),ex:}
+       | empty;
+
+MycaseStat::= MYCASE ID:id DO IdCaseList:icl DEFAULT Expr:ex OD
 
 IfStat ::= IF Expr:e THEN StatList:sl ElifList:el Else:els FI {:RESULT = new IfOP(e,new BodyOP(sl),el,els);:};
 

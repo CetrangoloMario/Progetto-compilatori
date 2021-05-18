@@ -82,6 +82,12 @@ spazi_bianchi = [\r|\n|\r\n]+ | [ \t\f]
 "false"   {return new Symbol(sym.FALSE);}
 
 "null"   {return new Symbol(sym.NULL);}
+"mycase" {return new Symbol(sym.MYCASE);}
+"do" {return new Symbol(sym.DO);}
+"od" {return new Symbol(sym.OD);}
+"default" {return new Symbol(sym.DEFAULT);}
+
+
 
 
 
