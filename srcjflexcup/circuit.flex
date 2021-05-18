@@ -156,16 +156,3 @@ decimal= {integer}((\.({digit}+))?)
 [^]			{ return new Symbol(CircuitSym.ERROR,yytext());}
 <<EOF>> {return new Symbol(CircuitSym.EOF);}
 
-
-//<STRING>{
-
-//\"          {yybegin(YYINITIAL);
-  //          return new Symbol(CircuitSym.STRING_LITERAL,string.toString());}
-
-/*[^\n\r\"\\]+    {string.append(yytext());}
-\\t             {string.append('\t');}
-\\n             {string.append('\n');}
-\\r             {string.append('\r');}
-\\              {string.append('\\');}
-
-}*/
